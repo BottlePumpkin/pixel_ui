@@ -1,0 +1,44 @@
+name: pixel_ui
+description: Pixel-art design system for Flutter. Parametric shapes, interactive
+  buttons, and bundled pixel font.
+version: 0.1.0
+homepage: https://github.com/BottlePumpkin/pixel_ui
+repository: https://github.com/BottlePumpkin/pixel_ui
+issue_tracker: https://github.com/BottlePumpkin/pixel_ui/issues
+documentation: https://pub.dev/documentation/pixel_ui/latest/
+
+topics:
+  - widgets
+  - design-system
+  - pixel-art
+  - retro
+  - game-ui
+
+screenshots:
+  - description: 'Complete pixel UI composed from primitives'
+    path: example/assets/screenshots/1.png
+  - description: 'Interactive pixel button with press state'
+    path: example/assets/screenshots/2.png
+  - description: 'Parametric corner scale from sharp to xl'
+    path: example/assets/screenshots/3.png
+  - description: 'Plain vs textured surfaces via PixelTexture'
+    path: example/assets/screenshots/4.png
+
+environment:
+  sdk: ^3.8.0
+  flutter: '>=3.32.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  fonts:
+    - family: Mulmaru
+      fonts:
+        - asset: assets/fonts/Mulmaru.ttf
