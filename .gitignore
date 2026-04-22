@@ -25,3 +25,6 @@ example/build/
 example/.dart_tool/
 example/ios/Pods/
 example/android/.gradle/
+
+# Claude Code local overrides (personal, not shared)
+.claude/settings.local.json
