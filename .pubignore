@@ -28,6 +28,9 @@ example/build/
 example/.dart_tool/
 example/ios/Pods/
 example/android/.gradle/
+example/macos/Flutter/ephemeral/
+example/linux/flutter/ephemeral/
+example/windows/flutter/ephemeral/
 
 # Claude Code local overrides
 .claude/
