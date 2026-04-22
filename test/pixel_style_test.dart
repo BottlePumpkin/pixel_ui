@@ -3,6 +3,77 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:pixel_ui/pixel_ui.dart';
 
 void main() {
+  group('PixelShapeStyle', () {
+    const base = PixelShapeStyle(
+      corners: PixelCorners.md,
+      fillColor: Color(0xFFAA0000),
+      borderColor: Color(0xFF550000),
+      borderWidth: 1,
+      shadow: PixelShadow(offset: Offset(1, 1), color: Color(0xFF220000)),
+    );
+
+    test('equality and hashCode', () {
+      const a = PixelShapeStyle(corners: PixelCorners.md, fillColor: Color(0xFFFF0000));
+      const b = PixelShapeStyle(corners: PixelCorners.md, fillColor: Color(0xFFFF0000));
+      expect(a, equals(b));
+      expect(a.hashCode, equals(b.hashCode));
+    });
+
+    group('copyWith sentinel pattern', () {
+      test('omitting a parameter keeps the original value', () {
+        final result = base.copyWith(fillColor: const Color(0xFFBB0000));
+        expect(result.borderColor, base.borderColor);
+        expect(result.shadow, base.shadow);
+      });
+
+      test('explicit null clears a nullable field', () {
+        final result = base.copyWith(borderColor: null);
+        expect(result.borderColor, isNull);
+        expect(result.fillColor, base.fillColor);
+      });
+
+      test('new value replaces a nullable field', () {
+        const newShadow = PixelShadow(offset: Offset(3, 3), color: Color(0xFFFF0000));
+        final result = base.copyWith(shadow: newShadow);
+        expect(result.shadow, newShadow);
+      });
+
+      test('clearing shadow yields null shadow', () {
+        final result = base.copyWith(shadow: null);
+        expect(result.shadow, isNull);
+      });
+
+      test('clearing texture preserves other fields', () {
+        const withTexture = PixelShapeStyle(
+          corners: PixelCorners.sm,
+          fillColor: Color(0xFF00FF00),
+          texture: PixelTexture(color: Color(0xFFFFFFFF)),
+        );
+        final result = withTexture.copyWith(texture: null);
+        expect(result.texture, isNull);
+        expect(result.fillColor, const Color(0xFF00FF00));
+      });
+
+      test('non-nullable fields respect original if omitted', () {
+        final result = base.copyWith();
+        expect(result.corners, base.corners);
+        expect(result.fillColor, base.fillColor);
+        expect(result.borderWidth, base.borderWidth);
+      });
+
+      test('non-nullable fields replaced when provided', () {
+        final result = base.copyWith(
+          corners: PixelCorners.xl,
+          fillColor: const Color(0xFF00FF00),
+          borderWidth: 3,
+        );
+        expect(result.corners, PixelCorners.xl);
+        expect(result.fillColor, const Color(0xFF00FF00));
+        expect(result.borderWidth, 3);
+      });
+    });
+  });
+
   group('PixelTexture', () {
     test('equality checks all fields', () {
       const a = PixelTexture(color: Color(0xFFFFFFFF), density: 0.2, size: 2, seed: 7);
