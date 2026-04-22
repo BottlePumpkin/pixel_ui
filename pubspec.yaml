@@ -1,7 +1,7 @@
 name: pixel_ui
 description: Pixel-art design system for Flutter. Parametric shapes, interactive
   buttons, and bundled pixel font.
-version: 0.1.0
+version: 0.1.1
 homepage: https://github.com/BottlePumpkin/pixel_ui
 repository: https://github.com/BottlePumpkin/pixel_ui
 issue_tracker: https://github.com/BottlePumpkin/pixel_ui/issues
@@ -14,7 +14,17 @@ topics:
   - retro
   - game-ui
 
-# screenshots: deferred to 0.1.1+ (capture from example app)
+screenshots:
+  - description: "Hero composition — logo, corners, shadow, texture primitives"
+    path: doc/screenshots/01_hero.png
+  - description: "Corner stair presets: sharp, xs, sm, md, lg, xl, and asymmetric tab"
+    path: doc/screenshots/02_corners.png
+  - description: "Pixel drop shadows at sm, md, lg offsets"
+    path: doc/screenshots/03_shadows.png
+  - description: "PixelButton states: normal, pressed, disabled"
+    path: doc/screenshots/04_buttons.png
+  - description: "Deterministic LCG texture overlay — plain vs textured"
+    path: doc/screenshots/05_texture.png
 
 environment:
   sdk: ^3.8.0
