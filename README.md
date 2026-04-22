@@ -2,6 +2,7 @@
 
 [![pub package](https://img.shields.io/pub/v/pixel_ui.svg)](https://pub.dev/packages/pixel_ui)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Platform Build](https://github.com/BottlePumpkin/pixel_ui/actions/workflows/build.yml/badge.svg)](https://github.com/BottlePumpkin/pixel_ui/actions/workflows/build.yml)
 
 Pixel-art design system for Flutter — parametric shapes, interactive buttons, and a bundled pixel font.
 
@@ -15,6 +16,22 @@ Pixel-art design system for Flutter — parametric shapes, interactive buttons, 
 - Press-state–aware interactive pixel buttons (`PixelButton`)
 - Bundled Mulmaru pixel font (SIL OFL 1.1) with a ready-made `TextStyle` factory
 - Zero external dependencies beyond the Flutter SDK
+
+## Platforms
+
+| Platform | Status | Verification |
+|----------|--------|--------------|
+| Android  | ✅      | CI build (debug APK) |
+| iOS      | ✅      | CI build (no-codesign) |
+| Web      | ✅      | CI build + smoke-tested on Chrome |
+| macOS    | ✅      | CI build + smoke-tested locally |
+| Linux    | ✅      | CI build |
+| Windows  | ✅      | CI build |
+
+> Web is smoke-tested on Chrome. Other browsers (Safari, Firefox)
+> should work but are not part of release validation. Linux and Windows
+> are validated by CI build only — please file an issue if you find
+> rendering glitches on those platforms.
 
 ## Install
 
