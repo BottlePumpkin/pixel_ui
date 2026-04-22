@@ -1,2 +1,39 @@
-# Internal development documentation — not shipped to pub.dev.
+# `.pubignore` fully replaces `.gitignore` for pub publish. Mirror the
+# gitignore entries + pub.dev-specific exclusions.
+
+# Dart/Flutter build outputs and tool caches
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+build/
+pubspec.lock
+coverage/
+
+# IDE / editor metadata
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+
+# OS metadata
+.DS_Store
+Thumbs.db
+
+# Example app build artifacts
+example/build/
+example/.dart_tool/
+example/ios/Pods/
+example/android/.gradle/
+
+# Claude Code local overrides
+.claude/
+
+# Internal development documentation — not shipped to pub.dev consumers.
 docs/
+
+# Internal AI-assistant rules file.
+CLAUDE.md
