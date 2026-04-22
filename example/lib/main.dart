@@ -34,20 +34,25 @@ class _ShowcaseScreen extends StatelessWidget {
         backgroundColor: const Color(0xFFE8DFC6),
         elevation: 0,
       ),
-      body: ListView(
-        padding: const EdgeInsets.symmetric(vertical: 24),
-        children: const [
-          _HeroComposition(),
-          _SectionDivider('1. Corners scale'),
-          _CornersShowcase(),
-          _SectionDivider('2. Shadows'),
-          _ShadowsShowcase(),
-          _SectionDivider('3. Buttons'),
-          _ButtonsShowcase(),
-          _SectionDivider('4. Texture'),
-          _TextureShowcase(),
-          SizedBox(height: 40),
-        ],
+      body: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 480),
+          child: ListView(
+            padding: const EdgeInsets.symmetric(vertical: 24),
+            children: const [
+              _HeroComposition(),
+              _SectionDivider('1. Corners scale'),
+              _CornersShowcase(),
+              _SectionDivider('2. Shadows'),
+              _ShadowsShowcase(),
+              _SectionDivider('3. Buttons'),
+              _ButtonsShowcase(),
+              _SectionDivider('4. Texture'),
+              _TextureShowcase(),
+              SizedBox(height: 40),
+            ],
+          ),
+        ),
       ),
     );
   }
