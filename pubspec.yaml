@@ -14,15 +14,7 @@ topics:
   - retro
   - game-ui
 
-screenshots:
-  - description: 'Complete pixel UI composed from primitives'
-    path: example/assets/screenshots/1.png
-  - description: 'Interactive pixel button with press state'
-    path: example/assets/screenshots/2.png
-  - description: 'Parametric corner scale from sharp to xl'
-    path: example/assets/screenshots/3.png
-  - description: 'Plain vs textured surfaces via PixelTexture'
-    path: example/assets/screenshots/4.png
+# screenshots: deferred to 0.1.1+ (capture from example app)
 
 environment:
   sdk: ^3.8.0
