@@ -1,0 +1,24 @@
+# Changelog
+
+## 0.1.0 — 2026-04-22
+
+Initial public release.
+
+### Features
+- `PixelCorners`: asymmetric per-corner stair pattern with `.sharp`/`.xs`/`.sm`/`.md`/`.lg`/`.xl` static presets.
+- `PixelShadow`: pixel drop shadow with `.sm`/`.md`/`.lg` factory constructors (offsets 1/2/4).
+- `PixelTexture`: deterministic LCG noise overlay.
+- `PixelShapeStyle`: composable shape style with sentinel-based `copyWith` (`null` clears, omit preserves).
+- `PixelShapePainter`: low-level `CustomPainter` for pixel rendering.
+- `PixelBox`: container widget with automatic size resolution by logical ratio.
+- `PixelButton`: interactive pixel button with normal/pressed styles, press-down animation, and `Semantics` integration.
+- `PixelText`: static namespace exposing `mulmaruFontFamily`/`mulmaruPackage` constants and a `mulmaru()` TextStyle factory.
+- Bundled Mulmaru Proportional pixel font (SIL OFL 1.1).
+
+### Bundled font integrity
+- `assets/fonts/Mulmaru.ttf` SHA-256: `02545e10374c0797be32df8670e18663c6ab73eea6966bb98f4ffd0283138810`
+- Size: 1,606,948 bytes
+- Source: https://github.com/mushsooni/mulmaru
+
+### Known limitations
+- Screenshots for pub.dev listing are deferred to 0.1.1+.
