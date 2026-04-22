@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.1 — 2026-04-22
+
+### Added
+- pub.dev screenshots (5) generated via golden tests from `test/screenshots/scenes/`.
+- `tool/update_screenshots.sh` regenerates goldens and syncs them to `doc/screenshots/`.
+
 ## 0.1.0 — 2026-04-22
 
 Initial public release.
@@ -19,6 +25,3 @@ Initial public release.
 - `assets/fonts/Mulmaru.ttf` SHA-256: `02545e10374c0797be32df8670e18663c6ab73eea6966bb98f4ffd0283138810`
 - Size: 1,606,948 bytes
 - Source: https://github.com/mushsooni/mulmaru
-
-### Known limitations
-- Screenshots for pub.dev listing are deferred to 0.1.1+.
