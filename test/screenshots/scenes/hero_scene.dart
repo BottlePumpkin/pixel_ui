@@ -72,7 +72,7 @@ class HeroScene extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(height: 48),
+          const SizedBox(height: 46),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
