@@ -5,6 +5,8 @@
 
 Pixel-art design system for Flutter — parametric shapes, interactive buttons, and a bundled pixel font.
 
+![pixel_ui hero — logo, corners, shadow, and texture primitives](doc/screenshots/01_hero.png)
+
 ## Features
 
 - Stair-pattern asymmetric corners (`PixelCorners` with `.sharp`/`.xs`/`.sm`/`.md`/`.lg`/`.xl` presets, plus fully custom per-corner control)
@@ -124,6 +126,16 @@ Text(
   ),
 );
 ```
+
+## Gallery
+
+| Corners | Shadows |
+| --- | --- |
+| ![Corner stair presets: sharp, xs, sm, md, lg, xl, and an asymmetric tab](doc/screenshots/02_corners.png) | ![Pixel drop shadows at sm, md, lg offsets](doc/screenshots/03_shadows.png) |
+
+| Buttons | Texture |
+| --- | --- |
+| ![PixelButton states: normal, pressed, disabled](doc/screenshots/04_buttons.png) | ![Deterministic LCG texture overlay — plain vs textured](doc/screenshots/05_texture.png) |
 
 ## Example
 

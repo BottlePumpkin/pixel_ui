@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.2 — 2026-04-22
+
+### Added
+- README hero image and gallery section embedding the 5 pub.dev screenshots.
+
 ## 0.1.1 — 2026-04-22
 
 ### Added
