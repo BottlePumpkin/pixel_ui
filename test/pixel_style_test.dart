@@ -3,6 +3,37 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:pixel_ui/pixel_ui.dart';
 
 void main() {
+  group('PixelShadow', () {
+    test('equality checks offset and color', () {
+      const a = PixelShadow(offset: Offset(1, 1), color: Color(0xFF000000));
+      const b = PixelShadow(offset: Offset(1, 1), color: Color(0xFF000000));
+      expect(a, equals(b));
+      expect(a.hashCode, equals(b.hashCode));
+    });
+
+    test('different offsets are not equal', () {
+      const a = PixelShadow(offset: Offset(1, 1), color: Color(0xFF000000));
+      const b = PixelShadow(offset: Offset(2, 2), color: Color(0xFF000000));
+      expect(a, isNot(equals(b)));
+    });
+
+    test('PixelShadow.sm uses offset (1,1)', () {
+      final shadow = PixelShadow.sm(const Color(0xFFAA0000));
+      expect(shadow.offset, const Offset(1, 1));
+      expect(shadow.color, const Color(0xFFAA0000));
+    });
+
+    test('PixelShadow.md uses offset (2,2)', () {
+      final shadow = PixelShadow.md(const Color(0xFF00AA00));
+      expect(shadow.offset, const Offset(2, 2));
+    });
+
+    test('PixelShadow.lg uses offset (4,4)', () {
+      final shadow = PixelShadow.lg(const Color(0xFF0000AA));
+      expect(shadow.offset, const Offset(4, 4));
+    });
+  });
+
   group('PixelCorners', () {
     test('equality uses listEquals on all four corners', () {
       const a = PixelCorners.all([3, 2, 1]);
