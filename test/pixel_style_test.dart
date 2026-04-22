@@ -3,6 +3,21 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:pixel_ui/pixel_ui.dart';
 
 void main() {
+  group('PixelTexture', () {
+    test('equality checks all fields', () {
+      const a = PixelTexture(color: Color(0xFFFFFFFF), density: 0.2, size: 2, seed: 7);
+      const b = PixelTexture(color: Color(0xFFFFFFFF), density: 0.2, size: 2, seed: 7);
+      expect(a, equals(b));
+      expect(a.hashCode, equals(b.hashCode));
+    });
+
+    test('different density is not equal', () {
+      const a = PixelTexture(color: Color(0xFFFFFFFF), density: 0.1);
+      const b = PixelTexture(color: Color(0xFFFFFFFF), density: 0.2);
+      expect(a, isNot(equals(b)));
+    });
+  });
+
   group('PixelShadow', () {
     test('equality checks offset and color', () {
       const a = PixelShadow(offset: Offset(1, 1), color: Color(0xFF000000));
