@@ -1,4 +1,5 @@
 /// pixel_ui — Pixel-art design system for Flutter.
-library pixel_ui;
+library;
 
+export 'src/pixel_shape_painter.dart';
 export 'src/pixel_style.dart';
