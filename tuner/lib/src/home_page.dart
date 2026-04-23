@@ -5,6 +5,11 @@ import 'preview_panel.dart';
 import 'tuner_state.dart';
 import 'widgets/pixel_card.dart';
 import 'widgets/pixel_section_header.dart';
+import 'controls/border_width_slider.dart';
+import 'controls/color_hex_input.dart';
+import 'controls/corner_picker.dart';
+import 'controls/shadow_editor.dart';
+import 'controls/texture_editor.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -114,23 +119,82 @@ class _ControlsPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: const [
-          PixelCard(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                PixelSectionHeader('CONTROLS'),
-                SizedBox(height: 8),
-                Text('(controls coming in later tasks)'),
-              ],
-            ),
+    return ValueListenableBuilder<PixelShapeStyle>(
+      valueListenable: state,
+      builder: (context, style, _) {
+        return SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              PixelCard(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    const PixelSectionHeader('CORNERS'),
+                    CornerPicker(
+                      value: style.corners,
+                      onChanged: state.setCorners,
+                    ),
+                  ],
+                ),
+              ),
+              PixelCard(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    const PixelSectionHeader('COLORS'),
+                    ColorHexInput(
+                      label: 'fill',
+                      value: style.fillColor,
+                      onChanged: (c) {
+                        if (c != null) state.setFillColor(c);
+                      },
+                    ),
+                    const SizedBox(height: 8),
+                    ColorHexInput(
+                      label: 'border',
+                      value: style.borderColor,
+                      nullable: true,
+                      onChanged: state.setBorderColor,
+                    ),
+                    const SizedBox(height: 8),
+                    BorderWidthSlider(
+                      value: style.borderWidth,
+                      hasBorderColor: style.borderColor != null,
+                      onChanged: state.setBorderWidth,
+                    ),
+                  ],
+                ),
+              ),
+              PixelCard(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    const PixelSectionHeader('SHADOW'),
+                    ShadowEditor(
+                      value: style.shadow,
+                      onChanged: state.setShadow,
+                    ),
+                  ],
+                ),
+              ),
+              PixelCard(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    const PixelSectionHeader('TEXTURE'),
+                    TextureEditor(
+                      value: style.texture,
+                      onChanged: state.setTexture,
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }
