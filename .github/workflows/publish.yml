@@ -14,6 +14,7 @@ jobs:
       contents: write   # gh release create
     steps:
       - uses: actions/checkout@v4
+      - uses: dart-lang/setup-dart@v1
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.32.7'
