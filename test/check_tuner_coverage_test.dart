@@ -139,6 +139,63 @@ Widget cornerPicker(State s) {
     });
   });
 
+  group('scanTypeReferences', () {
+    test('credits all fields of a type referenced as whole word', () {
+      const src = '''
+class CornerPicker {
+  final PixelCorners value;
+  final ValueChanged<PixelCorners> onChanged;
+}
+''';
+      final refs = cov.scanTypeReferences(src, <String, Set<String>>{
+        'PixelCorners': <String>{'tl', 'tr', 'bl', 'br'},
+        'PixelShadow': <String>{'offset', 'color'},
+      });
+      expect(refs, containsAll(<String>['tl', 'tr', 'bl', 'br']));
+      expect(refs, isNot(contains('offset')));
+      expect(refs, isNot(contains('color')));
+    });
+
+    test('accumulates fields across multiple referenced types', () {
+      const src = 'PixelShadow.sm(c); PixelTexture.new();';
+      final refs = cov.scanTypeReferences(src, <String, Set<String>>{
+        'PixelShadow': <String>{'offset', 'color'},
+        'PixelTexture': <String>{'density', 'size', 'seed'},
+      });
+      expect(refs,
+          containsAll(<String>['offset', 'color', 'density', 'size', 'seed']));
+    });
+
+    test('ignores suffix collisions in type names', () {
+      const src = 'class PixelCornersExtended {}';
+      final refs = cov.scanTypeReferences(src, <String, Set<String>>{
+        'PixelCorners': <String>{'tl'},
+      });
+      expect(refs, isEmpty);
+    });
+  });
+
+  group('compareWithCoverage', () {
+    test('missing driven by external coveredFields, orphan scoped to controls',
+        () {
+      final fields = <String>{'a', 'b', 'c'};
+      final controlRefs = <String, Set<String>>{
+        'ctrl_a.dart': <String>{'a'},
+        'orphan.dart': <String>{'nonexistent'},
+      };
+      // 'b' is covered by non-control file; 'c' is uncovered everywhere.
+      final coveredFromWiderScan = <String>{'a', 'b'};
+      final result = cov.compareWithCoverage(
+        fields,
+        controlRefs,
+        coveredFromWiderScan,
+      );
+      expect(result.missing, <String>{'c'});
+      expect(result.orphans, contains('orphan.dart'));
+      expect(result.covered.keys, contains('ctrl_a.dart'));
+    });
+  });
+
   group('CoverageResult.toJson', () {
     test('sorts covered map keys for deterministic output', () {
       final result = cov.CoverageResult(

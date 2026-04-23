@@ -168,7 +168,7 @@ class _ControlsPanel extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
                     BorderWidthSlider(
-                      value: style.borderWidth,
+                      borderWidth: style.borderWidth,
                       hasBorderColor: style.borderColor != null,
                       onChanged: state.setBorderWidth,
                     ),

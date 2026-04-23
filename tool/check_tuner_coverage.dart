@@ -12,11 +12,24 @@
 //   1 — drift detected
 //   2 — required path missing (lib/src/pixel_style.dart or tuner/lib/src/controls)
 //
-// Coverage is identifier-based: a control "covers" a field when the field's
-// identifier appears as a whole word anywhere in the control's Dart source.
-// Same identifier across target types (e.g. `color` in both PixelShadow and
-// PixelTexture) is counted once — any mention credits coverage for the shared
-// name across classes.
+// Coverage model:
+//
+//   - A field is "covered" if any Dart file under tuner/lib/** references
+//     either the field identifier as a whole word (e.g. `fillColor`) OR the
+//     enclosing type name (e.g. `PixelCorners`, which credits tl/tr/bl/br
+//     via the type-reference fallback). This captures composite controls
+//     that abstract individual fields away (like `corner_picker.dart`
+//     handling all four corners through presets) as well as fields exposed
+//     only by the tuner state / home page instead of a dedicated control.
+//
+//   - A file in tuner/lib/src/controls/ is an "orphan" when it matches
+//     neither a field identifier nor a target type anywhere in its source.
+//     Other tuner files (home_page.dart, tuner_state.dart, code_panel.dart,
+//     etc.) are scanned for coverage but are never reported as orphans —
+//     they're non-control infrastructure.
+//
+//   - Same identifier across target types (e.g. `color` in both PixelShadow
+//     and PixelTexture) is counted once.
 
 import 'dart:convert';
 import 'dart:io';
@@ -29,6 +42,7 @@ const List<String> targetTypes = <String>[
 ];
 
 const String pixelStylePath = 'lib/src/pixel_style.dart';
+const String tunerLibDir = 'tuner/lib';
 const String controlsDir = 'tuner/lib/src/controls';
 
 /// Scans [source] for `final <Type> <name>;` fields inside
@@ -59,6 +73,21 @@ Set<String> scanControlReferences(String source, Iterable<String> candidates) {
   for (final name in candidates) {
     final pattern = RegExp(r'\b' + RegExp.escape(name) + r'\b');
     if (pattern.hasMatch(source)) hits.add(name);
+  }
+  return hits;
+}
+
+/// Given a [typeToFields] map (e.g. `'PixelCorners' → {'tl','tr','bl','br'}`)
+/// and a [source] Dart file, returns the union of field names transitively
+/// credited when the source references a whole-word target type.
+Set<String> scanTypeReferences(
+  String source,
+  Map<String, Set<String>> typeToFields,
+) {
+  final hits = <String>{};
+  for (final entry in typeToFields.entries) {
+    final pattern = RegExp(r'\b' + RegExp.escape(entry.key) + r'\b');
+    if (pattern.hasMatch(source)) hits.addAll(entry.value);
   }
   return hits;
 }
@@ -97,7 +126,18 @@ CoverageResult compare(
   Set<String> fields,
   Map<String, Set<String>> controlRefs,
 ) {
-  final covered = <String>{};
+  final coveredFields = controlRefs.values.expand((s) => s).toSet();
+  return compareWithCoverage(fields, controlRefs, coveredFields);
+}
+
+/// Like [compare] but takes an explicit [coveredFields] set so coverage can
+/// come from a wider scan (e.g. all of `tuner/lib/**`) while orphan detection
+/// stays scoped to [controlRefs] only.
+CoverageResult compareWithCoverage(
+  Set<String> fields,
+  Map<String, Set<String>> controlRefs,
+  Set<String> coveredFields,
+) {
   final perControl = <String, Set<String>>{};
   final orphans = <String>{};
 
@@ -107,11 +147,10 @@ CoverageResult compare(
       orphans.add(file);
     } else {
       perControl[file] = hits;
-      covered.addAll(hits);
     }
   });
 
-  final missing = fields.difference(covered);
+  final missing = fields.difference(coveredFields.intersection(fields));
   return CoverageResult(
     missing: missing,
     orphans: orphans,
@@ -129,27 +168,37 @@ Future<void> main(List<String> args) async {
   }
   final pixelStyleSrc = await pixelStyleFile.readAsString();
 
+  final typeToFields = <String, Set<String>>{};
   final allFields = <String>{};
   for (final type in targetTypes) {
-    allFields.addAll(scanPublicFields(pixelStyleSrc, type));
+    final fields = scanPublicFields(pixelStyleSrc, type).toSet();
+    typeToFields[type] = fields;
+    allFields.addAll(fields);
   }
 
-  final controlsDirEntry = Directory(controlsDir);
-  if (!await controlsDirEntry.exists()) {
-    stderr.writeln('ERROR: $controlsDir not found.');
+  final tunerDirEntry = Directory(tunerLibDir);
+  if (!await tunerDirEntry.exists()) {
+    stderr.writeln('ERROR: $tunerLibDir not found.');
     exit(2);
   }
+
+  // Two-tier scan: controls are eligible for "orphan" status; non-control
+  // files in tuner/lib contribute to coverage but not to orphan detection.
   final controlRefs = <String, Set<String>>{};
-  await for (final entity in controlsDirEntry.list(recursive: true)) {
-    if (entity is File && entity.path.endsWith('.dart')) {
-      final src = await entity.readAsString();
-      final refs = scanControlReferences(src, allFields);
+  final coveredFields = <String>{};
+  await for (final entity in tunerDirEntry.list(recursive: true)) {
+    if (entity is! File || !entity.path.endsWith('.dart')) continue;
+    final src = await entity.readAsString();
+    final hits = scanControlReferences(src, allFields)
+      ..addAll(scanTypeReferences(src, typeToFields));
+    coveredFields.addAll(hits);
+    if (entity.path.startsWith('$controlsDir/')) {
       final relPath = entity.path.replaceFirst('$controlsDir/', '');
-      controlRefs[relPath] = refs;
+      controlRefs[relPath] = hits;
     }
   }
 
-  final result = compare(allFields, controlRefs);
+  final result = compareWithCoverage(allFields, controlRefs, coveredFields);
 
   if (jsonMode) {
     stdout.writeln(jsonEncode(result.toJson()));
