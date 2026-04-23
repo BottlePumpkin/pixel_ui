@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.2.0 — 2026-04-23
+
+### Added
+- Official platform support: Web, macOS, Linux, Windows (in addition to existing iOS, Android).
+- `.github/workflows/build.yml` CI workflow that builds the example app on 6 OS/target combinations.
+- README "Platforms" section documenting verification level for each platform.
+
+### Changed
+- example app showcase is now constrained to 480px max width on wide viewports (desktop, web), keeping the mobile-style layout centered. Mobile rendering is unaffected.
+
 ## 0.1.2 — 2026-04-22
 
 ### Added
