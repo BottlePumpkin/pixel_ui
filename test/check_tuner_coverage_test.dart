@@ -43,6 +43,30 @@ class PixelShapeStyle {
       const src = 'class Other { final int x; }';
       expect(cov.scanPublicFields(src, 'PixelShapeStyle'), isEmpty);
     });
+
+    test('tolerates extends/with/implements on class header', () {
+      const src = '''
+class PixelShapeStyle extends Diagnosticable with EquatableMixin implements Comparable<PixelShapeStyle> {
+  final PixelCorners corners;
+  final Color fillColor;
+}
+''';
+      final fields = cov.scanPublicFields(src, 'PixelShapeStyle');
+      expect(fields, <String>['corners', 'fillColor']);
+    });
+
+    test('does not match a class whose name starts with the target name', () {
+      const src = '''
+class PixelShapeStyleExtended {
+  final int extended;
+}
+class PixelShapeStyle {
+  final PixelCorners corners;
+}
+''';
+      final fields = cov.scanPublicFields(src, 'PixelShapeStyle');
+      expect(fields, <String>['corners']);
+    });
   });
 
   group('scanControlReferences', () {
@@ -62,10 +86,20 @@ Widget cornerPicker(State s) {
       expect(refs, isNot(contains('bl')));
     });
 
-    test('only matches whole-word identifiers', () {
+    test('only matches whole-word identifiers (prefix collision)', () {
       const src = "Text('this is unrelated but contains trsomething');";
       final refs = cov.scanControlReferences(src, <String>['tr']);
       expect(refs, isEmpty);
+    });
+
+    test('does not match suffix collisions', () {
+      const src = 'var mytr = 1;';
+      expect(cov.scanControlReferences(src, <String>['tr']), isEmpty);
+    });
+
+    test('treats underscore as word char so _tr does not match tr', () {
+      const src = 'final Color _tr = Color(0);';
+      expect(cov.scanControlReferences(src, <String>['tr']), isEmpty);
     });
   });
 
@@ -92,6 +126,36 @@ Widget cornerPicker(State s) {
       expect(result.hasDrift, isFalse);
       expect(result.missing, isEmpty);
       expect(result.orphans, isEmpty);
+    });
+
+    test('file with empty refs becomes orphan', () {
+      final fields = <String>{'a'};
+      final controlRefs = <String, Set<String>>{
+        'empty.dart': <String>{},
+      };
+      final result = cov.compare(fields, controlRefs);
+      expect(result.orphans, contains('empty.dart'));
+      expect(result.missing, <String>{'a'});
+    });
+  });
+
+  group('CoverageResult.toJson', () {
+    test('sorts covered map keys for deterministic output', () {
+      final result = cov.CoverageResult(
+        missing: <String>{'x'},
+        orphans: <String>{'zz.dart'},
+        covered: <String, Set<String>>{
+          'z_control.dart': <String>{'b', 'a'},
+          'a_control.dart': <String>{'d', 'c'},
+        },
+      );
+      final json = result.toJson();
+      expect(json['missing'], <String>['x']);
+      expect(json['orphans'], <String>['zz.dart']);
+      final covered = json['covered'] as Map<String, dynamic>;
+      expect(covered.keys.toList(), <String>['a_control.dart', 'z_control.dart']);
+      expect(covered['a_control.dart'], <String>['c', 'd']);
+      expect(covered['z_control.dart'], <String>['a', 'b']);
     });
   });
 }
