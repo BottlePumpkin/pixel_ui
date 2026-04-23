@@ -40,22 +40,24 @@ Host github.com-BottlePumpkin
 
 ## 배포 리듬 (버전 bump 시)
 
+배포는 `v*.*.*` 태그 push 시 `.github/workflows/publish.yml`이 자동 수행한다. 수동 publish 명령은 실행하지 않는다.
+
 ```text
 1. 코드 변경 → 테스트 추가/업데이트
-2. fvm flutter analyze
-3. fvm flutter test
-4. pubspec.yaml version bump + CHANGELOG.md 엔트리 맨 위에 추가
-5. fvm dart pub publish --dry-run          # 0 warnings 확인 필수
-6. 배포 계정 재확인:
-   cat ~/Library/Application\ Support/dart/pub-credentials.json | grep -i email
-   # idToken JWT payload의 email이 p4569zz@gmail.com
-7. fvm dart pub publish                     # 또는 --force (대화형 y 스킵)
-8. git tag -a vX.Y.Z -m "vX.Y.Z — summary"
-9. git push origin main vX.Y.Z
-10. https://pub.dev/packages/pixel_ui 접속, 새 버전·README·스크린샷·토픽 확인
+2. (선택) 로컬 빠른 피드백: fvm flutter analyze && fvm flutter test --exclude-tags screenshot
+3. pubspec.yaml version bump + CHANGELOG.md 엔트리 맨 위 추가
+4. git commit -am "chore: bump version to X.Y.Z"
+5. git tag -a vX.Y.Z -m "vX.Y.Z — summary"
+6. git push origin main vX.Y.Z        # publish.yml 자동 시작
+7. Actions 탭에서 워크플로 성공 확인
+8. https://pub.dev/packages/pixel_ui 에서 새 버전·README·CHANGELOG 렌더링 확인
 ```
 
-**원칙**: `dart pub publish`는 **취소 불가 (30일 retract만)**. 반드시 사용자에게 직접 확인받고 실행.
+**자동 실행되는 검증**: tag↔pubspec 버전 일치 → `flutter analyze` → `flutter test --exclude-tags screenshot` → `dart pub publish --dry-run` → pub.dev 중복 배포 차단 → `dart pub publish --force` → `gh release create --generate-notes`.
+
+**원칙**: `dart pub publish`는 취소 불가 (30일 retract만). CHANGELOG와 version bump를 신중히 검토한 뒤 태그 push.
+
+**OIDC 인증**: `.github/workflows/publish.yml`의 `permissions: id-token: write`와 pub.dev Admin 탭의 Automated publishing 설정(`BottlePumpkin/pixel_ui`, tag pattern `v{{version}}`)이 함께 동작. 로컬 `pub-credentials.json` 의존성 없음.
 
 ## 파일 무결성 규칙
 
