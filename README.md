@@ -188,6 +188,9 @@ See [OFL.txt](OFL.txt) for the full font license. Apps using `pixel_ui` should i
 
 Issues and PRs are welcome at [github.com/BottlePumpkin/pixel_ui/issues](https://github.com/BottlePumpkin/pixel_ui/issues).
 
+Internal quality improvement cycles use the `dogfood` label. To view only user-facing issues:
+[open issues excluding dogfood](https://github.com/BottlePumpkin/pixel_ui/issues?q=is%3Aopen+-label%3Adogfood).
+
 ## License
 
 MIT for code (see [LICENSE](LICENSE)). Bundled Mulmaru font is under SIL OFL 1.1 (see [OFL.txt](OFL.txt)).
