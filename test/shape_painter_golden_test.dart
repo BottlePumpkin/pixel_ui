@@ -8,6 +8,7 @@ import 'package:pixel_ui/pixel_ui.dart';
 const _fill = Color(0xFF00FF00);
 const _border = Color(0xFF003300);
 const _shadowColor = Color(0xFF222222);
+const _textureColor = Color(0xFF003300);
 
 const _boundaryKey = Key('golden-boundary');
 
@@ -175,6 +176,44 @@ void main() {
       await expectLater(
         find.byKey(_boundaryKey),
         matchesGoldenFile('goldens/painter/shadow_lg.png'),
+      );
+    });
+
+    testWidgets('texture off', (tester) async {
+      await _pumpBox(
+        tester,
+        const PixelShapeStyle(
+          corners: PixelCorners.md,
+          fillColor: _fill,
+          borderColor: _border,
+          borderWidth: 1,
+        ),
+      );
+      await expectLater(
+        find.byKey(_boundaryKey),
+        matchesGoldenFile('goldens/painter/texture_off.png'),
+      );
+    });
+
+    testWidgets('texture on', (tester) async {
+      await _pumpBox(
+        tester,
+        const PixelShapeStyle(
+          corners: PixelCorners.md,
+          fillColor: _fill,
+          borderColor: _border,
+          borderWidth: 1,
+          texture: PixelTexture(
+            color: _textureColor,
+            density: 0.15,
+            size: 1,
+            seed: 42,
+          ),
+        ),
+      );
+      await expectLater(
+        find.byKey(_boundaryKey),
+        matchesGoldenFile('goldens/painter/texture_on.png'),
       );
     });
   });
