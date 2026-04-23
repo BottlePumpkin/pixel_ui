@@ -1,0 +1,55 @@
+name: Deploy Tuner
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'tuner/**'
+      - 'lib/**'
+      - 'pubspec.yaml'
+      - 'assets/**'
+      - '.github/workflows/deploy-tuner.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.32.7'
+          channel: stable
+      - name: Install dependencies
+        working-directory: tuner
+        run: flutter pub get
+      - name: Analyze
+        working-directory: tuner
+        run: flutter analyze
+      - name: Test
+        working-directory: tuner
+        run: flutter test
+      - name: Build web
+        working-directory: tuner
+        run: flutter build web --release --base-href /pixel_ui/
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: tuner/build/web
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
