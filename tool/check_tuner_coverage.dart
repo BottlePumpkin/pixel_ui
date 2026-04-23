@@ -7,7 +7,16 @@
 // Usage:
 //   dart run tool/check_tuner_coverage.dart [--json]
 //
-// Exit code: 0 on clean, 1 when drift detected.
+// Exit codes:
+//   0 — no drift
+//   1 — drift detected
+//   2 — required path missing (lib/src/pixel_style.dart or tuner/lib/src/controls)
+//
+// Coverage is identifier-based: a control "covers" a field when the field's
+// identifier appears as a whole word anywhere in the control's Dart source.
+// Same identifier across target types (e.g. `color` in both PixelShadow and
+// PixelTexture) is counted once — any mention credits coverage for the shared
+// name across classes.
 
 import 'dart:convert';
 import 'dart:io';
@@ -22,9 +31,12 @@ const List<String> targetTypes = <String>[
 const String pixelStylePath = 'lib/src/pixel_style.dart';
 const String controlsDir = 'tuner/lib/src/controls';
 
+/// Scans [source] for `final <Type> <name>;` fields inside
+/// `class <typeName> { ... }`. Tolerates `extends`/`with`/`implements` on the
+/// class header. Excludes underscore-prefixed (private) fields.
 List<String> scanPublicFields(String source, String typeName) {
   final classPattern = RegExp(
-    r'class\s+' + RegExp.escape(typeName) + r'\s*\{([\s\S]*?)\n\}',
+    r'class\s+' + RegExp.escape(typeName) + r'\b[^{]*\{([\s\S]*?)\n\}',
   );
   final match = classPattern.firstMatch(source);
   if (match == null) return <String>[];
@@ -40,6 +52,8 @@ List<String> scanPublicFields(String source, String typeName) {
       .toList();
 }
 
+/// Returns the subset of [candidates] appearing as whole-word identifiers
+/// (`\b...\b`) in [source]. `_` is a word char, so `_tr` does not match `tr`.
 Set<String> scanControlReferences(String source, Iterable<String> candidates) {
   final hits = <String>{};
   for (final name in candidates) {
@@ -62,15 +76,23 @@ class CoverageResult {
 
   bool get hasDrift => missing.isNotEmpty || orphans.isNotEmpty;
 
-  Map<String, dynamic> toJson() => <String, dynamic>{
-        'missing': missing.toList()..sort(),
-        'orphans': orphans.toList()..sort(),
-        'covered': covered.map(
-          (k, v) => MapEntry(k, (v.toList()..sort())),
-        ),
-      };
+  Map<String, dynamic> toJson() {
+    final sortedCovered = <String, List<String>>{};
+    for (final key in covered.keys.toList()..sort()) {
+      sortedCovered[key] = covered[key]!.toList()..sort();
+    }
+    return <String, dynamic>{
+      'missing': missing.toList()..sort(),
+      'orphans': orphans.toList()..sort(),
+      'covered': sortedCovered,
+    };
+  }
 }
 
+/// Compares the flat [fields] set (union across target types) with a map of
+/// control file path → identifier references. Returns drift report: fields
+/// never referenced (missing), controls referencing nothing in the set
+/// (orphans), and per-control field hits (covered).
 CoverageResult compare(
   Set<String> fields,
   Map<String, Set<String>> controlRefs,
