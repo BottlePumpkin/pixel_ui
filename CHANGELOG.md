@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.2.1 — 2026-04-23
+
+### Added
+- Bundled `MulmaruMono` font family (SIL OFL 1.1) for code, terminal-style UI, and fixed-width layouts.
+- `PixelText.mulmaruMono(...)` factory and `PixelText.mulmaruMonoFontFamily` constant. Signature identical to `PixelText.mulmaru(...)`.
+
+### Notes
+- Font source: [mushsooni/mulmaru v1.0 release](https://github.com/mushsooni/mulmaru/releases/tag/v1.0). SHA256 `34a1641eb4e94449b26192321e8e0c2bd4f07ef3674fac8abed33d8953a7f70d`.
+
 ## 0.2.0 — 2026-04-23
 
 ### Added
