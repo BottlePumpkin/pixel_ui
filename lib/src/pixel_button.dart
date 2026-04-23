@@ -3,11 +3,13 @@ import 'package:flutter/widgets.dart';
 import 'package:pixel_ui/src/pixel_box.dart';
 import 'package:pixel_ui/src/pixel_style.dart';
 
-/// Interactive pixel button with optional press-state style.
+/// Interactive pixel button with optional press-state and disabled-state styles.
 ///
-/// Visuals come from [normalStyle] in the default state and [pressedStyle] when
-/// pressed (falling back to [normalStyle] if not provided). The child can be
-/// shifted down by [pressChildOffset] while pressed, simulating a button press.
+/// Visuals come from [normalStyle] in the default state, [pressedStyle] when
+/// pressed (falling back to [normalStyle] if not provided), and [disabledStyle]
+/// when [onPressed] is null (falling back to [normalStyle] rendered at 50%
+/// opacity if not provided). The child can be shifted down by
+/// [pressChildOffset] while pressed, simulating a button press.
 class PixelButton extends StatefulWidget {
   final int logicalWidth;
   final int logicalHeight;
@@ -16,6 +18,10 @@ class PixelButton extends StatefulWidget {
 
   /// Style to show while pressed. `null` keeps [normalStyle].
   final PixelShapeStyle? pressedStyle;
+
+  /// Style to show when [onPressed] is `null`. `null` keeps [normalStyle]
+  /// rendered at 50% opacity (the default dimmed look).
+  final PixelShapeStyle? disabledStyle;
 
   final double? width;
   final double? height;
@@ -39,6 +45,7 @@ class PixelButton extends StatefulWidget {
     required this.logicalHeight,
     required this.normalStyle,
     this.pressedStyle,
+    this.disabledStyle,
     this.width,
     this.height,
     this.padding,
@@ -60,8 +67,16 @@ class _PixelButtonState extends State<PixelButton> {
   bool get _enabled => widget.onPressed != null;
 
   PixelShapeStyle get _currentStyle {
+    if (!_enabled && widget.disabledStyle != null) return widget.disabledStyle!;
     if (_pressed && widget.pressedStyle != null) return widget.pressedStyle!;
     return widget.normalStyle;
+  }
+
+  double get _opacity {
+    // Only dim when falling back to normalStyle in the disabled state;
+    // a custom disabledStyle already carries the author's intent.
+    if (!_enabled && widget.disabledStyle == null) return 0.5;
+    return 1.0;
   }
 
   void _setPressed(bool v) {
@@ -84,7 +99,7 @@ class _PixelButtonState extends State<PixelButton> {
         onTapCancel: () => _setPressed(false),
         onTap: _enabled ? () => widget.onPressed!() : null,
         child: Opacity(
-          opacity: _enabled ? 1.0 : 0.5,
+          opacity: _opacity,
           child: PixelBox(
             logicalWidth: widget.logicalWidth,
             logicalHeight: widget.logicalHeight,

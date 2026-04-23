@@ -78,6 +78,80 @@ void main() {
     handle.dispose();
   });
 
+  testWidgets('PixelButton uses disabledStyle when provided and onPressed is null',
+      (tester) async {
+    const disabledStyle = PixelShapeStyle(
+      corners: PixelCorners.md,
+      fillColor: Color(0xFF888888),
+    );
+    await tester.pumpWidget(
+      const Directionality(
+        textDirection: TextDirection.ltr,
+        child: Center(
+          child: PixelButton(
+            logicalWidth: 10,
+            logicalHeight: 5,
+            normalStyle: normalStyle,
+            disabledStyle: disabledStyle,
+            onPressed: null,
+            child: Text('x'),
+          ),
+        ),
+      ),
+    );
+    final customPaint = tester.widget<CustomPaint>(find.byType(CustomPaint).first);
+    final painter = customPaint.painter! as PixelShapePainter;
+    expect(painter.style, disabledStyle);
+  });
+
+  testWidgets(
+      'PixelButton falls back to normalStyle when disabledStyle is null and onPressed is null',
+      (tester) async {
+    await tester.pumpWidget(
+      const Directionality(
+        textDirection: TextDirection.ltr,
+        child: Center(
+          child: PixelButton(
+            logicalWidth: 10,
+            logicalHeight: 5,
+            normalStyle: normalStyle,
+            onPressed: null,
+            child: Text('x'),
+          ),
+        ),
+      ),
+    );
+    final customPaint = tester.widget<CustomPaint>(find.byType(CustomPaint).first);
+    final painter = customPaint.painter! as PixelShapePainter;
+    expect(painter.style, normalStyle);
+  });
+
+  testWidgets('PixelButton ignores disabledStyle when onPressed is provided',
+      (tester) async {
+    const disabledStyle = PixelShapeStyle(
+      corners: PixelCorners.md,
+      fillColor: Color(0xFF888888),
+    );
+    await tester.pumpWidget(
+      Directionality(
+        textDirection: TextDirection.ltr,
+        child: Center(
+          child: PixelButton(
+            logicalWidth: 10,
+            logicalHeight: 5,
+            normalStyle: normalStyle,
+            disabledStyle: disabledStyle,
+            onPressed: () {},
+            child: const Text('x'),
+          ),
+        ),
+      ),
+    );
+    final customPaint = tester.widget<CustomPaint>(find.byType(CustomPaint).first);
+    final painter = customPaint.painter! as PixelShapePainter;
+    expect(painter.style, normalStyle);
+  });
+
   testWidgets('PixelButton switches to pressed style on tap down', (tester) async {
     await tester.pumpWidget(
       Directionality(

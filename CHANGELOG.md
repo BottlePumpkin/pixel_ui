@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+### Added
+- `PixelButton.disabledStyle` optional parameter — explicit `PixelShapeStyle` shown when `onPressed` is `null`. Unspecified keeps the existing behavior (`normalStyle` rendered at 50% opacity).
+
 ## 0.2.1 — 2026-04-23
 
 ### Added
