@@ -106,7 +106,16 @@
 - 커버리지: corners(sharp/xs/sm/md/lg/xl), shadow(sm/md/lg/negative/asymmetric/sharp+shadow/shadow+texture), texture(off/on/dense/size2), border(borderless/thick), 비대칭 corners(top tab/bottom tab/tl-only/top+bottom)
 - `test.yml`에서 매 PR/push마다 실행 (`--exclude-tags screenshot`)
 
-### F. 스크린샷 자동화 (integration_test)
+### F. Tuner 고도화
+
+**왜**: `tuner/`는 GitHub Pages로 배포된 PixelShapeStyle 인터랙티브 튜너. 0.2.1 기준 최소 기능만 제공. 브라우저 UX 요소 보강 필요.
+
+**작업 항목**:
+
+- **favicon 추가**: `tuner/web/favicon.png` (16/32/192/512 사이즈 또는 단일 PNG). pixel_ui 아이덴티티(예: PixelBox 썸네일) 반영. `tuner/web/index.html`의 `<link rel="icon">` 경로 확인.
+- (추후) 프리셋 공유 URL, 다크/라이트 테마 토글, PixelText 프리뷰 탭 등.
+
+### G. 스크린샷 자동화 (integration_test)
 
 **왜**: 매 릴리스마다 수동 캡처 부담 제거.
 
@@ -157,7 +166,7 @@
 
 ## 🎯 1.0.0 — 장기 로드맵
 
-### G. 플랫폼 지원 확장 (Web / macOS / Linux / Windows)
+### H. 플랫폼 지원 확장 (Web / macOS / Linux / Windows)
 
 **효과**: pub.dev Platform 스코어 10 → 20 만점.
 
@@ -180,7 +189,7 @@
 
 4. CI multi-platform build matrix 추가.
 
-### H. API 안정 선언 (1.0.0 semver 약속)
+### I. API 안정 선언 (1.0.0 semver 약속)
 
 0.x 동안 쌓인 사용자 피드백 반영해 breaking change 소화 → 1.0.0 bump. 이후 API 변경은 major bump 필요.
 
@@ -217,8 +226,9 @@
 2. ~~C (CI)~~ — 완료 (test.yml + publish.yml + build.yml)
 3. ~~D (Mulmaru Mono)~~ — 완료 (0.2.1)
 4. ~~E (골든 테스트)~~ — 완료 (PR #1 + #6, 23 케이스)
-5. **F (스크린샷 자동화)** — 릴리스 주기 확립 후
-6. G (플랫폼 확장) — 1.0 직전 마지막 준비
+5. **F (Tuner 고도화)** — favicon 등 저비용 개선부터
+6. G (스크린샷 자동화) — 릴리스 주기 확립 후
+7. H (플랫폼 확장) — 1.0 직전 마지막 준비
 
 ---
 
