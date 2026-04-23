@@ -40,22 +40,24 @@ Host github.com-BottlePumpkin
 
 ## 배포 리듬 (버전 bump 시)
 
+배포는 `v*.*.*` 태그 push 시 `.github/workflows/publish.yml`이 자동 수행한다. 수동 publish 명령은 실행하지 않는다.
+
 ```text
 1. 코드 변경 → 테스트 추가/업데이트
-2. fvm flutter analyze
-3. fvm flutter test
-4. pubspec.yaml version bump + CHANGELOG.md 엔트리 맨 위에 추가
-5. fvm dart pub publish --dry-run          # 0 warnings 확인 필수
-6. 배포 계정 재확인:
-   cat ~/Library/Application\ Support/dart/pub-credentials.json | grep -i email
-   # idToken JWT payload의 email이 p4569zz@gmail.com
-7. fvm dart pub publish                     # 또는 --force (대화형 y 스킵)
-8. git tag -a vX.Y.Z -m "vX.Y.Z — summary"
-9. git push origin main vX.Y.Z
-10. https://pub.dev/packages/pixel_ui 접속, 새 버전·README·스크린샷·토픽 확인
+2. (선택) 로컬 빠른 피드백: fvm flutter analyze && fvm flutter test --exclude-tags screenshot
+3. pubspec.yaml version bump + CHANGELOG.md 엔트리 맨 위 추가
+4. git commit -am "chore: bump version to X.Y.Z"
+5. git tag -a vX.Y.Z -m "vX.Y.Z — summary"
+6. git push origin main vX.Y.Z        # publish.yml 자동 시작
+7. Actions 탭에서 워크플로 성공 확인
+8. https://pub.dev/packages/pixel_ui 에서 새 버전·README·CHANGELOG 렌더링 확인
 ```
 
-**원칙**: `dart pub publish`는 **취소 불가 (30일 retract만)**. 반드시 사용자에게 직접 확인받고 실행.
+**자동 실행되는 검증**: tag↔pubspec 버전 일치 → `flutter analyze` → `flutter test --exclude-tags screenshot` → `dart pub publish --dry-run` → pub.dev 중복 배포 차단 → `dart pub publish --force` → `gh release create --generate-notes`.
+
+**원칙**: `dart pub publish`는 취소 불가 (30일 retract만). CHANGELOG와 version bump를 신중히 검토한 뒤 태그 push.
+
+**OIDC 인증**: `.github/workflows/publish.yml`의 `permissions: id-token: write`와 pub.dev Admin 탭의 Automated publishing 설정(`BottlePumpkin/pixel_ui`, tag pattern `v{{version}}`)이 함께 동작. 로컬 `pub-credentials.json` 의존성 없음.
 
 ## 파일 무결성 규칙
 
@@ -76,7 +78,7 @@ Host github.com-BottlePumpkin
 - **Hot restart ≠ 패키지 재해석**: 워크스페이스/path ↔ pub.dev 의존성 스위치 후에는 **반드시 cold `flutter run`**. `.dart_tool/flutter_build/<hash>/` 캐시가 옛 경로를 잡아 "Member not found" 발생 가능. 애매하면 `fvm flutter clean && flutter run`.
 - **pub.dev retract 30일 한정**: 치명 버그 발견 시 30일 이내엔 `dart pub retract X.Y.Z` 가능, 이후엔 deprecate만. 보통은 즉시 hotfix 릴리스가 안전.
 - **shields.io 배지 캐시**: README pub 버전 배지는 ~5분 캐시. 배포 직후 안 갱신 보여도 정상.
-- **퍼블리셔 계정 잘못 로그인**: 새 배포 전 매번 `pub-credentials.json` 확인 리듬에 포함. jobis.co로 배포되면 첫 uploader 기록 영구.
+- **퍼블리셔 계정 잘못 연결**: pub.dev Admin → Automated publishing에 연결된 GitHub repo가 `BottlePumpkin/pixel_ui`인지 확인. 잘못된 계정/repo로 첫 publish되면 uploader 기록 영구 (retract로 버전은 내릴 수 있어도 uploader 변경 불가).
 
 ## 저장소 구조
 
@@ -90,7 +92,7 @@ pixel_ui/
 ├── docs/
 │   ├── ROADMAP.md          0.1.1+ 계획
 │   └── specs/              설계 스펙
-├── .github/workflows/      (계획) CI, Pages 배포
+├── .github/workflows/      test.yml / build.yml / publish.yml
 ├── .claude/
 │   └── settings.json       SessionStart hook (git identity)
 ├── LICENSE                 MIT + OFL 언급
@@ -104,7 +106,7 @@ pixel_ui/
 
 - Flutter `>=3.32.0`, Dart SDK `^3.8.0`
 - FVM 사용 권장 (`fvm flutter`/`fvm dart`)
-- 개인 계정 개발이므로 macOS pub credentials: `~/Library/Application Support/dart/pub-credentials.json`
+- 평상시 배포는 publish.yml + OIDC가 담당, 로컬 `pub-credentials.json` 불필요. 응급 수동 publish가 필요한 경우에만 `dart pub login`으로 재로그인.
 
 ## 관련 문서
 
