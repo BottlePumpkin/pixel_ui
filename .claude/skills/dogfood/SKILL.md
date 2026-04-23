@@ -28,7 +28,6 @@ gh label create widget-gap --color 5319E7 --description "Missing widget request"
 gh label create tuner      --color FBCA04 --description "Tuner-related"              2>/dev/null || true
 gh label create stale      --color CCCCCC --description "Outdated content"           2>/dev/null || true
 gh label create missing    --color EEEEEE --description "Missing coverage"           2>/dev/null || true
-gh label create broken     --color BB0000 --description "Non-functional"             2>/dev/null || true
 gh label create upstream   --color BFD4F2 --description "Upstream Flutter limit"     2>/dev/null || true
 ```
 
@@ -95,7 +94,7 @@ gh issue list --label dogfood --state open --json title,number,body
 **10b. 페르소나 이슈**: `issue-templates/{category}.md`의 body 템플릿으로 `gh issue create`. 라벨 조합:
 - 기본: `dogfood,{category}`
 - widget-gap이면 `dogfood,feature,widget-gap`
-- tuner 이슈면 `dogfood,{category},tuner,{stale|missing|broken}`
+- tuner 이슈면 `dogfood,{category},tuner,{stale|missing}`
 
 **10c. Tuner drift 집계**: `issue-templates/tuner-drift.md` 템플릿 사용. 기존 open drift 이슈 있으면 신규 생성 대신 `gh issue comment`로 "cycle #N에서도 감지됨" 추가. 동일 drift가 3사이클 연속 open이면 `priority-high` 라벨 자동 추가.
 

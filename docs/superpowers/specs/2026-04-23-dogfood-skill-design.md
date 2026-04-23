@@ -174,7 +174,6 @@ dependencies:
 | `tuner` | `#FBCA04` | `dx` / `docs` / `bug` | tuner 관련 |
 | `stale` | `#CCCCCC` | `tuner` | 컨트롤은 있으나 동작 이상 |
 | `missing` | `#EEEEEE` | `tuner` | 공개 필드인데 컨트롤 부재 |
-| `broken` | `#BB0000` | `tuner` | 컨트롤 자체 렌더 실패 |
 
 ### 8.3 라벨 자동 생성 (Prereqs)
 
@@ -185,7 +184,6 @@ gh label create widget-gap --color 5319E7 --description "Missing widget request"
 gh label create tuner      --color FBCA04 --description "Tuner-related"              2>/dev/null || true
 gh label create stale      --color CCCCCC --description "Outdated content"           2>/dev/null || true
 gh label create missing    --color EEEEEE --description "Missing coverage"           2>/dev/null || true
-gh label create broken     --color BB0000 --description "Non-functional"             2>/dev/null || true
 gh label create upstream   --color BFD4F2 --description "Upstream Flutter limit"     2>/dev/null || true
 ```
 
@@ -316,9 +314,6 @@ const List<String> targetTypes = [
 
 ⚠️ Orphan controls (N):
   - controls/unused_gradient_picker.dart → (no matching public field)
-
-🔧 Broken (N):
-  - controls/corners_tr.dart → (not imported in home_page.dart)
 ```
 
 ### 11.6 자동 이슈 통합
@@ -328,7 +323,7 @@ Drift 발견 시:
 - **1개 집계 이슈** 파일링 (사이클당, quota 밖):
   - 제목: `[dogfood/tuner] Coverage drift (cycle #N)`
   - 라벨: `dogfood,dx,tuner`
-  - Body: missing/orphan/broken 체크리스트
+  - Body: missing/orphan 체크리스트
 - 기존 open drift 이슈가 있으면 신규 생성 대신 **comment 추가**: `cycle #N에서도 감지됨`
 - 동일 drift가 3사이클 연속 open이면 자동으로 `priority-high` 라벨 추가 (외면 방지)
 
