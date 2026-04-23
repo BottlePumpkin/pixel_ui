@@ -41,7 +41,7 @@ Pixel-art design system for Flutter — parametric shapes, interactive buttons, 
 
 ```yaml
 dependencies:
-  pixel_ui: ^0.1.0
+  pixel_ui: ^0.2.0
 ```
 
 ## Quick Start
