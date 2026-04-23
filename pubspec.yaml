@@ -44,3 +44,6 @@ flutter:
     - family: Mulmaru
       fonts:
         - asset: assets/fonts/Mulmaru.ttf
+    - family: MulmaruMono
+      fonts:
+        - asset: assets/fonts/MulmaruMono.ttf
