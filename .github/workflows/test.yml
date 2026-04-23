@@ -17,15 +17,24 @@ jobs:
           channel: 'stable'
       - name: Pub get (root package)
         run: flutter pub get
+      - name: Pub get (example)
+        run: flutter pub get
+        working-directory: example
+      - name: Pub get (tuner)
+        run: flutter pub get
+        working-directory: tuner
       - name: Analyze (package)
         run: flutter analyze
       - name: Test (package)
         run: flutter test --exclude-tags screenshot
       - name: Publish dry-run
         run: dart pub publish --dry-run
-      - name: Pub get (example)
-        run: flutter pub get
-        working-directory: example
       - name: Analyze (example)
         run: flutter analyze
         working-directory: example
+      - name: Analyze (tuner)
+        run: flutter analyze
+        working-directory: tuner
+      - name: Test (tuner)
+        run: flutter test
+        working-directory: tuner
