@@ -7,6 +7,7 @@ import 'package:pixel_ui/pixel_ui.dart';
 
 const _fill = Color(0xFF00FF00);
 const _border = Color(0xFF003300);
+const _shadowColor = Color(0xFF222222);
 
 const _boundaryKey = Key('golden-boundary');
 
@@ -123,6 +124,57 @@ void main() {
       await expectLater(
         find.byKey(_boundaryKey),
         matchesGoldenFile('goldens/painter/corners_xl.png'),
+      );
+    });
+
+    testWidgets('shadow sm', (tester) async {
+      await _pumpBox(
+        tester,
+        PixelShapeStyle(
+          corners: PixelCorners.md,
+          fillColor: _fill,
+          borderColor: _border,
+          borderWidth: 1,
+          shadow: PixelShadow.sm(_shadowColor),
+        ),
+      );
+      await expectLater(
+        find.byKey(_boundaryKey),
+        matchesGoldenFile('goldens/painter/shadow_sm.png'),
+      );
+    });
+
+    testWidgets('shadow md', (tester) async {
+      await _pumpBox(
+        tester,
+        PixelShapeStyle(
+          corners: PixelCorners.md,
+          fillColor: _fill,
+          borderColor: _border,
+          borderWidth: 1,
+          shadow: PixelShadow.md(_shadowColor),
+        ),
+      );
+      await expectLater(
+        find.byKey(_boundaryKey),
+        matchesGoldenFile('goldens/painter/shadow_md.png'),
+      );
+    });
+
+    testWidgets('shadow lg', (tester) async {
+      await _pumpBox(
+        tester,
+        PixelShapeStyle(
+          corners: PixelCorners.md,
+          fillColor: _fill,
+          borderColor: _border,
+          borderWidth: 1,
+          shadow: PixelShadow.lg(_shadowColor),
+        ),
+      );
+      await expectLater(
+        find.byKey(_boundaryKey),
+        matchesGoldenFile('goldens/painter/shadow_lg.png'),
       );
     });
   });
