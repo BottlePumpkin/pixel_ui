@@ -43,9 +43,10 @@ jobs:
 
       - name: Guard against re-publish
         run: |
+          set -euo pipefail
           TAG_VERSION="${GITHUB_REF_NAME#v}"
-          if curl -fsSL "https://pub.dev/api/packages/pixel_ui" \
-             | grep -q "\"version\":\"$TAG_VERSION\""; then
+          response=$(curl -fsSL "https://pub.dev/api/packages/pixel_ui")
+          if echo "$response" | grep -q "\"version\":\"$TAG_VERSION\""; then
             echo "::error::Version $TAG_VERSION already published on pub.dev"
             exit 1
           fi
