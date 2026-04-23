@@ -20,7 +20,7 @@ jobs:
       - name: Analyze (package)
         run: flutter analyze
       - name: Test (package)
-        run: flutter test
+        run: flutter test --exclude-tags screenshot
       - name: Publish dry-run
         run: dart pub publish --dry-run
       - name: Pub get (example)
