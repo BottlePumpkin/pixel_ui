@@ -1,4 +1,9 @@
 // test/screenshots/screenshots_test.dart
+// Screenshots are generated on macOS for visual reference.
+// Excluded from CI (Linux) because font rendering differs.
+@Tags(['screenshot'])
+library;
+
 import 'dart:ui' as ui;
 
 import 'package:flutter/rendering.dart';

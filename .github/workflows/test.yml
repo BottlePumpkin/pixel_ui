@@ -1,0 +1,31 @@
+name: Test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    name: Analyze + Test + Publish dry-run
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.32.7'
+          channel: 'stable'
+      - name: Pub get (root package)
+        run: flutter pub get
+      - name: Analyze (package)
+        run: flutter analyze
+      - name: Test (package)
+        run: flutter test --exclude-tags screenshot
+      - name: Publish dry-run
+        run: dart pub publish --dry-run
+      - name: Pub get (example)
+        run: flutter pub get
+        working-directory: example
+      - name: Analyze (example)
+        run: flutter analyze
+        working-directory: example
