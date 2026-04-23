@@ -54,4 +54,38 @@ abstract class PixelText {
       shadows: resolvedShadows,
     );
   }
+
+  /// Font family name of the bundled Mulmaru Mono (monospaced) font.
+  static const String mulmaruMonoFontFamily = 'MulmaruMono';
+
+  /// Returns a [TextStyle] configured for the bundled Mulmaru Mono pixel font.
+  ///
+  /// Identical semantics to [mulmaru] — see that method for shadow resolution
+  /// rules and default justification.
+  static TextStyle mulmaruMono({
+    double fontSize = 16,
+    Color color = const Color(0xFF000000),
+    Color? shadowColor,
+    Offset shadowOffset = const Offset(1, 1),
+    double height = 1.0,
+    FontWeight? fontWeight,
+    double? letterSpacing,
+    List<Shadow>? shadows,
+  }) {
+    final resolvedShadows = shadows ??
+        (shadowColor != null
+            ? <Shadow>[Shadow(offset: shadowOffset, color: shadowColor)]
+            : null);
+
+    return TextStyle(
+      fontFamily: mulmaruMonoFontFamily,
+      package: mulmaruPackage,
+      fontSize: fontSize,
+      color: color,
+      height: height,
+      fontWeight: fontWeight,
+      letterSpacing: letterSpacing,
+      shadows: resolvedShadows,
+    );
+  }
 }
