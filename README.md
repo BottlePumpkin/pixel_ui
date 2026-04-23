@@ -145,6 +145,17 @@ Text(
 );
 ```
 
+#### Monospaced variant
+
+For code, terminal-style UI, or fixed-width layouts, use `PixelText.mulmaruMono`:
+
+```dart
+Text(
+  'HP 042/100',
+  style: PixelText.mulmaruMono(fontSize: 12, color: Colors.white),
+)
+```
+
 ## Gallery
 
 | Corners | Shadows |
@@ -166,7 +177,7 @@ flutter run
 
 ## Bundled Font
 
-This package bundles the [Mulmaru](https://github.com/mushsooni/mulmaru) pixel font by **mushsooni**, distributed under the SIL Open Font License 1.1.
+This package bundles the [Mulmaru](https://github.com/mushsooni/mulmaru) pixel fonts (proportional + monospaced variants) by **mushsooni**, distributed under the SIL Open Font License 1.1.
 
 See [OFL.txt](OFL.txt) for the full font license. Apps using `pixel_ui` should include OFL attribution in their open-source license disclosures; Flutter's `showLicensePage()` handles this automatically when the bundling note (see [LICENSE](LICENSE)) is in place.
 
