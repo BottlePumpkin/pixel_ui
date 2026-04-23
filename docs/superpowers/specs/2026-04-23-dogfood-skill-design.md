@@ -286,19 +286,20 @@ const List<String> targetTypes = [
 
 총 14개 공개 필드. 향후 `PixelText` 튜너 탭 추가 시 이 리스트 확장.
 
-### 11.3 네이밍 컨벤션 (계약)
+### 11.3 커버리지 모델
 
-- 컨트롤 파일: `tuner/lib/src/controls/{snake_field}.dart`
-- 중첩 필드는 부모 접두사 (예: `corners_tl.dart`, `shadow_offset.dart`)
-- 규칙 위반은 drift로 탐지됨 — 컨벤션 자체가 스크립트의 계약
+- 각 공개 필드는 `tuner/lib/**/*.dart` 아래 어떤 `.dart` 파일이든 **필드 식별자**를 whole word로 참조하거나 **enclosing 타입**(`PixelCorners`, `PixelShadow`, ...)을 참조하면 "covered"로 간주. 타입 참조 fallback으로 composite 컨트롤(예: 프리셋 기반 `corner_picker.dart`)도 자연스럽게 필드 크레딧.
+- "orphan"은 `tuner/lib/src/controls/` 밑 컨트롤 파일이 어떤 target field/type도 언급하지 않을 때. `home_page.dart`, `tuner_state.dart` 같은 non-control infra는 커버리지에는 기여하지만 orphan 판정 대상 아님.
+- 권장(계약 아님) 파일 네이밍: `tuner/lib/src/controls/{topic}_picker|editor|slider|input.dart` (예: `corner_picker.dart`, `shadow_editor.dart`). 네이밍 자체를 스캐너가 강제하지는 않음.
 
 ### 11.4 접근 방식
 
 **정규식 기반** (초기):
 
 - 공개 필드: `lib/src/pixel_style.dart`에서 `final\s+<Type>\s+<name>;` 정규식 추출 (대상 타입 범위 내만)
-- 컨트롤: `tuner/lib/src/controls/`의 `.dart` 파일 목록
-- snake_case 변환 후 set diff
+- 컨트롤/infra: `tuner/lib/**`의 `.dart` 파일 전체를 재귀 스캔
+- 필드 식별자 whole-word 매칭 + 타입 이름 whole-word 매칭 → 타입별 필드 집합 전개(union)
+- orphan 판정은 `tuner/lib/src/controls/` 경로의 파일에만 적용
 
 후일 파일 분산·복잡도 증가 시 `package:analyzer` 기반 AST로 교체 (구현 세부 변경, 스펙 불변).
 
