@@ -216,5 +216,26 @@ void main() {
         matchesGoldenFile('goldens/painter/texture_on.png'),
       );
     });
+
+    testWidgets('asymmetric tabs (top-left + bottom-right)', (tester) async {
+      await _pumpBox(
+        tester,
+        const PixelShapeStyle(
+          corners: PixelCorners.only(
+            tl: [3, 2, 1],
+            tr: [],
+            bl: [],
+            br: [3, 2, 1],
+          ),
+          fillColor: _fill,
+          borderColor: _border,
+          borderWidth: 1,
+        ),
+      );
+      await expectLater(
+        find.byKey(_boundaryKey),
+        matchesGoldenFile('goldens/painter/asymmetric_tabs.png'),
+      );
+    });
   });
 }
