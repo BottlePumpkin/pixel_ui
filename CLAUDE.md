@@ -78,7 +78,7 @@ Host github.com-BottlePumpkin
 - **Hot restart ≠ 패키지 재해석**: 워크스페이스/path ↔ pub.dev 의존성 스위치 후에는 **반드시 cold `flutter run`**. `.dart_tool/flutter_build/<hash>/` 캐시가 옛 경로를 잡아 "Member not found" 발생 가능. 애매하면 `fvm flutter clean && flutter run`.
 - **pub.dev retract 30일 한정**: 치명 버그 발견 시 30일 이내엔 `dart pub retract X.Y.Z` 가능, 이후엔 deprecate만. 보통은 즉시 hotfix 릴리스가 안전.
 - **shields.io 배지 캐시**: README pub 버전 배지는 ~5분 캐시. 배포 직후 안 갱신 보여도 정상.
-- **퍼블리셔 계정 잘못 로그인**: 새 배포 전 매번 `pub-credentials.json` 확인 리듬에 포함. jobis.co로 배포되면 첫 uploader 기록 영구.
+- **퍼블리셔 계정 잘못 연결**: pub.dev Admin → Automated publishing에 연결된 GitHub repo가 `BottlePumpkin/pixel_ui`인지 확인. 잘못된 계정/repo로 첫 publish되면 uploader 기록 영구 (retract로 버전은 내릴 수 있어도 uploader 변경 불가).
 
 ## 저장소 구조
 
@@ -92,7 +92,7 @@ pixel_ui/
 ├── docs/
 │   ├── ROADMAP.md          0.1.1+ 계획
 │   └── specs/              설계 스펙
-├── .github/workflows/      (계획) CI, Pages 배포
+├── .github/workflows/      test.yml / build.yml / publish.yml
 ├── .claude/
 │   └── settings.json       SessionStart hook (git identity)
 ├── LICENSE                 MIT + OFL 언급
@@ -106,7 +106,7 @@ pixel_ui/
 
 - Flutter `>=3.32.0`, Dart SDK `^3.8.0`
 - FVM 사용 권장 (`fvm flutter`/`fvm dart`)
-- 개인 계정 개발이므로 macOS pub credentials: `~/Library/Application Support/dart/pub-credentials.json`
+- 평상시 배포는 publish.yml + OIDC가 담당, 로컬 `pub-credentials.json` 불필요. 응급 수동 publish가 필요한 경우에만 `dart pub login`으로 재로그인.
 
 ## 관련 문서
 
