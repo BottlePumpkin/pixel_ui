@@ -117,12 +117,18 @@ PixelButton(
   logicalHeight: 18,
   normalStyle: /* PixelShapeStyle */,
   pressedStyle: /* optional, falls back to normalStyle */,
+  disabledStyle: /* optional, falls back to normalStyle at 50% opacity */,
   pressChildOffset: const Offset(0, 1),
   onPressed: () {},
   semanticsLabel: 'Start',
   child: /* your child widget */,
 );
 ```
+
+When `onPressed` is `null` the button is non-interactive. If you pass a
+`disabledStyle` it renders at full opacity with that style; otherwise the
+button falls back to `normalStyle` rendered at 50% opacity — a generic dim
+that avoids a distracting visual when you don't need one.
 
 ### Texture
 
