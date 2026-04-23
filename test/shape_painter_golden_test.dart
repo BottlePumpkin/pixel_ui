@@ -45,5 +45,85 @@ void main() {
         matchesGoldenFile('goldens/painter/corners_md.png'),
       );
     });
+
+    testWidgets('corners sharp', (tester) async {
+      await _pumpBox(
+        tester,
+        const PixelShapeStyle(
+          corners: PixelCorners.sharp,
+          fillColor: _fill,
+          borderColor: _border,
+          borderWidth: 1,
+        ),
+      );
+      await expectLater(
+        find.byKey(_boundaryKey),
+        matchesGoldenFile('goldens/painter/corners_sharp.png'),
+      );
+    });
+
+    testWidgets('corners xs', (tester) async {
+      await _pumpBox(
+        tester,
+        const PixelShapeStyle(
+          corners: PixelCorners.xs,
+          fillColor: _fill,
+          borderColor: _border,
+          borderWidth: 1,
+        ),
+      );
+      await expectLater(
+        find.byKey(_boundaryKey),
+        matchesGoldenFile('goldens/painter/corners_xs.png'),
+      );
+    });
+
+    testWidgets('corners sm', (tester) async {
+      await _pumpBox(
+        tester,
+        const PixelShapeStyle(
+          corners: PixelCorners.sm,
+          fillColor: _fill,
+          borderColor: _border,
+          borderWidth: 1,
+        ),
+      );
+      await expectLater(
+        find.byKey(_boundaryKey),
+        matchesGoldenFile('goldens/painter/corners_sm.png'),
+      );
+    });
+
+    testWidgets('corners lg', (tester) async {
+      await _pumpBox(
+        tester,
+        const PixelShapeStyle(
+          corners: PixelCorners.lg,
+          fillColor: _fill,
+          borderColor: _border,
+          borderWidth: 1,
+        ),
+      );
+      await expectLater(
+        find.byKey(_boundaryKey),
+        matchesGoldenFile('goldens/painter/corners_lg.png'),
+      );
+    });
+
+    testWidgets('corners xl', (tester) async {
+      await _pumpBox(
+        tester,
+        const PixelShapeStyle(
+          corners: PixelCorners.xl,
+          fillColor: _fill,
+          borderColor: _border,
+          borderWidth: 1,
+        ),
+      );
+      await expectLater(
+        find.byKey(_boundaryKey),
+        matchesGoldenFile('goldens/painter/corners_xl.png'),
+      );
+    });
   });
 }
