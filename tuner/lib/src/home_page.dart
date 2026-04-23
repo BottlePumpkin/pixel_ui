@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pixel_ui/pixel_ui.dart';
 
+import 'code_panel.dart';
 import 'preview_panel.dart';
 import 'tuner_state.dart';
 import 'widgets/pixel_card.dart';
@@ -84,9 +85,14 @@ class _WideLayout extends StatelessWidget {
         ),
         Expanded(
           flex: 70,
-          child: Padding(
+          child: SingleChildScrollView(
             padding: const EdgeInsets.all(16),
-            child: PreviewPanel(state: state),
+            child: Column(
+              children: [
+                PreviewPanel(state: state),
+                CodePanel(state: state),
+              ],
+            ),
           ),
         ),
       ],
@@ -105,6 +111,8 @@ class _StackedLayout extends StatelessWidget {
       child: Column(
         children: [
           PreviewPanel(state: state),
+          const SizedBox(height: 16),
+          CodePanel(state: state),
           const SizedBox(height: 16),
           _ControlsPanel(state: state),
         ],
