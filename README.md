@@ -70,6 +70,20 @@ PixelButton(
 );
 ```
 
+### Sizing model
+
+`logicalWidth` and `logicalHeight` are **integer pixel-art grid cells**, not
+screen pixels. When you don't pass `width:` / `height:`, the widget renders at
+**logical size × 4** screen pixels (so `logicalWidth: 60, logicalHeight: 18`
+→ 240×72 dp). Override either dimension to stretch the same logical grid to a
+custom screen size — the painter still draws at the logical resolution so
+pixels stay crisp. Aspect ratio is preserved if only one of `width`/`height`
+is given.
+
+The logical values also drive corner stair patterns, shadow offsets, and
+texture cell sizes, so think of them as the "pixel art canvas" the design
+is authored on.
+
 ## Usage
 
 ### Corners
