@@ -99,47 +99,12 @@
 
 6. CHANGELOG + 버전 bump + publish (공통 리듬).
 
-### E. 골든 테스트 도입 (`PixelShapePainter` 픽셀 정확도)
+### ✅ E. 골든 테스트 — 완료
 
-**왜 지금**: 0.1.0에서 "example 앱 시각 검증으로 대체"해 연기했으나, API 안정화 후 회귀 방지 가치 상승.
-
-**작업 순서**:
-
-1. `test/goldens/` 디렉터리 생성.
-
-2. `test/pixel_shape_painter_golden_test.dart`:
-   ```dart
-   import 'package:flutter/widgets.dart';
-   import 'package:flutter_test/flutter_test.dart';
-   import 'package:pixel_ui/pixel_ui.dart';
-
-   void main() {
-     testWidgets('PixelBox md corners no shadow matches golden', (tester) async {
-       await tester.pumpWidget(const Directionality(
-         textDirection: TextDirection.ltr,
-         child: Center(child: PixelBox(
-           logicalWidth: 16, logicalHeight: 16,
-           style: PixelShapeStyle(
-             corners: PixelCorners.md,
-             fillColor: Color(0xFF00FF00),
-             borderColor: Color(0xFF003300),
-             borderWidth: 1,
-           ),
-         )),
-       ));
-       await expectLater(
-         find.byType(PixelBox),
-         matchesGoldenFile('goldens/box_md_plain.png'),
-       );
-     });
-     // 추가 케이스: with shadow (positive/negative offset), with texture,
-     // asymmetric corners (topTab/bottomTab 조합)
-   }
-   ```
-
-3. 최초 실행 시 `fvm flutter test --update-goldens`로 baseline 생성 후 커밋.
-
-4. CI test 스텝에 골든 실행 포함. 주의: Flutter의 골든은 OS/렌더러 편차가 있어 CI runner OS를 고정해야 안정적. 픽셀 아트는 `isAntiAlias=false`라 편차 적음.
+- PR #1 (`9dde14e`): `test/shape_painter_golden_test.dart` 하네스 + 12 케이스 baseline (CI Ubuntu runner 고정)
+- PR #6 (`48e8c6f`): 11 케이스 확장 → 총 23 케이스
+- 커버리지: corners(sharp/xs/sm/md/lg/xl), shadow(sm/md/lg/negative/asymmetric/sharp+shadow/shadow+texture), texture(off/on/dense/size2), border(borderless/thick), 비대칭 corners(top tab/bottom tab/tl-only/top+bottom)
+- `test.yml`에서 매 PR/push마다 실행 (`--exclude-tags screenshot`)
 
 ### F. 스크린샷 자동화 (integration_test)
 
@@ -251,8 +216,8 @@
 1. ~~A (스크린샷 0.1.1)~~ — 완료
 2. ~~C (CI)~~ — 완료 (test.yml + publish.yml + build.yml)
 3. ~~D (Mulmaru Mono)~~ — 완료 (0.2.1)
-4. **E (골든 테스트)** — 이미 부분 도입 (PixelShapePainter), 스크린샷 자동화와 연계 고려
-5. F (스크린샷 자동화) — 릴리스 주기 확립 후
+4. ~~E (골든 테스트)~~ — 완료 (PR #1 + #6, 23 케이스)
+5. **F (스크린샷 자동화)** — 릴리스 주기 확립 후
 6. G (플랫폼 확장) — 1.0 직전 마지막 준비
 
 ---
