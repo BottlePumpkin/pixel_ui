@@ -41,7 +41,7 @@ Pixel-art design system for Flutter — parametric shapes, interactive buttons, 
 
 ```yaml
 dependencies:
-  pixel_ui: ^0.2.0
+  pixel_ui: ^0.4.0
 ```
 
 ## Quick Start
@@ -146,6 +146,43 @@ PixelShapeStyle(
 ```
 
 Textures use a deterministic LCG so identical settings produce identical patterns across platforms and builds.
+
+### Direct CustomPaint integration
+
+For custom compositions that `PixelBox` doesn't cover — minimaps, tile
+grids, procedural layouts — use `PixelShapePainter` inside your own
+`CustomPaint`. Size the canvas with the shadow-aware helper so drop
+shadows never get clipped:
+
+```dart
+import 'package:pixel_ui/pixel_ui.dart';
+
+final style = PixelShapeStyle(
+  corners: PixelCorners.md,
+  fillColor: const Color(0xFF5A8A3A),
+  shadow: PixelShadow.md(const Color(0xFF1A3010)),
+);
+
+CustomPaint(
+  size: PixelShapePainter.canvasSizeFor(
+    style: style,
+    logicalWidth: 16,
+    logicalHeight: 16,
+    scale: 4, // default — screen pixels per logical pixel
+  ),
+  painter: PixelShapePainter(
+    logicalWidth: 16,
+    logicalHeight: 16,
+    style: style,
+  ),
+)
+```
+
+The helper returns `(logicalWidth × scale, logicalHeight × scale)` when
+there's no shadow, and expands by `|shadow.offset|` on each axis
+otherwise. If you compute canvas size yourself, mirror the formula:
+`(logicalWidth + |shadow.offset.dx|) × scale` wide by
+`(logicalHeight + |shadow.offset.dy|) × scale` tall.
 
 ### Typography
 

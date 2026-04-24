@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.4.1 — 2026-04-24
+
+### Added
+- `PixelShapePainter.canvasSizeFor(...)` static helper — computes the `CustomPaint.size` needed to fit the shape plus its drop shadow at a given scale. Closes #35 for direct-use callers that previously had to reverse-engineer `PixelBox` internals to size the canvas correctly.
+
+### Docs
+- Class-level dartdoc on `PixelShapePainter` now documents canvas sizing (including the shadow-aware formula) and links to the new helper.
+- README `## Usage` gains a "Direct CustomPaint integration" subsection with a full minimap/tile-grid-style example (#38).
+- README `## Install` version pin bumped `^0.2.0` → `^0.4.0` to match the current minor line (recurring drift; see #19).
+
 ## 0.4.0 — 2026-04-24
 
 ### Fixed

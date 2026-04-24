@@ -4,9 +4,46 @@ import 'package:pixel_ui/src/pixel_style.dart';
 
 /// Low-level CustomPainter for pixel shapes.
 ///
+/// Use this directly inside a [CustomPaint] when you want low-level
+/// composition (minimaps, tile grids, procedural layouts) that
+/// [PixelBox] doesn't cover. For the common case of a standalone shape
+/// with an inner child, prefer [PixelBox].
+///
+/// ## Canvas sizing
+///
+/// The painter paints the shape plus its drop shadow, so the surrounding
+/// [CustomPaint.size] should include the shadow extent:
+///
+/// ```
+/// width  = (logicalWidth  + |shadow.offset.dx|) * scale
+/// height = (logicalHeight + |shadow.offset.dy|) * scale
+/// ```
+///
+/// where `scale` is your target logical-to-screen pixel ratio (the built-in
+/// [PixelBox] uses `4`). Use [PixelShapePainter.canvasSizeFor] as a helper:
+///
+/// ```dart
+/// CustomPaint(
+///   size: PixelShapePainter.canvasSizeFor(
+///     style: style,
+///     logicalWidth: 16,
+///     logicalHeight: 16,
+///     scale: 4,
+///   ),
+///   painter: PixelShapePainter(
+///     logicalWidth: 16,
+///     logicalHeight: 16,
+///     style: style,
+///   ),
+/// )
+/// ```
+///
+/// If [PixelShapeStyle.shadow] is null, the helper returns
+/// `(logicalWidth * scale, logicalHeight * scale)`.
+///
+/// ## Other notes
+///
 /// - Takes a single [PixelShapeStyle] for `shouldRepaint` optimization.
-/// - [logicalWidth]/[logicalHeight] is the "design-basis pixel count"; actual
-///   render size auto-scales to match the composed canvas size.
 /// - Texture uses a deterministic LCG (1664525, 1013904223) so identical
 ///   settings always produce the same pattern across platforms/builds.
 class PixelShapePainter extends CustomPainter {
@@ -27,6 +64,28 @@ class PixelShapePainter extends CustomPainter {
             'logicalWidth must be positive (got $logicalWidth)'),
         assert(logicalHeight > 0,
             'logicalHeight must be positive (got $logicalHeight)');
+
+  /// Returns the [CustomPaint.size] a direct-use painter needs to fit the
+  /// shape's [logicalWidth] × [logicalHeight] grid plus any drop shadow, at
+  /// the given `scale` (logical pixels → screen pixels).
+  ///
+  /// Equivalent to what [PixelBox] computes internally. Returns
+  /// `(logicalWidth * scale, logicalHeight * scale)` when `style.shadow` is
+  /// null.
+  static Size canvasSizeFor({
+    required PixelShapeStyle style,
+    required int logicalWidth,
+    required int logicalHeight,
+    double scale = 4,
+  }) {
+    final shadow = style.shadow;
+    final sox = shadow?.offset.dx.abs() ?? 0;
+    final soy = shadow?.offset.dy.abs() ?? 0;
+    return Size(
+      (logicalWidth + sox) * scale,
+      (logicalHeight + soy) * scale,
+    );
+  }
 
   @override
   void paint(Canvas canvas, Size size) {
