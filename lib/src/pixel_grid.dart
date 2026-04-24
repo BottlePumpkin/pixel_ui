@@ -100,6 +100,65 @@ class PixelGrid<T> extends StatefulWidget {
 class _PixelGridState<T> extends State<PixelGrid<T>> {
   @override
   Widget build(BuildContext context) {
-    return const SizedBox.shrink(); // replaced in Task 2
+    final rows = <Widget>[];
+    for (int y = 0; y < widget.rows; y++) {
+      final tiles = <Widget>[];
+      for (int x = 0; x < widget.cols; x++) {
+        tiles.add(_tileFor(x, y));
+      }
+      rows.add(Row(
+        mainAxisSize: MainAxisSize.min,
+        spacing: widget.gap,
+        children: tiles,
+      ));
+    }
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      spacing: widget.gap,
+      children: rows,
+    );
+  }
+
+  Widget _tileFor(int x, int y) {
+    final data = widget.tileAt(x, y);
+    final style = data == null ? widget.emptyStyle : widget.styleFor(data);
+    return _TilePaint(
+      key: ValueKey<(int, int)>((x, y)),
+      style: style,
+      tileLogicalWidth: widget.tileLogicalWidth,
+      tileLogicalHeight: widget.tileLogicalHeight,
+      tileScreenSize: widget.tileScreenSize,
+    );
+  }
+}
+
+class _TilePaint extends StatelessWidget {
+  const _TilePaint({
+    super.key,
+    required this.style,
+    required this.tileLogicalWidth,
+    required this.tileLogicalHeight,
+    required this.tileScreenSize,
+  });
+
+  final PixelShapeStyle? style;
+  final int tileLogicalWidth;
+  final int tileLogicalHeight;
+  final Size tileScreenSize;
+
+  @override
+  Widget build(BuildContext context) {
+    final style = this.style;
+    if (style == null) {
+      return SizedBox(width: tileScreenSize.width, height: tileScreenSize.height);
+    }
+    return CustomPaint(
+      size: tileScreenSize,
+      painter: PixelShapePainter(
+        logicalWidth: tileLogicalWidth,
+        logicalHeight: tileLogicalHeight,
+        style: style,
+      ),
+    );
   }
 }
