@@ -41,11 +41,11 @@
 Run from the repo root:
 
 ```bash
-cd /Users/byeonghopark-jobis/dev/byeonghopark/pixel_ui
+cd ~/dev/byeonghopark/pixel_ui
 cd /tmp
 curl -fsSL -o MulmaruMono.zip "https://github.com/mushsooni/mulmaru/releases/download/v1.0/MulmaruMono.zip"
 unzip -o MulmaruMono.zip MulmaruMono.ttf
-mv MulmaruMono.ttf /Users/byeonghopark-jobis/dev/byeonghopark/pixel_ui/assets/fonts/MulmaruMono.ttf
+mv MulmaruMono.ttf ~/dev/byeonghopark/pixel_ui/assets/fonts/MulmaruMono.ttf
 rm MulmaruMono.zip
 ```
 
@@ -53,7 +53,7 @@ rm MulmaruMono.zip
 
 Run:
 ```bash
-cd /Users/byeonghopark-jobis/dev/byeonghopark/pixel_ui
+cd ~/dev/byeonghopark/pixel_ui
 shasum -a 256 assets/fonts/MulmaruMono.ttf
 ```
 
@@ -119,7 +119,7 @@ flutter:
 
 Run:
 ```bash
-cd /Users/byeonghopark-jobis/dev/byeonghopark/pixel_ui
+cd ~/dev/byeonghopark/pixel_ui
 fvm flutter pub get
 ```
 
@@ -210,7 +210,7 @@ Add the following `group` block to `test/pixel_text_test.dart` immediately after
 
 Run:
 ```bash
-cd /Users/byeonghopark-jobis/dev/byeonghopark/pixel_ui
+cd ~/dev/byeonghopark/pixel_ui
 fvm flutter test test/pixel_text_test.dart -r expanded
 ```
 
@@ -351,7 +351,7 @@ This package bundles the [Mulmaru](https://github.com/mushsooni/mulmaru) pixel f
 
 Run:
 ```bash
-cd /Users/byeonghopark-jobis/dev/byeonghopark/pixel_ui
+cd ~/dev/byeonghopark/pixel_ui
 grep -n "Monospaced variant" README.md
 grep -n "proportional + monospaced variants" README.md
 ```
@@ -433,7 +433,7 @@ Find the `## 우선순위 제안` section near the end of the file. Replace the 
 
 Run:
 ```bash
-cd /Users/byeonghopark-jobis/dev/byeonghopark/pixel_ui
+cd ~/dev/byeonghopark/pixel_ui
 grep -c "^## ✅ 0.1.1" docs/ROADMAP.md
 grep -c "^### ✅ C. CI 워크플로우" docs/ROADMAP.md
 grep -c "^### ✅ D. Mulmaru Mono" docs/ROADMAP.md
@@ -494,7 +494,7 @@ The blank line between this new section and the existing `## 0.2.0` must be pres
 
 Run:
 ```bash
-cd /Users/byeonghopark-jobis/dev/byeonghopark/pixel_ui
+cd ~/dev/byeonghopark/pixel_ui
 fvm flutter analyze
 fvm flutter test --exclude-tags screenshot
 fvm dart pub publish --dry-run
@@ -524,7 +524,7 @@ git commit -m "chore: bump version to 0.2.1"
 
 Run:
 ```bash
-cd /Users/byeonghopark-jobis/dev/byeonghopark/pixel_ui
+cd ~/dev/byeonghopark/pixel_ui
 git status
 git log --oneline origin/main..HEAD
 ```
@@ -594,7 +594,7 @@ Report back with the PR URL and wait for user review / merge decision.
 
 Run:
 ```bash
-cd /Users/byeonghopark-jobis/dev/byeonghopark/pixel_ui
+cd ~/dev/byeonghopark/pixel_ui
 git checkout main
 git pull --ff-only origin main
 ```
@@ -665,7 +665,7 @@ Optional but recommended — visually confirm the new font works end-to-end.
 
 Run:
 ```bash
-cd /Users/byeonghopark-jobis/dev/byeonghopark/pixel_ui/example
+cd ~/dev/byeonghopark/pixel_ui/example
 fvm flutter pub upgrade pixel_ui
 ```
 

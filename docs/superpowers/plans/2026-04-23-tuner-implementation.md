@@ -61,7 +61,7 @@
 
 Run:
 ```bash
-cd /Users/byeonghopark-jobis/dev/byeonghopark/pixel_ui
+cd ~/dev/byeonghopark/pixel_ui
 fvm flutter create --platforms=web --project-name=pixel_ui_tuner --org=com.bottlepumpkin tuner
 ```
 
@@ -235,7 +235,7 @@ void main() {
 
 Run:
 ```bash
-cd /Users/byeonghopark-jobis/dev/byeonghopark/pixel_ui/tuner
+cd ~/dev/byeonghopark/pixel_ui/tuner
 fvm flutter test
 ```
 
@@ -244,7 +244,7 @@ Expected: `+4: All tests passed!`
 - [ ] **Step 4: Commit**
 
 ```bash
-cd /Users/byeonghopark-jobis/dev/byeonghopark/pixel_ui
+cd ~/dev/byeonghopark/pixel_ui
 git add tuner/lib/src/tuner_state.dart tuner/test/tuner_state_test.dart
 git commit -m "feat(tuner): add TunerState ValueNotifier with copyWith setters"
 ```
@@ -505,7 +505,7 @@ NOTE: verify the `PixelBox` public API in `lib/src/pixel_box.dart`. If `pixelSiz
 
 Run:
 ```bash
-cd /Users/byeonghopark-jobis/dev/byeonghopark/pixel_ui/tuner
+cd ~/dev/byeonghopark/pixel_ui/tuner
 fvm flutter analyze
 ```
 
@@ -516,7 +516,7 @@ If analyze complains about `pixelSize` being an unknown parameter, read `lib/src
 - [ ] **Step 3: Commit**
 
 ```bash
-cd /Users/byeonghopark-jobis/dev/byeonghopark/pixel_ui
+cd ~/dev/byeonghopark/pixel_ui
 git add tuner/lib/src/preview_panel.dart
 git commit -m "feat(tuner): add preview_panel with 6x PixelBox + checker bg"
 ```
@@ -707,7 +707,7 @@ class TunerApp extends StatelessWidget {
 
 Run:
 ```bash
-cd /Users/byeonghopark-jobis/dev/byeonghopark/pixel_ui/tuner
+cd ~/dev/byeonghopark/pixel_ui/tuner
 fvm flutter analyze
 ```
 
@@ -725,7 +725,7 @@ Expected: Build succeeds. Output in `tuner/build/web/`. If compilation fails due
 - [ ] **Step 5: Commit**
 
 ```bash
-cd /Users/byeonghopark-jobis/dev/byeonghopark/pixel_ui
+cd ~/dev/byeonghopark/pixel_ui
 git add tuner/lib/main.dart tuner/lib/src/home_page.dart
 git commit -m "feat(tuner): scaffold home_page with 30/70 layout + preview panel wired"
 ```
@@ -740,7 +740,7 @@ git commit -m "feat(tuner): scaffold home_page with 30/70 layout + preview panel
 
 Run:
 ```bash
-cd /Users/byeonghopark-jobis/dev/byeonghopark/pixel_ui/tuner
+cd ~/dev/byeonghopark/pixel_ui/tuner
 fvm flutter run -d chrome
 ```
 
@@ -814,7 +814,7 @@ void main() {
 
 Run:
 ```bash
-cd /Users/byeonghopark-jobis/dev/byeonghopark/pixel_ui/tuner
+cd ~/dev/byeonghopark/pixel_ui/tuner
 fvm flutter test test/color_hex_parser_test.dart
 ```
 
@@ -858,7 +858,7 @@ Expected: `+7: All tests passed!`
 - [ ] **Step 5: Commit**
 
 ```bash
-cd /Users/byeonghopark-jobis/dev/byeonghopark/pixel_ui
+cd ~/dev/byeonghopark/pixel_ui
 git add tuner/lib/src/color_hex_parser.dart tuner/test/color_hex_parser_test.dart
 git commit -m "feat(tuner): add color_hex_parser with unit tests"
 ```
@@ -992,7 +992,7 @@ class _ColorHexInputState extends State<ColorHexInput> {
 
 Run:
 ```bash
-cd /Users/byeonghopark-jobis/dev/byeonghopark/pixel_ui/tuner
+cd ~/dev/byeonghopark/pixel_ui/tuner
 fvm flutter analyze
 ```
 
@@ -1001,7 +1001,7 @@ Expected: No issues. If `Color.toARGB32` isn't available on the bundled Flutter 
 - [ ] **Step 3: Commit**
 
 ```bash
-cd /Users/byeonghopark-jobis/dev/byeonghopark/pixel_ui
+cd ~/dev/byeonghopark/pixel_ui
 git add tuner/lib/src/controls/color_hex_input.dart
 git commit -m "feat(tuner): add ColorHexInput control (swatch + hex field + nullable)"
 ```
@@ -1172,7 +1172,7 @@ class _PresetButton extends StatelessWidget {
 
 Run:
 ```bash
-cd /Users/byeonghopark-jobis/dev/byeonghopark/pixel_ui/tuner
+cd ~/dev/byeonghopark/pixel_ui/tuner
 fvm flutter analyze
 ```
 
@@ -1181,7 +1181,7 @@ Expected: `No issues found!`. If `PixelCorners.all(List<int>)` signature is diff
 - [ ] **Step 3: Commit**
 
 ```bash
-cd /Users/byeonghopark-jobis/dev/byeonghopark/pixel_ui
+cd ~/dev/byeonghopark/pixel_ui
 git add tuner/lib/src/controls/corner_picker.dart
 git commit -m "feat(tuner): add CornerPicker with presets + custom depth slider"
 ```
@@ -1413,7 +1413,7 @@ class _IntSlider extends StatelessWidget {
 
 Run:
 ```bash
-cd /Users/byeonghopark-jobis/dev/byeonghopark/pixel_ui/tuner
+cd ~/dev/byeonghopark/pixel_ui/tuner
 fvm flutter analyze
 ```
 
@@ -1422,7 +1422,7 @@ Expected: `No issues found!`
 - [ ] **Step 3: Commit**
 
 ```bash
-cd /Users/byeonghopark-jobis/dev/byeonghopark/pixel_ui
+cd ~/dev/byeonghopark/pixel_ui
 git add tuner/lib/src/controls/shadow_editor.dart
 git commit -m "feat(tuner): add ShadowEditor (enabled + presets + dx/dy + color)"
 ```
@@ -1623,7 +1623,7 @@ NOTE: verify `PixelTexture` constructor parameter names and types match (`densit
 
 Run:
 ```bash
-cd /Users/byeonghopark-jobis/dev/byeonghopark/pixel_ui/tuner
+cd ~/dev/byeonghopark/pixel_ui/tuner
 fvm flutter analyze
 ```
 
@@ -1632,7 +1632,7 @@ Expected: `No issues found!`
 - [ ] **Step 3: Commit**
 
 ```bash
-cd /Users/byeonghopark-jobis/dev/byeonghopark/pixel_ui
+cd ~/dev/byeonghopark/pixel_ui
 git add tuner/lib/src/controls/texture_editor.dart
 git commit -m "feat(tuner): add TextureEditor (density/size/seed/color + random button)"
 ```
@@ -1750,7 +1750,7 @@ import 'controls/texture_editor.dart';
 
 Run:
 ```bash
-cd /Users/byeonghopark-jobis/dev/byeonghopark/pixel_ui/tuner
+cd ~/dev/byeonghopark/pixel_ui/tuner
 fvm flutter analyze
 ```
 
@@ -1776,7 +1776,7 @@ Verify:
 - [ ] **Step 4: Commit**
 
 ```bash
-cd /Users/byeonghopark-jobis/dev/byeonghopark/pixel_ui
+cd ~/dev/byeonghopark/pixel_ui
 git add tuner/lib/src/home_page.dart
 git commit -m "feat(tuner): wire 5 controls into home_page ControlsPanel"
 ```
@@ -1866,7 +1866,7 @@ void main() {
 
 Run:
 ```bash
-cd /Users/byeonghopark-jobis/dev/byeonghopark/pixel_ui/tuner
+cd ~/dev/byeonghopark/pixel_ui/tuner
 fvm flutter test test/code_generator_test.dart
 ```
 
@@ -1958,7 +1958,7 @@ Expected: `+6: All tests passed!`
 - [ ] **Step 5: Commit**
 
 ```bash
-cd /Users/byeonghopark-jobis/dev/byeonghopark/pixel_ui
+cd ~/dev/byeonghopark/pixel_ui
 git add tuner/lib/src/code_generator.dart tuner/test/code_generator_test.dart
 git commit -m "feat(tuner): add code_generator with tests (preset detection, null omission)"
 ```
@@ -2120,7 +2120,7 @@ In `tuner/lib/src/home_page.dart`:
 
 Run:
 ```bash
-cd /Users/byeonghopark-jobis/dev/byeonghopark/pixel_ui/tuner
+cd ~/dev/byeonghopark/pixel_ui/tuner
 fvm flutter analyze
 fvm flutter run -d chrome
 ```
@@ -2134,7 +2134,7 @@ Verify:
 - [ ] **Step 4: Commit**
 
 ```bash
-cd /Users/byeonghopark-jobis/dev/byeonghopark/pixel_ui
+cd ~/dev/byeonghopark/pixel_ui
 git add tuner/lib/src/code_panel.dart tuner/lib/src/home_page.dart
 git commit -m "feat(tuner): add code_panel with dark theme, MulmaruMono, and Copy button"
 ```
@@ -2151,7 +2151,7 @@ The stacked layout is already in place from Task 7 and extended in Task 17. This
 
 Run:
 ```bash
-cd /Users/byeonghopark-jobis/dev/byeonghopark/pixel_ui/tuner
+cd ~/dev/byeonghopark/pixel_ui/tuner
 fvm flutter run -d chrome
 ```
 
@@ -2180,7 +2180,7 @@ If the stacked layout overflows, wraps weirdly, or cuts off content, debug in th
 
 Run:
 ```bash
-cat /Users/byeonghopark-jobis/dev/byeonghopark/pixel_ui/tuner/web/index.html
+cat ~/dev/byeonghopark/pixel_ui/tuner/web/index.html
 ```
 
 Note the existing structure — Flutter's template has a `<title>`, `<meta name="description">`, `<meta name="theme-color">`, and favicon/manifest lines.
@@ -2198,7 +2198,7 @@ Leave all other Flutter template lines (favicon, manifest, flutter_bootstrap.js 
 
 Run:
 ```bash
-cd /Users/byeonghopark-jobis/dev/byeonghopark/pixel_ui/tuner
+cd ~/dev/byeonghopark/pixel_ui/tuner
 fvm flutter build web --release --base-href /pixel_ui/
 ```
 
@@ -2207,7 +2207,7 @@ Expected: build succeeds, `tuner/build/web/index.html` contains the new title.
 - [ ] **Step 4: Commit**
 
 ```bash
-cd /Users/byeonghopark-jobis/dev/byeonghopark/pixel_ui
+cd ~/dev/byeonghopark/pixel_ui
 git add tuner/web/index.html
 git commit -m "feat(tuner): customize web index title/description/theme-color"
 ```
@@ -2285,7 +2285,7 @@ jobs:
 
 Run:
 ```bash
-cd /Users/byeonghopark-jobis/dev/byeonghopark/pixel_ui
+cd ~/dev/byeonghopark/pixel_ui
 python3 -c "import yaml; yaml.safe_load(open('.github/workflows/deploy-tuner.yml'))" && echo "YAML ok"
 ```
 
@@ -2307,7 +2307,7 @@ git commit -m "ci: add deploy-tuner workflow for GitHub Pages publishing"
 
 - [ ] **Step 1: Add Live Tuner badge to the badge row**
 
-Open `/Users/byeonghopark-jobis/dev/byeonghopark/pixel_ui/README.md`. Find the badges block near the top (below the `# pixel_ui` title):
+Open `~/dev/byeonghopark/pixel_ui/README.md`. Find the badges block near the top (below the `# pixel_ui` title):
 
 ```markdown
 [![pub package](https://img.shields.io/pub/v/pixel_ui.svg)](https://pub.dev/packages/pixel_ui)
@@ -2354,7 +2354,7 @@ git commit -m "docs(README): add Live Tuner badge and hero link"
 
 Run:
 ```bash
-cd /Users/byeonghopark-jobis/dev/byeonghopark/pixel_ui
+cd ~/dev/byeonghopark/pixel_ui
 git status
 git log --oneline origin/main..HEAD
 ```
@@ -2432,7 +2432,7 @@ Do NOT attempt to enable Pages or trigger deploy before the PR merges. User will
 - [ ] **Step 1: Sync local main**
 
 ```bash
-cd /Users/byeonghopark-jobis/dev/byeonghopark/pixel_ui
+cd ~/dev/byeonghopark/pixel_ui
 git checkout main
 git pull --ff-only origin main
 ```

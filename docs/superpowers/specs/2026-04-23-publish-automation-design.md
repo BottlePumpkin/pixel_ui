@@ -2,7 +2,7 @@
 
 - 작성일: 2026-04-23
 - 브랜치: `feat/publish-automation`
-- 참조: `/Users/byeonghopark-jobis/dev/rfw_gen/.github/workflows/publish.yml`
+- 참조: `~/dev/rfw_gen/.github/workflows/publish.yml`
 
 ## 배경
 
