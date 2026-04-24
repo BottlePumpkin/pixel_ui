@@ -97,6 +97,33 @@ void main() {
     expect(_painterCount(tester), 4);
   });
 
+  testWidgets('onTileTap invoked with (x, y) on tap', (tester) async {
+    final taps = <(int, int)>[];
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: PixelGrid<_Kind>.fromList(
+              data: const [
+                [_Kind.wall, _Kind.floor, _Kind.wall],
+                [_Kind.floor, _Kind.wall, _Kind.floor],
+              ],
+              tileLogicalWidth: 4,
+              tileLogicalHeight: 4,
+              tileScreenSize: const Size(16, 16),
+              styleFor: _styleFor,
+              onTileTap: (x, y) => taps.add((x, y)),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    await tester.tap(find.byKey(const ValueKey<(int, int)>((1, 0))));
+    await tester.tap(find.byKey(const ValueKey<(int, int)>((0, 1))));
+    expect(taps, [(1, 0), (0, 1)]);
+  });
+
   group('PixelGrid asserts', () {
     test('empty data throws', () {
       expect(

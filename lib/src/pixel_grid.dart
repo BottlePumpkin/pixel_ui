@@ -123,13 +123,58 @@ class _PixelGridState<T> extends State<PixelGrid<T>> {
     final data = widget.tileAt(x, y);
     // null style → _TilePaint renders a placeholder SizedBox.
     final style = data == null ? widget.emptyStyle : widget.styleFor(data);
-    return _TilePaint(
+    return _Tile<T>(
       key: ValueKey<(int, int)>((x, y)),
+      x: x,
+      y: y,
+      data: data,
       style: style,
       tileLogicalWidth: widget.tileLogicalWidth,
       tileLogicalHeight: widget.tileLogicalHeight,
       tileScreenSize: widget.tileScreenSize,
+      onTileTap: widget.onTileTap,
     );
+  }
+}
+
+class _Tile<T> extends StatelessWidget {
+  const _Tile({
+    super.key,
+    required this.x,
+    required this.y,
+    required this.data,
+    required this.style,
+    required this.tileLogicalWidth,
+    required this.tileLogicalHeight,
+    required this.tileScreenSize,
+    this.onTileTap,
+  });
+
+  final int x;
+  final int y;
+  final T? data;
+  final PixelShapeStyle? style;
+  final int tileLogicalWidth;
+  final int tileLogicalHeight;
+  final Size tileScreenSize;
+  final void Function(int x, int y)? onTileTap;
+
+  @override
+  Widget build(BuildContext context) {
+    Widget tile = _TilePaint(
+      style: style,
+      tileLogicalWidth: tileLogicalWidth,
+      tileLogicalHeight: tileLogicalHeight,
+      tileScreenSize: tileScreenSize,
+    );
+    if (onTileTap != null) {
+      tile = GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () => onTileTap!(x, y),
+        child: tile,
+      );
+    }
+    return tile;
   }
 }
 
@@ -137,7 +182,6 @@ class _PixelGridState<T> extends State<PixelGrid<T>> {
 /// same-sized [SizedBox] when [style] is null.
 class _TilePaint extends StatelessWidget {
   const _TilePaint({
-    super.key,
     required this.style,
     required this.tileLogicalWidth,
     required this.tileLogicalHeight,
