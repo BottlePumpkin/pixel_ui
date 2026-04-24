@@ -10,7 +10,6 @@ import 'package:pixel_ui/src/pixel_style.dart';
 /// outer list = rows, inner list = columns. `null` data = empty slot.
 class PixelGrid<T> extends StatefulWidget {
   /// Static 2D data. `data[y][x] == null` leaves the slot empty.
-  // ignore: prefer_const_constructors_in_immutables
   PixelGrid.fromList({
     super.key,
     required List<List<T?>> data,
@@ -30,8 +29,10 @@ class PixelGrid<T> extends StatefulWidget {
   })  : assert(data.isNotEmpty, 'PixelGrid.fromList: data must not be empty'),
         assert(data[0].isNotEmpty,
             'PixelGrid.fromList: data rows must not be empty'),
-        assert(data.every((row) => row.length == data[0].length),
-            'PixelGrid.fromList: all rows must have the same length'),
+        assert(
+          data.every((row) => row.length == data[0].length),
+          'PixelGrid.fromList: all rows must have length ${data[0].length}',
+        ),
         assert(tileLogicalWidth > 0, 'tileLogicalWidth must be positive'),
         assert(tileLogicalHeight > 0, 'tileLogicalHeight must be positive'),
         assert(dragDataFor != null || onTileAccept == null,
@@ -68,6 +69,7 @@ class PixelGrid<T> extends StatefulWidget {
         assert(dragDataFor != null || onTileAccept == null,
             'onTileAccept requires dragDataFor so tiles can be drag sources');
 
+  // Rendering
   final int rows;
   final int cols;
   final T? Function(int x, int y) tileAt;
@@ -75,16 +77,18 @@ class PixelGrid<T> extends StatefulWidget {
   final int tileLogicalWidth;
   final int tileLogicalHeight;
   final Size tileScreenSize;
-  final double gap;
 
   final PixelShapeStyle Function(T data) styleFor;
   final PixelShapeStyle? emptyStyle;
+  final double gap;
 
+  // Interaction
   final T? Function(int x, int y)? dragDataFor;
   final void Function(int x, int y)? onTileTap;
   final void Function(int x, int y)? onTileActivate;
   final void Function((int, int) from, (int, int) to, T data)? onTileAccept;
 
+  // Keyboard
   final bool Function(int x, int y)? isTileEnabled;
   final bool autofocus;
   final FocusNode? focusNode;
