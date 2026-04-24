@@ -45,4 +45,55 @@ void main() {
     // 5 rows × 3 cols = 15 tiles.
     expect(_painterCount(tester), 15);
   });
+
+  testWidgets('null data + no emptyStyle renders empty SizedBox',
+      (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: PixelGrid<_Kind>.fromList(
+            data: const [
+              [_Kind.wall, null],
+              [null, _Kind.wall],
+            ],
+            tileLogicalWidth: 4,
+            tileLogicalHeight: 4,
+            tileScreenSize: const Size(16, 16),
+            styleFor: _styleFor,
+          ),
+        ),
+      ),
+    );
+
+    // 2 non-null tiles only (out of 4 slots).
+    expect(_painterCount(tester), 2);
+  });
+
+  testWidgets('null data + emptyStyle renders emptyStyle for null slots',
+      (tester) async {
+    const emptyStyle = PixelShapeStyle(
+      corners: PixelCorners.sharp,
+      fillColor: Color(0xFF222222),
+    );
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: PixelGrid<_Kind>.fromList(
+            data: const [
+              [_Kind.wall, null],
+              [null, _Kind.wall],
+            ],
+            tileLogicalWidth: 4,
+            tileLogicalHeight: 4,
+            tileScreenSize: const Size(16, 16),
+            styleFor: _styleFor,
+            emptyStyle: emptyStyle,
+          ),
+        ),
+      ),
+    );
+
+    // All 4 slots painted now.
+    expect(_painterCount(tester), 4);
+  });
 }
