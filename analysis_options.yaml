@@ -3,6 +3,14 @@ include: package:flutter_lints/flutter.yaml
 analyzer:
   exclude:
     - dogfood_cycle_*/**
+    # Subpackages ship their own pubspec + their own analyze runs. Scoping
+    # the root analyzer here means `flutter analyze` at the repo root only
+    # covers the published package, so publish.yml doesn't need to
+    # `flutter pub get` inside tuner/example first. The subpackages stay
+    # covered by dedicated `Analyze (tuner)` / `Analyze (example)` steps
+    # in test.yml.
+    - example/**
+    - tuner/**
   language:
     strict-casts: true
     strict-inference: true
