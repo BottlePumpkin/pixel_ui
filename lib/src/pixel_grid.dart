@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:pixel_ui/src/pixel_shape_painter.dart';
 import 'package:pixel_ui/src/pixel_style.dart';
@@ -98,6 +99,79 @@ class PixelGrid<T> extends StatefulWidget {
 }
 
 class _PixelGridState<T> extends State<PixelGrid<T>> {
+  late FocusNode _focusNode;
+  bool _ownsFocusNode = false;
+  (int, int) _focused = (0, 0);
+
+  @override
+  void initState() {
+    super.initState();
+    _focusNode = widget.focusNode ?? FocusNode();
+    _ownsFocusNode = widget.focusNode == null;
+  }
+
+  @override
+  void didUpdateWidget(covariant PixelGrid<T> oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.focusNode != oldWidget.focusNode) {
+      if (_ownsFocusNode) _focusNode.dispose();
+      _focusNode = widget.focusNode ?? FocusNode();
+      _ownsFocusNode = widget.focusNode == null;
+    }
+  }
+
+  @override
+  void dispose() {
+    if (_ownsFocusNode) _focusNode.dispose();
+    super.dispose();
+  }
+
+  bool _isEnabled(int x, int y) =>
+      widget.isTileEnabled?.call(x, y) ?? true;
+
+  void _moveFocusBy(int dx, int dy) {
+    final (fx, fy) = _focused;
+    int nx = fx + dx;
+    int ny = fy + dy;
+    // Skip disabled tiles; stop at boundary without wrapping.
+    while (nx >= 0 && nx < widget.cols && ny >= 0 && ny < widget.rows) {
+      if (_isEnabled(nx, ny)) {
+        setState(() => _focused = (nx, ny));
+        return;
+      }
+      nx += dx;
+      ny += dy;
+    }
+    // No enabled target in that direction: stay put.
+  }
+
+  void _moveFocusTo(int x, int y) {
+    if (_focused == (x, y)) return;
+    setState(() => _focused = (x, y));
+  }
+
+  KeyEventResult _handleKey(FocusNode node, KeyEvent event) {
+    if (event is! KeyDownEvent) return KeyEventResult.ignored;
+    switch (event.logicalKey) {
+      case LogicalKeyboardKey.arrowUp:
+        _moveFocusBy(0, -1);
+      case LogicalKeyboardKey.arrowDown:
+        _moveFocusBy(0, 1);
+      case LogicalKeyboardKey.arrowLeft:
+        _moveFocusBy(-1, 0);
+      case LogicalKeyboardKey.arrowRight:
+        _moveFocusBy(1, 0);
+      case LogicalKeyboardKey.enter:
+      case LogicalKeyboardKey.space:
+        final (fx, fy) = _focused;
+        final data = widget.tileAt(fx, fy);
+        if (data != null) widget.onTileActivate?.call(fx, fy);
+      default:
+        return KeyEventResult.ignored;
+    }
+    return KeyEventResult.handled;
+  }
+
   @override
   Widget build(BuildContext context) {
     final rows = <Widget>[];
@@ -112,10 +186,15 @@ class _PixelGridState<T> extends State<PixelGrid<T>> {
         children: tiles,
       ));
     }
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      spacing: widget.gap,
-      children: rows,
+    return Focus(
+      focusNode: _focusNode,
+      autofocus: widget.autofocus,
+      onKeyEvent: _handleKey,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        spacing: widget.gap,
+        children: rows,
+      ),
     );
   }
 
@@ -132,7 +211,14 @@ class _PixelGridState<T> extends State<PixelGrid<T>> {
       tileLogicalWidth: widget.tileLogicalWidth,
       tileLogicalHeight: widget.tileLogicalHeight,
       tileScreenSize: widget.tileScreenSize,
-      onTileTap: widget.onTileTap,
+      onTileTap: widget.onTileTap == null
+          ? null
+          : (tx, ty) {
+              widget.onTileTap!(tx, ty);
+              _moveFocusTo(tx, ty);
+              _focusNode.requestFocus();
+            },
+      focused: _focused == (x, y),
     );
   }
 }
@@ -147,6 +233,7 @@ class _Tile<T> extends StatelessWidget {
     required this.tileLogicalWidth,
     required this.tileLogicalHeight,
     required this.tileScreenSize,
+    required this.focused,
     this.onTileTap,
   });
 
@@ -157,15 +244,21 @@ class _Tile<T> extends StatelessWidget {
   final int tileLogicalWidth;
   final int tileLogicalHeight;
   final Size tileScreenSize;
+  final bool focused;
   final void Function(int x, int y)? onTileTap;
 
   @override
   Widget build(BuildContext context) {
-    Widget tile = _TilePaint(
-      style: style,
-      tileLogicalWidth: tileLogicalWidth,
-      tileLogicalHeight: tileLogicalHeight,
-      tileScreenSize: tileScreenSize,
+    Widget tile = Stack(
+      children: [
+        _TilePaint(
+          style: style,
+          tileLogicalWidth: tileLogicalWidth,
+          tileLogicalHeight: tileLogicalHeight,
+          tileScreenSize: tileScreenSize,
+        ),
+        if (focused) _FocusOutline(size: tileScreenSize),
+      ],
     );
     if (onTileTap != null) {
       tile = GestureDetector(
@@ -175,6 +268,26 @@ class _Tile<T> extends StatelessWidget {
       );
     }
     return tile;
+  }
+}
+
+class _FocusOutline extends StatelessWidget {
+  const _FocusOutline({required this.size});
+  final Size size;
+
+  @override
+  Widget build(BuildContext context) {
+    return IgnorePointer(
+      child: SizedBox(
+        width: size.width,
+        height: size.height,
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            border: Border.all(color: const Color(0xFFFFFFFF), width: 1),
+          ),
+        ),
+      ),
+    );
   }
 }
 

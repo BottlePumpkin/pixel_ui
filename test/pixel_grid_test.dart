@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pixel_ui/pixel_ui.dart';
 
@@ -122,6 +123,97 @@ void main() {
     await tester.tap(find.byKey(const ValueKey<(int, int)>((1, 0))));
     await tester.tap(find.byKey(const ValueKey<(int, int)>((0, 1))));
     expect(taps, [(1, 0), (0, 1)]);
+  });
+
+  testWidgets('arrow keys move focus', (tester) async {
+    final activates = <(int, int)>[];
+    final focus = FocusNode();
+    addTearDown(focus.dispose);
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: PixelGrid<_Kind>.builder(
+            rows: 3,
+            cols: 3,
+            tileAt: (_, _) => _Kind.floor,
+            tileLogicalWidth: 4,
+            tileLogicalHeight: 4,
+            tileScreenSize: const Size(16, 16),
+            styleFor: _styleFor,
+            focusNode: focus,
+            autofocus: true,
+            onTileActivate: (x, y) => activates.add((x, y)),
+          ),
+        ),
+      ),
+    );
+    await tester.pump();
+
+    // Start focus at (0, 0), Right → (1, 0), Down → (1, 1), Enter → activate.
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    expect(activates, [(1, 1)]);
+  });
+
+  testWidgets('arrow key at boundary is no-op', (tester) async {
+    final activates = <(int, int)>[];
+    final focus = FocusNode();
+    addTearDown(focus.dispose);
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: PixelGrid<_Kind>.builder(
+            rows: 2,
+            cols: 2,
+            tileAt: (_, _) => _Kind.floor,
+            tileLogicalWidth: 4,
+            tileLogicalHeight: 4,
+            tileScreenSize: const Size(16, 16),
+            styleFor: _styleFor,
+            focusNode: focus,
+            autofocus: true,
+            onTileActivate: (x, y) => activates.add((x, y)),
+          ),
+        ),
+      ),
+    );
+    await tester.pump();
+
+    // Try to go up from (0, 0). Should stay. Enter should activate (0, 0).
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowUp);
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowLeft);
+    await tester.sendKeyEvent(LogicalKeyboardKey.space);
+    expect(activates, [(0, 0)]);
+  });
+
+  testWidgets('Enter/Space on null tile does NOT activate', (tester) async {
+    final activates = <(int, int)>[];
+    final focus = FocusNode();
+    addTearDown(focus.dispose);
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: PixelGrid<_Kind>.fromList(
+            data: const [
+              [null, _Kind.floor],
+            ],
+            tileLogicalWidth: 4,
+            tileLogicalHeight: 4,
+            tileScreenSize: const Size(16, 16),
+            styleFor: _styleFor,
+            focusNode: focus,
+            autofocus: true,
+            onTileActivate: (x, y) => activates.add((x, y)),
+          ),
+        ),
+      ),
+    );
+    await tester.pump();
+
+    // Focus starts at (0, 0) — null slot. Enter should be no-op.
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    expect(activates, isEmpty);
   });
 
   group('PixelGrid asserts', () {
