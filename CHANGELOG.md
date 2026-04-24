@@ -1,9 +1,16 @@
 # Changelog
 
-## Unreleased
+## 0.3.0 (Unreleased)
 
 ### Added
+- `PixelTheme` / `PixelBoxTheme` / `PixelButtonTheme` — `ThemeExtension`-based pixel defaults. Wire once with `pixelUiTheme(...)` on `MaterialApp.theme` and any descendant `PixelBox` / `PixelButton` inherits its style (#8).
+- `pixelUiTheme({base, pixelTheme, boxTheme, buttonTheme})` factory returns a `ThemeData` with pixel extensions registered; explicit `boxTheme`/`buttonTheme` override slots on `pixelTheme`. Preserves unrelated extensions on `base`.
+- `context.pixelTheme<T>()` shorthand for `Theme.of(context).extension<T>()`.
+- `PixelShapePainterBuilder` typedef exported as a reserved slot on `PixelBoxTheme.painter` (wired in a future release).
 - `PixelButton.disabledStyle` optional parameter — explicit `PixelShapeStyle` shown when `onPressed` is `null`. Unspecified keeps the existing behavior (`normalStyle` rendered at 50% opacity).
+
+### Changed
+- `PixelBox.style` and `PixelButton.normalStyle` are now optional. When omitted they resolve from the ancestor theme; asserts if neither is available. Existing call sites that pass these props explicitly are unaffected.
 
 ## 0.2.1 — 2026-04-23
 

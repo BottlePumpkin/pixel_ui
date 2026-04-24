@@ -1,17 +1,21 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 
 import 'package:pixel_ui/src/pixel_shape_painter.dart';
 import 'package:pixel_ui/src/pixel_style.dart';
+import 'package:pixel_ui/src/pixel_theme.dart';
 
 /// Base pixel-shape container.
 ///
 /// Accepts any [child] widget. If only [width] or [height] is given, the other
 /// is computed from `logicalWidth / logicalHeight`. If neither is given,
 /// defaults to logical size × 4.
+///
+/// When [style] is omitted, falls back to `PixelBoxTheme.style` supplied via
+/// [pixelUiTheme]. Asserts if neither is available.
 class PixelBox extends StatelessWidget {
   final int logicalWidth;
   final int logicalHeight;
-  final PixelShapeStyle style;
+  final PixelShapeStyle? style;
 
   final double? width;
   final double? height;
@@ -25,7 +29,7 @@ class PixelBox extends StatelessWidget {
     super.key,
     required this.logicalWidth,
     required this.logicalHeight,
-    required this.style,
+    this.style,
     this.width,
     this.height,
     this.padding,
@@ -35,10 +39,18 @@ class PixelBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final resolved = style ?? context.pixelTheme<PixelBoxTheme>()?.style;
+    assert(
+      resolved != null,
+      'PixelBox requires a `style` prop or a `PixelBoxTheme.style` registered '
+      'via `pixelUiTheme(...)` on an ancestor Theme/MaterialApp.',
+    );
+    final shapeStyle = resolved!;
+
     final ratio = logicalWidth / logicalHeight;
     final (w, h) = _resolveSize(ratio);
 
-    final shadow = style.shadow;
+    final shadow = shapeStyle.shadow;
     final sox = shadow?.offset.dx.abs() ?? 0;
     final soy = shadow?.offset.dy.abs() ?? 0;
     final perPxW = w / logicalWidth;
@@ -56,9 +68,9 @@ class PixelBox extends StatelessWidget {
               painter: PixelShapePainter(
                 logicalWidth: logicalWidth,
                 logicalHeight: logicalHeight,
-                style: style,
+                style: shapeStyle,
               ),
-              isComplex: style.texture != null,
+              isComplex: shapeStyle.texture != null,
               willChange: false,
             ),
           ),
