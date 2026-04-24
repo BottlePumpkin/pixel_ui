@@ -1,6 +1,6 @@
 # pixel_ui Roadmap
 
-작업 위치: `/Users/byeonghopark-jobis/dev/byeonghopark/pixel_ui`
+작업 위치: `~/dev/byeonghopark/pixel_ui`
 공개 URL: https://pub.dev/packages/pixel_ui · https://github.com/BottlePumpkin/pixel_ui
 배포 계정: `p4569zz@gmail.com` (Google OAuth, pub.dev uploader)
 
@@ -214,7 +214,7 @@
 
 - **Hot restart ≠ 패키지 재해석**: 워크스페이스 ↔ pub.dev 의존성 스위치 후에는 **cold `flutter run`** 필요. 하지 않으면 "Member not found" 발생 (`.dart_tool/flutter_build/<hash>/` 캐시가 옛 경로를 잡음). 애매하면 `fvm flutter clean && melos bs && flutter run`.
 - **pub.dev retract 30일 한정**: 버전 올리고 바로 치명적 버그 발견 시 30일 이내엔 `dart pub retract X.Y.Z`로 신규 설치 차단 가능, 이후엔 deprecate만. 치명적 이슈면 즉시 hotfix(`X.Y.Z+1`) 배포가 더 안전.
-- **퍼블리셔 계정 잘못 로그인**: 첫 배포 때만 중요하다고 방심하지 말 것. 새 기능/테스트 배포 시에도 **jobis.co로 로그인된 상태에서 publish 금지**. 매번 credentials 확인 리듬에 포함.
+- **퍼블리셔 계정 잘못 로그인**: 첫 배포 때만 중요하다고 방심하지 말 것. 새 기능/테스트 배포 시에도 **개인 계정(`p4569zz@gmail.com`)이 아닌 상태에서 publish 금지**. 매번 credentials 확인 리듬에 포함.
 - **OFL 호환 유지**: `assets/fonts/Mulmaru.ttf`를 절대 재인코딩·최적화하지 말 것 (OFL Reserved Font Name + copyright 메타데이터 훼손 위험). `OFL.txt` 파일도 동반 배포 유지 필수.
 - **shields.io 캐시**: README 배지는 ~5분 캐시. 배포 직후 버전 배지가 갱신 안 보여도 대기 후 새로고침.
 

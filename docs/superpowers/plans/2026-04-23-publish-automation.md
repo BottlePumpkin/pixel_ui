@@ -118,7 +118,7 @@ This verifies the shell script inside the "Verify tag matches pubspec version" s
 
 Run:
 ```bash
-cd /Users/byeonghopark-jobis/dev/byeonghopark/pixel_ui
+cd ~/dev/byeonghopark/pixel_ui
 CURRENT=$(grep '^version:' pubspec.yaml | awk '{print $2}')
 echo "pubspec version: $CURRENT"
 

@@ -10,7 +10,7 @@
 
 **Spec:** `docs/specs/2026-04-23-test-ci-and-painter-goldens-design.md`
 
-**Commit identity (CRITICAL):** All commits must use `BottlePumpkin <p4569zz@gmail.com>`. Do NOT add Claude/AI attribution to any commit message or trailer (per `.claude/projects/-Users-byeonghopark-jobis-dev-byeonghopark-pixel-ui/memory/feedback_commit_style.md`).
+**Commit identity (CRITICAL):** All commits must use `BottlePumpkin <p4569zz@gmail.com>`. Do NOT add Claude/AI attribution to any commit message or trailer.
 
 ---
 
