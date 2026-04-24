@@ -23,10 +23,25 @@ class PixelShapePainter extends CustomPainter {
     required this.logicalHeight,
     required this.style,
     this.labelCutout,
-  });
+  })  : assert(logicalWidth > 0,
+            'logicalWidth must be positive (got $logicalWidth)'),
+        assert(logicalHeight > 0,
+            'logicalHeight must be positive (got $logicalHeight)');
 
   @override
   void paint(Canvas canvas, Size size) {
+    // Cross-field invariant: corner stairs from top + bottom cannot collide.
+    // When they do, the top and bottom draw loops silently overpaint shared
+    // rows with different insets, corrupting the outline. See #33.
+    assert(
+      style.corners.topInsetRows + style.corners.bottomInsetRows <=
+          logicalHeight,
+      'Corner stairs overflow logicalHeight: '
+      'topInsetRows=${style.corners.topInsetRows} + '
+      'bottomInsetRows=${style.corners.bottomInsetRows} > '
+      'logicalHeight=$logicalHeight',
+    );
+
     final shadow = style.shadow;
     final sox = shadow?.offset.dx.toInt() ?? 0;
     final soy = shadow?.offset.dy.toInt() ?? 0;

@@ -4,11 +4,11 @@ import 'package:pixel_ui/pixel_ui.dart';
 
 void main() {
   const normalStyle = PixelShapeStyle(
-    corners: PixelCorners.md,
+    corners: PixelCorners.sm,
     fillColor: Color(0xFF00FF00),
   );
   const pressedStyle = PixelShapeStyle(
-    corners: PixelCorners.md,
+    corners: PixelCorners.sm,
     fillColor: Color(0xFF008800),
   );
 
@@ -81,7 +81,7 @@ void main() {
   testWidgets('PixelButton uses disabledStyle when provided and onPressed is null',
       (tester) async {
     const disabledStyle = PixelShapeStyle(
-      corners: PixelCorners.md,
+      corners: PixelCorners.sm,
       fillColor: Color(0xFF888888),
     );
     await tester.pumpWidget(
@@ -129,7 +129,7 @@ void main() {
   testWidgets('PixelButton ignores disabledStyle when onPressed is provided',
       (tester) async {
     const disabledStyle = PixelShapeStyle(
-      corners: PixelCorners.md,
+      corners: PixelCorners.sm,
       fillColor: Color(0xFF888888),
     );
     await tester.pumpWidget(

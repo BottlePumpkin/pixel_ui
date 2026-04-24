@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:pixel_ui/pixel_ui.dart';
 
 const _boxStyle = PixelShapeStyle(
-  corners: PixelCorners.md,
+  corners: PixelCorners.sm,
   fillColor: Color(0xFFFF0000),
 );
 

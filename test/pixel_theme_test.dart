@@ -3,19 +3,19 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:pixel_ui/pixel_ui.dart';
 
 const _boxStyle = PixelShapeStyle(
-  corners: PixelCorners.md,
+  corners: PixelCorners.sm,
   fillColor: Color(0xFFFF0000),
 );
 const _normalStyle = PixelShapeStyle(
-  corners: PixelCorners.md,
+  corners: PixelCorners.sm,
   fillColor: Color(0xFF00AA00),
 );
 const _pressedStyle = PixelShapeStyle(
-  corners: PixelCorners.md,
+  corners: PixelCorners.sm,
   fillColor: Color(0xFF007700),
 );
 const _disabledStyle = PixelShapeStyle(
-  corners: PixelCorners.md,
+  corners: PixelCorners.sm,
   fillColor: Color(0xFF888888),
 );
 

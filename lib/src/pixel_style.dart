@@ -191,7 +191,9 @@ class PixelTexture {
     this.density = 0.15,
     this.size = 1,
     this.seed = 42,
-  });
+  })  : assert(density >= 0 && density <= 1,
+            'density must be in [0, 1] (got $density)'),
+        assert(size >= 1, 'size must be >= 1 (got $size)');
 
   @override
   bool operator ==(Object other) =>
@@ -226,7 +228,8 @@ class PixelShapeStyle {
     this.borderWidth = 0,
     this.shadow,
     this.texture,
-  });
+  }) : assert(borderWidth >= 0,
+            'borderWidth must be non-negative (got $borderWidth)');
 
   static const Object _unset = Object();
 

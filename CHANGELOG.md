@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.4.0 — 2026-04-24
+
+### Changed
+- **Debug asserts on public painter/style/texture constructors.** Previously-silent misuse now fails loudly in debug builds (no effect in release). Closes #33 and #37.
+  - `PixelShapePainter`: `logicalWidth > 0`, `logicalHeight > 0` on construction; `corners.topInsetRows + corners.bottomInsetRows <= logicalHeight` on first `paint()`. Prevents the silent corner-stair overlap that caused top/bottom loops to double-paint shared rows with mismatched insets (#33).
+  - `PixelShapeStyle`: `borderWidth >= 0`.
+  - `PixelTexture`: `size >= 1`, `0 <= density <= 1`.
+- Callers hitting the new corner invariant should raise `logicalHeight` so the top+bottom stair fits — e.g. `PixelCorners.md` (3+3=6 rows) requires `logicalHeight >= 6`.
+
 ## 0.3.0 — 2026-04-24
 
 ### Added
