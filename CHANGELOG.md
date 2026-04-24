@@ -2,6 +2,9 @@
 
 ## 0.4.0 — 2026-04-24
 
+### Fixed
+- Texture cells no longer overflow the shape's bounding rect when `PixelTexture.size` exceeds the remaining logical space. Trailing cells are now clipped to fit. Previously a tile with `logicalWidth: 5, logicalHeight: 5` + `texture.size: 10` would bleed 50% into adjacent widgets (#34).
+
 ### Changed
 - **Debug asserts on public painter/style/texture constructors.** Previously-silent misuse now fails loudly in debug builds (no effect in release). Closes #33 and #37.
   - `PixelShapePainter`: `logicalWidth > 0`, `logicalHeight > 0` on construction; `corners.topInsetRows + corners.bottomInsetRows <= logicalHeight` on first `paint()`. Prevents the silent corner-stair overlap that caused top/bottom loops to double-paint shared rows with mismatched insets (#33).

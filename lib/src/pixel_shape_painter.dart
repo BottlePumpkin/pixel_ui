@@ -270,12 +270,18 @@ class PixelShapePainter extends CustomPainter {
         if (!_isInside(x, y, w, h)) continue;
         final r = state / 0xFFFFFFFF;
         if (r < tex.density) {
+          // Clip the cell to the shape's bounding rect so trailing cells that
+          // would extend past the right/bottom edges stay inside. Prevents the
+          // overflow reported in #34 when the texture cell size is greater
+          // than the remaining logical space.
+          final cellW = (x + size > w) ? w - x : size;
+          final cellH = (y + size > h) ? h - y : size;
           canvas.drawRect(
             Rect.fromLTWH(
               (offsetX + x) * px,
               (offsetY + y) * px,
-              size * px,
-              size * px,
+              cellW * px,
+              cellH * px,
             ),
             paint,
           );
