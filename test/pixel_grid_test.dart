@@ -2,6 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pixel_ui/pixel_ui.dart';
 
+int _painterCount(WidgetTester tester) =>
+    find.byType(CustomPaint).evaluate().where((e) {
+      return (e.widget as CustomPaint).painter is PixelShapePainter;
+    }).length;
+
 const _wall = _Kind.wall;
 const _floor = _Kind.floor;
 
@@ -38,12 +43,6 @@ void main() {
     );
 
     // 5 rows × 3 cols = 15 tiles.
-    expect(
-      find.byType(CustomPaint).evaluate().where((e) {
-        final painter = (e.widget as CustomPaint).painter;
-        return painter is PixelShapePainter;
-      }).length,
-      15,
-    );
+    expect(_painterCount(tester), 15);
   });
 }

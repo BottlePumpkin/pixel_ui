@@ -121,6 +121,7 @@ class _PixelGridState<T> extends State<PixelGrid<T>> {
 
   Widget _tileFor(int x, int y) {
     final data = widget.tileAt(x, y);
+    // null style → _TilePaint renders a placeholder SizedBox.
     final style = data == null ? widget.emptyStyle : widget.styleFor(data);
     return _TilePaint(
       key: ValueKey<(int, int)>((x, y)),
@@ -132,6 +133,8 @@ class _PixelGridState<T> extends State<PixelGrid<T>> {
   }
 }
 
+/// Pure-render leaf. Paints [style] onto a [tileScreenSize] canvas, or emits a
+/// same-sized [SizedBox] when [style] is null.
 class _TilePaint extends StatelessWidget {
   const _TilePaint({
     super.key,
