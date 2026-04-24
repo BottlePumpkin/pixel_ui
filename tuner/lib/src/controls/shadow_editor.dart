@@ -17,6 +17,7 @@ class ShadowEditor extends StatelessWidget {
     final dx = value?.offset.dx.toInt() ?? 1;
     final dy = value?.offset.dy.toInt() ?? 1;
     final color = value?.color ?? _defaultColor;
+    final style = value?.style ?? PixelShadowStyle.solid;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -43,19 +44,19 @@ class ShadowEditor extends StatelessWidget {
             _PresetButton(
               label: 'sm',
               onTap: enabled
-                  ? () => onChanged(PixelShadow(offset: const Offset(1, 1), color: color))
+                  ? () => onChanged(PixelShadow(offset: const Offset(1, 1), color: color, style: style))
                   : null,
             ),
             _PresetButton(
               label: 'md',
               onTap: enabled
-                  ? () => onChanged(PixelShadow(offset: const Offset(2, 2), color: color))
+                  ? () => onChanged(PixelShadow(offset: const Offset(2, 2), color: color, style: style))
                   : null,
             ),
             _PresetButton(
               label: 'lg',
               onTap: enabled
-                  ? () => onChanged(PixelShadow(offset: const Offset(4, 4), color: color))
+                  ? () => onChanged(PixelShadow(offset: const Offset(4, 4), color: color, style: style))
                   : null,
             ),
           ],
@@ -67,7 +68,7 @@ class ShadowEditor extends StatelessWidget {
             min: -3,
             max: 3,
             onChanged: (v) => onChanged(
-              PixelShadow(offset: Offset(v.toDouble(), dy.toDouble()), color: color),
+              PixelShadow(offset: Offset(v.toDouble(), dy.toDouble()), color: color, style: style),
             ),
           ),
           _IntSlider(
@@ -76,15 +77,46 @@ class ShadowEditor extends StatelessWidget {
             min: -3,
             max: 3,
             onChanged: (v) => onChanged(
-              PixelShadow(offset: Offset(dx.toDouble(), v.toDouble()), color: color),
+              PixelShadow(offset: Offset(dx.toDouble(), v.toDouble()), color: color, style: style),
             ),
+          ),
+          Row(
+            children: [
+              const SizedBox(width: 40, child: Text('style')),
+              const SizedBox(width: 12),
+              DropdownButton<PixelShadowStyle>(
+                value: style,
+                onChanged: (v) {
+                  if (v == null) return;
+                  onChanged(PixelShadow(
+                    offset: Offset(dx.toDouble(), dy.toDouble()),
+                    color: color,
+                    style: v,
+                  ));
+                },
+                items: const [
+                  DropdownMenuItem(
+                    value: PixelShadowStyle.solid,
+                    child: Text('solid'),
+                  ),
+                  DropdownMenuItem(
+                    value: PixelShadowStyle.stipple,
+                    child: Text('stipple'),
+                  ),
+                ],
+              ),
+            ],
           ),
           ColorHexInput(
             label: 'shadow color',
             value: color,
             onChanged: (c) {
               if (c == null) return;
-              onChanged(PixelShadow(offset: Offset(dx.toDouble(), dy.toDouble()), color: c));
+              onChanged(PixelShadow(
+                offset: Offset(dx.toDouble(), dy.toDouble()),
+                color: c,
+                style: style,
+              ));
             },
           ),
         ],

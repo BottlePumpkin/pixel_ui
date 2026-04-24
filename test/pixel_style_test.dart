@@ -118,6 +118,31 @@ void main() {
       final shadow = PixelShadow.lg(const Color(0xFF0000AA));
       expect(shadow.offset, const Offset(4, 4));
     });
+
+    test('PixelShadow.style defaults to solid', () {
+      const shadow = PixelShadow(offset: Offset(1, 1), color: Color(0xFF000000));
+      expect(shadow.style, PixelShadowStyle.solid);
+    });
+
+    test('equality distinguishes solid from stipple', () {
+      const a = PixelShadow(offset: Offset(1, 1), color: Color(0xFF000000));
+      const b = PixelShadow(
+        offset: Offset(1, 1),
+        color: Color(0xFF000000),
+        style: PixelShadowStyle.stipple,
+      );
+      expect(a, isNot(equals(b)));
+      expect(a.hashCode, isNot(equals(b.hashCode)));
+    });
+
+    test('factory shortcuts accept a style override', () {
+      final stipple = PixelShadow.md(
+        const Color(0xFF000000),
+        style: PixelShadowStyle.stipple,
+      );
+      expect(stipple.offset, const Offset(2, 2));
+      expect(stipple.style, PixelShadowStyle.stipple);
+    });
   });
 
   group('PixelCorners', () {

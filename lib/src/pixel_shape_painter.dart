@@ -32,17 +32,31 @@ class PixelShapePainter extends CustomPainter {
     final baseY = soy < 0 ? -soy : 0;
 
     if (shadow != null) {
-      _drawShape(
-        canvas,
-        Paint()
-          ..color = shadow.color
-          ..isAntiAlias = false,
-        baseX + sox,
-        baseY + soy,
-        logicalWidth,
-        logicalHeight,
-        px,
-      );
+      if (shadow.style == PixelShadowStyle.stipple) {
+        _drawStippleShape(
+          canvas,
+          Paint()
+            ..color = shadow.color
+            ..isAntiAlias = false,
+          baseX + sox,
+          baseY + soy,
+          logicalWidth,
+          logicalHeight,
+          px,
+        );
+      } else {
+        _drawShape(
+          canvas,
+          Paint()
+            ..color = shadow.color
+            ..isAntiAlias = false,
+          baseX + sox,
+          baseY + soy,
+          logicalWidth,
+          logicalHeight,
+          px,
+        );
+      }
     }
 
     if (style.borderColor != null && style.borderWidth > 0) {
@@ -144,6 +158,27 @@ class PixelShapePainter extends CustomPainter {
             rowW * px,
             px,
           ),
+          paint,
+        );
+      }
+    }
+  }
+
+  void _drawStippleShape(
+    Canvas canvas,
+    Paint paint,
+    int offsetX,
+    int offsetY,
+    int w,
+    int h,
+    double px,
+  ) {
+    for (int y = 0; y < h; y++) {
+      for (int x = 0; x < w; x++) {
+        if ((x + y).isOdd) continue;
+        if (!_isInside(x, y, w, h)) continue;
+        canvas.drawRect(
+          Rect.fromLTWH((offsetX + x) * px, (offsetY + y) * px, px, px),
           paint,
         );
       }

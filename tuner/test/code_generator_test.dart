@@ -46,6 +46,31 @@ void main() {
       expect(code, contains('color: Color(0xFF123456),'));
     });
 
+    test('solid shadow style is omitted from emitted source', () {
+      const style = PixelShapeStyle(
+        corners: PixelCorners.md,
+        fillColor: Color(0xFF000000),
+        shadow: PixelShadow(offset: Offset(1, 1), color: Color(0xFF000000)),
+      );
+      expect(generateCode(style), isNot(contains('style:')));
+    });
+
+    test('stipple shadow style is emitted as PixelShadowStyle.stipple', () {
+      const style = PixelShapeStyle(
+        corners: PixelCorners.md,
+        fillColor: Color(0xFF000000),
+        shadow: PixelShadow(
+          offset: Offset(1, 1),
+          color: Color(0xFF000000),
+          style: PixelShadowStyle.stipple,
+        ),
+      );
+      expect(
+        generateCode(style),
+        contains('style: PixelShadowStyle.stipple,'),
+      );
+    });
+
     test('output uses 2-space indent', () {
       const style = PixelShapeStyle(
         corners: PixelCorners.lg,
