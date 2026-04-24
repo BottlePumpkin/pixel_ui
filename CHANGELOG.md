@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.3.0 (Unreleased)
+## 0.3.0 — 2026-04-24
 
 ### Added
 - `PixelTheme` / `PixelBoxTheme` / `PixelButtonTheme` — `ThemeExtension`-based pixel defaults. Wire once with `pixelUiTheme(...)` on `MaterialApp.theme` and any descendant `PixelBox` / `PixelButton` inherits its style (#8).
