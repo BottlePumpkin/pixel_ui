@@ -96,4 +96,81 @@ void main() {
     // All 4 slots painted now.
     expect(_painterCount(tester), 4);
   });
+
+  group('PixelGrid asserts', () {
+    test('empty data throws', () {
+      expect(
+        () => PixelGrid<_Kind>.fromList(
+          data: const [],
+          tileLogicalWidth: 4,
+          tileLogicalHeight: 4,
+          tileScreenSize: const Size(16, 16),
+          styleFor: _styleFor,
+        ),
+        throwsAssertionError,
+      );
+    });
+
+    test('uneven rows throws', () {
+      expect(
+        () => PixelGrid<_Kind>.fromList(
+          data: const [
+            [_Kind.wall, _Kind.wall],
+            [_Kind.wall],
+          ],
+          tileLogicalWidth: 4,
+          tileLogicalHeight: 4,
+          tileScreenSize: const Size(16, 16),
+          styleFor: _styleFor,
+        ),
+        throwsAssertionError,
+      );
+    });
+
+    test('rows <= 0 throws', () {
+      expect(
+        () => PixelGrid<_Kind>.builder(
+          rows: 0,
+          cols: 3,
+          tileAt: (_, __) => null,
+          tileLogicalWidth: 4,
+          tileLogicalHeight: 4,
+          tileScreenSize: const Size(16, 16),
+          styleFor: _styleFor,
+        ),
+        throwsAssertionError,
+      );
+    });
+
+    test('tileLogicalWidth <= 0 throws', () {
+      expect(
+        () => PixelGrid<_Kind>.builder(
+          rows: 3,
+          cols: 3,
+          tileAt: (_, __) => null,
+          tileLogicalWidth: 0,
+          tileLogicalHeight: 4,
+          tileScreenSize: const Size(16, 16),
+          styleFor: _styleFor,
+        ),
+        throwsAssertionError,
+      );
+    });
+
+    test('onTileAccept without dragDataFor throws', () {
+      expect(
+        () => PixelGrid<_Kind>.builder(
+          rows: 3,
+          cols: 3,
+          tileAt: (_, __) => null,
+          tileLogicalWidth: 4,
+          tileLogicalHeight: 4,
+          tileScreenSize: const Size(16, 16),
+          styleFor: _styleFor,
+          onTileAccept: (_, __, ___) {},
+        ),
+        throwsAssertionError,
+      );
+    });
+  });
 }
