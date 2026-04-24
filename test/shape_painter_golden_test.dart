@@ -383,6 +383,44 @@ void main() {
       );
     });
 
+    testWidgets('texture size exceeds logical dim (clipped to shape)',
+        (tester) async {
+      // Regression guard for #34 — a cell size larger than the remaining
+      // logical space used to paint a full-sized rect that overflowed the
+      // shape bounds. With clipping, trailing cells are trimmed.
+      await tester.pumpWidget(
+        const Directionality(
+          textDirection: TextDirection.ltr,
+          child: Center(
+            child: RepaintBoundary(
+              key: _boundaryKey,
+              child: CustomPaint(
+                size: Size(80, 80),
+                painter: PixelShapePainter(
+                  logicalWidth: 5,
+                  logicalHeight: 5,
+                  style: PixelShapeStyle(
+                    corners: PixelCorners.sharp,
+                    fillColor: _fill,
+                    texture: PixelTexture(
+                      color: _textureColor,
+                      density: 1.0,
+                      size: 3, // 5 / 3 → one trailing 2-col/row cell
+                      seed: 1,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      await expectLater(
+        find.byKey(_boundaryKey),
+        matchesGoldenFile('goldens/painter/texture_size_exceeds.png'),
+      );
+    });
+
     testWidgets('borderless fill only', (tester) async {
       await _pumpBox(
         tester,
