@@ -35,5 +35,23 @@ void main() {
       state.setShadow(null);
       expect(state.value.shadow, isNull);
     });
+
+    test('labelText defaults to null and setLabel updates it', () {
+      final state = TunerState();
+      var notified = 0;
+      state.labelText.addListener(() => notified++);
+      expect(state.labelText.value, isNull);
+
+      state.setLabel('INV');
+      expect(state.labelText.value, 'INV');
+      expect(notified, 1);
+    });
+
+    test('setLabel with empty string clears the label', () {
+      final state = TunerState();
+      state.setLabel('INV');
+      state.setLabel('');
+      expect(state.labelText.value, isNull);
+    });
   });
 }

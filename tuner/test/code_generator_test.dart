@@ -55,6 +55,34 @@ void main() {
       expect(generateCode(style), isNot(contains('style:')));
     });
 
+    test('omitting labelText produces no label comment block', () {
+      const style = PixelShapeStyle(
+        corners: PixelCorners.md,
+        fillColor: Color(0xFF000000),
+      );
+      expect(generateCode(style), isNot(contains('Paired usage')));
+      expect(generateCode(style), isNot(contains('label:')));
+    });
+
+    test('non-null labelText emits PixelBox usage comment', () {
+      const style = PixelShapeStyle(
+        corners: PixelCorners.md,
+        fillColor: Color(0xFF000000),
+      );
+      final code = generateCode(style, labelText: 'INVENTORY');
+      expect(code, contains('// Paired usage:'));
+      expect(code, contains("//   label: Text('INVENTORY'),"));
+    });
+
+    test('label with single quote is escaped', () {
+      const style = PixelShapeStyle(
+        corners: PixelCorners.md,
+        fillColor: Color(0xFF000000),
+      );
+      final code = generateCode(style, labelText: "it's");
+      expect(code, contains(r"//   label: Text('it\'s'),"));
+    });
+
     test('stipple shadow style is emitted as PixelShadowStyle.stipple', () {
       const style = PixelShapeStyle(
         corners: PixelCorners.md,

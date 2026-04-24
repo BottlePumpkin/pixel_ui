@@ -3,6 +3,9 @@ import 'package:flutter/painting.dart';
 import 'package:pixel_ui/pixel_ui.dart';
 
 /// Single source of truth for the tuner's current [PixelShapeStyle].
+///
+/// The optional [labelText] is tracked separately because it is not a field of
+/// [PixelShapeStyle] — it is a widget-level option on `PixelBox.label`.
 class TunerState extends ValueNotifier<PixelShapeStyle> {
   TunerState() : super(_initial);
 
@@ -13,6 +16,8 @@ class TunerState extends ValueNotifier<PixelShapeStyle> {
     borderWidth: 1,
     shadow: PixelShadow(offset: Offset(1, 1), color: Color(0xFF1A3010)),
   );
+
+  final ValueNotifier<String?> labelText = ValueNotifier<String?>(null);
 
   void setCorners(PixelCorners corners) =>
       value = value.copyWith(corners: corners);
@@ -31,4 +36,15 @@ class TunerState extends ValueNotifier<PixelShapeStyle> {
 
   void setTexture(PixelTexture? texture) =>
       value = value.copyWith(texture: texture);
+
+  void setLabel(String? text) {
+    final trimmed = text == null || text.isEmpty ? null : text;
+    labelText.value = trimmed;
+  }
+
+  @override
+  void dispose() {
+    labelText.dispose();
+    super.dispose();
+  }
 }

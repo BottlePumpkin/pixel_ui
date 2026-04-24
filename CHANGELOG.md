@@ -10,6 +10,7 @@
 - `PixelButton.disabledStyle` optional parameter — explicit `PixelShapeStyle` shown when `onPressed` is `null`. Unspecified keeps the existing behavior (`normalStyle` rendered at 50% opacity).
 
 - `PixelShadowStyle { solid, stipple }` enum + `PixelShadow.style` field (default `.solid`, backward compatible). `stipple` renders the drop shadow as a 1-pixel checker pattern — retro "dithered" aesthetic alongside the existing solid look (#11). Tuner gains a `style` dropdown and emits `style: PixelShadowStyle.stipple` only when non-default.
+- `PixelBox.label` + `PixelBox.labelLeftInset` — overlay a widget on the top border with a painter-level carve-out (`[ TITLE ]━━━━━`). `PixelBoxCutout` value object + `PixelShapePainter.labelCutout` let the painter skip the underlying border/fill cells. Builder signature of `PixelShapePainterBuilder` gains an optional named `labelCutout` param; existing custom painters that don't declare it need to be updated (#10). Tuner adds a label editor with live text input.
 
 ### Changed
 - `PixelBox.style` and `PixelButton.normalStyle` are now optional. When omitted they resolve from the ancestor theme; asserts if neither is available. Existing call sites that pass these props explicitly are unaffected.

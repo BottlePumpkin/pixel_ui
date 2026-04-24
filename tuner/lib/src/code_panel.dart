@@ -32,14 +32,19 @@ class CodePanel extends StatelessWidget {
           child: ValueListenableBuilder<PixelShapeStyle>(
             valueListenable: state,
             builder: (context, style, _) {
-              final code = generateCode(style);
-              return SelectableText(
-                code,
-                style: PixelText.mulmaruMono(
-                  fontSize: 12,
-                  color: _textColor,
-                  height: 1.4,
-                ),
+              return ValueListenableBuilder<String?>(
+                valueListenable: state.labelText,
+                builder: (context, labelText, _) {
+                  final code = generateCode(style, labelText: labelText);
+                  return SelectableText(
+                    code,
+                    style: PixelText.mulmaruMono(
+                      fontSize: 12,
+                      color: _textColor,
+                      height: 1.4,
+                    ),
+                  );
+                },
               );
             },
           ),
@@ -82,7 +87,7 @@ class CodePanel extends StatelessWidget {
   }
 
   Future<void> _copy(BuildContext context) async {
-    final code = generateCode(state.value);
+    final code = generateCode(state.value, labelText: state.labelText.value);
     try {
       await Clipboard.setData(ClipboardData(text: code));
       if (!context.mounted) return;

@@ -14,10 +14,15 @@ class PixelShapePainter extends CustomPainter {
   final int logicalHeight;
   final PixelShapeStyle style;
 
+  /// Optional rectangle to skip in the border + fill passes. The shadow pass
+  /// is unaffected. Used internally by `PixelBox.label`.
+  final PixelBoxCutout? labelCutout;
+
   const PixelShapePainter({
     required this.logicalWidth,
     required this.logicalHeight,
     required this.style,
+    this.labelCutout,
   });
 
   @override
@@ -70,6 +75,7 @@ class PixelShapePainter extends CustomPainter {
         logicalWidth,
         logicalHeight,
         px,
+        cutout: _cutoutFor(inset: 0),
       );
     }
 
@@ -86,6 +92,7 @@ class PixelShapePainter extends CustomPainter {
       fillW,
       fillH,
       px,
+      cutout: _cutoutFor(inset: inset),
     );
 
     final tex = style.texture;
@@ -109,8 +116,9 @@ class PixelShapePainter extends CustomPainter {
     int offsetY,
     int w,
     int h,
-    double px,
-  ) {
+    double px, {
+    PixelBoxCutout? cutout,
+  }) {
     final c = style.corners;
     final topMax = c.topInsetRows;
     final bottomMax = c.bottomInsetRows;
@@ -118,50 +126,91 @@ class PixelShapePainter extends CustomPainter {
     for (int i = 0; i < topMax; i++) {
       final lIns = i < c.tl.length ? c.tl[i] : 0;
       final rIns = i < c.tr.length ? c.tr[i] : 0;
-      final rowW = w - lIns - rIns;
-      if (rowW > 0) {
-        canvas.drawRect(
-          Rect.fromLTWH(
-            (offsetX + lIns) * px,
-            (offsetY + i) * px,
-            rowW * px,
-            px,
-          ),
-          paint,
-        );
-      }
+      _drawRow(canvas, paint, offsetX, offsetY, i, lIns, w - rIns, px, cutout);
     }
 
     final midH = h - topMax - bottomMax;
-    if (midH > 0) {
-      canvas.drawRect(
-        Rect.fromLTWH(
-          offsetX * px,
-          (offsetY + topMax) * px,
-          w * px,
-          midH * px,
-        ),
-        paint,
-      );
+    for (int i = 0; i < midH; i++) {
+      _drawRow(canvas, paint, offsetX, offsetY, topMax + i, 0, w, px, cutout);
     }
 
     for (int i = 0; i < bottomMax; i++) {
       final row = bottomMax - 1 - i;
       final lIns = row < c.bl.length ? c.bl[row] : 0;
       final rIns = row < c.br.length ? c.br[row] : 0;
-      final rowW = w - lIns - rIns;
-      if (rowW > 0) {
-        canvas.drawRect(
-          Rect.fromLTWH(
-            (offsetX + lIns) * px,
-            (offsetY + h - bottomMax + i) * px,
-            rowW * px,
-            px,
-          ),
-          paint,
-        );
-      }
+      _drawRow(
+        canvas,
+        paint,
+        offsetX,
+        offsetY,
+        h - bottomMax + i,
+        lIns,
+        w - rIns,
+        px,
+        cutout,
+      );
     }
+  }
+
+  void _drawRow(
+    Canvas canvas,
+    Paint paint,
+    int offsetX,
+    int offsetY,
+    int rowY,
+    int xStart,
+    int xEnd,
+    double px,
+    PixelBoxCutout? cutout,
+  ) {
+    if (xEnd <= xStart) return;
+
+    if (cutout == null || rowY >= cutout.height) {
+      _drawSegment(canvas, paint, offsetX + xStart, offsetY + rowY,
+          xEnd - xStart, px);
+      return;
+    }
+
+    final cutLeft = cutout.left.clamp(xStart, xEnd);
+    final cutRight = (cutout.left + cutout.width).clamp(xStart, xEnd);
+    if (cutLeft > xStart) {
+      _drawSegment(canvas, paint, offsetX + xStart, offsetY + rowY,
+          cutLeft - xStart, px);
+    }
+    if (xEnd > cutRight) {
+      _drawSegment(canvas, paint, offsetX + cutRight, offsetY + rowY,
+          xEnd - cutRight, px);
+    }
+  }
+
+  void _drawSegment(
+    Canvas canvas,
+    Paint paint,
+    int x,
+    int y,
+    int w,
+    double px,
+  ) {
+    canvas.drawRect(
+      Rect.fromLTWH(x * px, y * px, w * px, px),
+      paint,
+    );
+  }
+
+  /// Rebases [labelCutout] from shape-logical coords into the pass-local coords
+  /// of a draw pass whose shape is inset by [inset] rows/columns on each side.
+  /// Returns null when the cutout is fully consumed by the inset (e.g. the
+  /// border already covers all cutout rows).
+  PixelBoxCutout? _cutoutFor({required int inset}) {
+    final c = labelCutout;
+    if (c == null) return null;
+    final localHeight = c.height - inset;
+    if (localHeight <= 0) return null;
+    return PixelBoxCutout(
+      left: c.left - inset,
+      width: c.width,
+      height: localHeight,
+    );
   }
 
   void _drawStippleShape(
@@ -244,5 +293,6 @@ class PixelShapePainter extends CustomPainter {
   bool shouldRepaint(covariant PixelShapePainter old) =>
       old.style != style ||
       old.logicalWidth != logicalWidth ||
-      old.logicalHeight != logicalHeight;
+      old.logicalHeight != logicalHeight ||
+      old.labelCutout != labelCutout;
 }

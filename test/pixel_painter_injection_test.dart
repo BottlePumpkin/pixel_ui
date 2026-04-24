@@ -70,6 +70,7 @@ void main() {
                 required int logicalWidth,
                 required int logicalHeight,
                 required PixelShapeStyle style,
+                PixelBoxCutout? labelCutout,
               }) {
                 final p = _MarkerPainter(
                   style: style,
@@ -101,6 +102,7 @@ void main() {
         required int logicalWidth,
         required int logicalHeight,
         required PixelShapeStyle style,
+        PixelBoxCutout? labelCutout,
       }) {
         throw StateError('theme builder should not have been invoked');
       }
@@ -122,6 +124,7 @@ void main() {
                 required int logicalWidth,
                 required int logicalHeight,
                 required PixelShapeStyle style,
+                PixelBoxCutout? labelCutout,
               }) {
                 final p = _MarkerPainter(
                   style: style,
@@ -150,6 +153,7 @@ void main() {
                 required int logicalWidth,
                 required int logicalHeight,
                 required PixelShapeStyle style,
+                PixelBoxCutout? labelCutout,
               }) {
                 seen = style;
                 return _MarkerPainter(

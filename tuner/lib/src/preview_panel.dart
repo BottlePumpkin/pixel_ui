@@ -32,12 +32,26 @@ class PreviewPanel extends StatelessWidget {
                 child: ValueListenableBuilder<PixelShapeStyle>(
                   valueListenable: state,
                   builder: (context, style, _) {
-                    return PixelBox(
-                      logicalWidth: _logicalWidth,
-                      logicalHeight: _logicalHeight,
-                      width: _logicalWidth * _scale.toDouble(),
-                      height: _logicalHeight * _scale.toDouble(),
-                      style: style,
+                    return ValueListenableBuilder<String?>(
+                      valueListenable: state.labelText,
+                      builder: (context, labelText, _) {
+                        return PixelBox(
+                          logicalWidth: _logicalWidth,
+                          logicalHeight: _logicalHeight,
+                          width: _logicalWidth * _scale.toDouble(),
+                          height: _logicalHeight * _scale.toDouble(),
+                          style: style,
+                          label: labelText == null
+                              ? null
+                              : Text(
+                                  labelText,
+                                  style: PixelText.mulmaru(
+                                    fontSize: 12,
+                                    color: style.borderColor ?? style.fillColor,
+                                  ),
+                                ),
+                        );
+                      },
                     );
                   },
                 ),
