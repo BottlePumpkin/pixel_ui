@@ -82,6 +82,42 @@ class PixelCorners {
       );
 }
 
+/// Rectangular region of the pixel shape to leave unpainted, in logical-pixel
+/// units. Used by `PixelBox.label` to carve space out of the top border for
+/// an overlaid label widget.
+@immutable
+class PixelBoxCutout {
+  /// Leftmost logical column (inclusive) to start skipping from.
+  final int left;
+
+  /// Number of logical columns to skip.
+  final int width;
+
+  /// Number of logical rows — counted from the top edge (y = 0) — to skip.
+  ///
+  /// Defaults to 1 row, which covers the top border line. Raise this to also
+  /// skip the first fill row when a thick border or tall label needs more
+  /// breathing room.
+  final int height;
+
+  const PixelBoxCutout({
+    required this.left,
+    required this.width,
+    this.height = 1,
+  });
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is PixelBoxCutout &&
+          left == other.left &&
+          width == other.width &&
+          height == other.height;
+
+  @override
+  int get hashCode => Object.hash(left, width, height);
+}
+
 /// Rendering style of a [PixelShadow].
 ///
 /// - [solid]: the shadow is a filled copy of the shape (default).

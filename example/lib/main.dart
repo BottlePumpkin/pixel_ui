@@ -51,6 +51,8 @@ class _ShowcaseScreen extends StatelessWidget {
               _TextureShowcase(),
               _SectionDivider('5. Theme inheritance'),
               _ThemeShowcase(),
+              _SectionDivider('6. Label carve-out'),
+              _LabelShowcase(),
               SizedBox(height: 40),
             ],
           ),
@@ -351,7 +353,52 @@ class _ThemeShowcase extends StatelessWidget {
   }
 }
 
-/// Section 6 — hero composition for pub.dev screenshot #1.
+/// Section 6 — labeled box demonstrating painter carve-out.
+class _LabelShowcase extends StatelessWidget {
+  const _LabelShowcase();
+
+  @override
+  Widget build(BuildContext context) {
+    const boxStyle = PixelShapeStyle(
+      corners: PixelCorners.md,
+      fillColor: Color(0xFFE8DFC6),
+      borderColor: Color(0xFF2A2A2A),
+      borderWidth: 1,
+    );
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24),
+      child: PixelBox(
+        logicalWidth: 80,
+        logicalHeight: 40,
+        width: 320,
+        style: boxStyle,
+        label: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+          color: const Color(0xFFF5F1E8),
+          child: Text(
+            'INVENTORY',
+            style: PixelText.mulmaru(
+              fontSize: 12,
+              color: const Color(0xFF2A2A2A),
+            ),
+          ),
+        ),
+        padding: const EdgeInsets.all(16),
+        alignment: Alignment.centerLeft,
+        child: Text(
+          '  - potion × 3\n  - scroll × 1\n  - gold × 42',
+          style: PixelText.mulmaru(
+            fontSize: 12,
+            color: const Color(0xFF2A2A2A),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Section 7 — hero composition for pub.dev screenshot #1.
 class _HeroComposition extends StatelessWidget {
   const _HeroComposition();
 

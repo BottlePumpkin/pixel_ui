@@ -451,6 +451,37 @@ void main() {
       );
     });
 
+    testWidgets('label cutout on top border', (tester) async {
+      await tester.pumpWidget(
+        Directionality(
+          textDirection: TextDirection.ltr,
+          child: Center(
+            child: RepaintBoundary(
+              key: _boundaryKey,
+              child: CustomPaint(
+                size: const Size(128, 128),
+                painter: const PixelShapePainter(
+                  logicalWidth: 16,
+                  logicalHeight: 16,
+                  style: PixelShapeStyle(
+                    corners: PixelCorners.md,
+                    fillColor: _fill,
+                    borderColor: _border,
+                    borderWidth: 1,
+                  ),
+                  labelCutout: PixelBoxCutout(left: 4, width: 6, height: 2),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      await expectLater(
+        find.byKey(_boundaryKey),
+        matchesGoldenFile('goldens/painter/label_cutout.png'),
+      );
+    });
+
     testWidgets('asymmetric single corner (tl only)', (tester) async {
       await _pumpBox(
         tester,

@@ -5,13 +5,15 @@ import 'package:pixel_ui/src/pixel_style.dart';
 /// Signature for a user-supplied builder that produces a [CustomPainter]
 /// from a [PixelShapeStyle] and logical dimensions.
 ///
-/// Reserved for the painter-injection feature (issue #9); exported here so
-/// that [PixelBoxTheme.painter] can hold it without a follow-up breaking
-/// change.
+/// Since 0.3.0 the builder also receives an optional [PixelBoxCutout]
+/// describing any carve-out the enclosing `PixelBox` wants honored (used by
+/// `PixelBox.label`). Custom builders may forward it to
+/// [PixelShapePainter] or ignore it.
 typedef PixelShapePainterBuilder = CustomPainter Function({
   required int logicalWidth,
   required int logicalHeight,
   required PixelShapeStyle style,
+  PixelBoxCutout? labelCutout,
 });
 
 /// Theme overrides for [PixelBox].

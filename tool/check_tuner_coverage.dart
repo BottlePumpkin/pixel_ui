@@ -41,6 +41,12 @@ const List<String> targetTypes = <String>[
   'PixelShapeStyle',
 ];
 
+/// Identifiers that live on widget APIs (e.g. `PixelBox.label`) rather than
+/// on a [targetTypes] value object. Referencing one in a control counts as
+/// coverage but these names are never required coverage — they don't surface
+/// in the `missing` list.
+const Set<String> widgetOnlyFields = <String>{'label'};
+
 const String pixelStylePath = 'lib/src/pixel_style.dart';
 const String tunerLibDir = 'tuner/lib';
 const String controlsDir = 'tuner/lib/src/controls';
@@ -133,16 +139,22 @@ CoverageResult compare(
 /// Like [compare] but takes an explicit [coveredFields] set so coverage can
 /// come from a wider scan (e.g. all of `tuner/lib/**`) while orphan detection
 /// stays scoped to [controlRefs] only.
+///
+/// [widgetFields] are identifiers from widget-level APIs (e.g. `PixelBox.label`)
+/// that should count as a valid control reference but don't participate in the
+/// `missing` calculation — they aren't style fields we insist be tunable.
 CoverageResult compareWithCoverage(
   Set<String> fields,
   Map<String, Set<String>> controlRefs,
-  Set<String> coveredFields,
-) {
+  Set<String> coveredFields, {
+  Set<String> widgetFields = const <String>{},
+}) {
   final perControl = <String, Set<String>>{};
   final orphans = <String>{};
+  final orphanTargets = <String>{...fields, ...widgetFields};
 
   controlRefs.forEach((file, refs) {
-    final hits = refs.intersection(fields);
+    final hits = refs.intersection(orphanTargets);
     if (hits.isEmpty) {
       orphans.add(file);
     } else {
@@ -186,10 +198,11 @@ Future<void> main(List<String> args) async {
   // files in tuner/lib contribute to coverage but not to orphan detection.
   final controlRefs = <String, Set<String>>{};
   final coveredFields = <String>{};
+  final scanTargets = <String>{...allFields, ...widgetOnlyFields};
   await for (final entity in tunerDirEntry.list(recursive: true)) {
     if (entity is! File || !entity.path.endsWith('.dart')) continue;
     final src = await entity.readAsString();
-    final hits = scanControlReferences(src, allFields)
+    final hits = scanControlReferences(src, scanTargets)
       ..addAll(scanTypeReferences(src, typeToFields));
     coveredFields.addAll(hits);
     if (entity.path.startsWith('$controlsDir/')) {
@@ -198,7 +211,12 @@ Future<void> main(List<String> args) async {
     }
   }
 
-  final result = compareWithCoverage(allFields, controlRefs, coveredFields);
+  final result = compareWithCoverage(
+    allFields,
+    controlRefs,
+    coveredFields,
+    widgetFields: widgetOnlyFields,
+  );
 
   if (jsonMode) {
     stdout.writeln(jsonEncode(result.toJson()));

@@ -194,6 +194,32 @@ class CornerPicker {
       expect(result.orphans, contains('orphan.dart'));
       expect(result.covered.keys, contains('ctrl_a.dart'));
     });
+
+    test('widgetFields rescue a control from orphan status', () {
+      final fields = <String>{'a', 'b'};
+      final controlRefs = <String, Set<String>>{
+        'label_ctrl.dart': <String>{'label'},
+      };
+      final result = cov.compareWithCoverage(
+        fields,
+        controlRefs,
+        <String>{'a', 'b'},
+        widgetFields: <String>{'label'},
+      );
+      expect(result.orphans, isEmpty);
+      expect(result.covered['label_ctrl.dart'], contains('label'));
+    });
+
+    test('widgetFields never surface as missing', () {
+      final fields = <String>{'a'};
+      final result = cov.compareWithCoverage(
+        fields,
+        <String, Set<String>>{'x.dart': <String>{'a'}},
+        <String>{'a'},
+        widgetFields: <String>{'label'},
+      );
+      expect(result.missing, isEmpty);
+    });
   });
 
   group('CoverageResult.toJson', () {

@@ -9,6 +9,7 @@ import 'widgets/pixel_section_header.dart';
 import 'controls/border_width_slider.dart';
 import 'controls/color_hex_input.dart';
 import 'controls/corner_picker.dart';
+import 'controls/label_editor.dart';
 import 'controls/shadow_editor.dart';
 import 'controls/texture_editor.dart';
 
@@ -195,6 +196,23 @@ class _ControlsPanel extends StatelessWidget {
                     TextureEditor(
                       value: style.texture,
                       onChanged: state.setTexture,
+                    ),
+                  ],
+                ),
+              ),
+              PixelCard(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    const PixelSectionHeader('LABEL'),
+                    ValueListenableBuilder<String?>(
+                      valueListenable: state.labelText,
+                      builder: (context, labelText, _) {
+                        return LabelEditor(
+                          value: labelText,
+                          onChanged: state.setLabel,
+                        );
+                      },
                     ),
                   ],
                 ),
