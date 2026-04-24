@@ -22,13 +22,16 @@ user_invocable: true
 3. **GitHub 라벨 생성** — 아래 스크립트 idempotent 실행:
 
 ```bash
-gh label create dogfood    --color 0E8A16 --description "Dogfood cycle issue"        2>/dev/null || true
-gh label create dx         --color D93F0B --description "Developer experience issue" 2>/dev/null || true
-gh label create widget-gap --color 5319E7 --description "Missing widget request"     2>/dev/null || true
-gh label create tuner      --color FBCA04 --description "Tuner-related"              2>/dev/null || true
-gh label create stale      --color CCCCCC --description "Outdated content"           2>/dev/null || true
-gh label create missing    --color EEEEEE --description "Missing coverage"           2>/dev/null || true
-gh label create upstream   --color BFD4F2 --description "Upstream Flutter limit"     2>/dev/null || true
+gh label create dogfood    --color 0E8A16 --description "Dogfood cycle issue"                 2>/dev/null || true
+gh label create bug        --color D73A4A --description "Something isn't working"              2>/dev/null || true
+gh label create feature    --color A2EEEF --description "New feature or request"               2>/dev/null || true
+gh label create docs       --color 0075CA --description "Improvements or additions to documentation" 2>/dev/null || true
+gh label create dx         --color D93F0B --description "Developer experience issue"           2>/dev/null || true
+gh label create widget-gap --color 5319E7 --description "Missing widget request"               2>/dev/null || true
+gh label create tuner      --color FBCA04 --description "Tuner-related"                        2>/dev/null || true
+gh label create stale      --color CCCCCC --description "Outdated content"                     2>/dev/null || true
+gh label create missing    --color EEEEEE --description "Missing coverage"                     2>/dev/null || true
+gh label create upstream   --color BFD4F2 --description "Upstream Flutter limit"               2>/dev/null || true
 ```
 
 4. **.gitignore 체크** — `dogfood_cycle_*/` 패턴 없으면 추가 후 커밋.
