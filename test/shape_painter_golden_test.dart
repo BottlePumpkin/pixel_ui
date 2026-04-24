@@ -278,6 +278,27 @@ void main() {
       );
     });
 
+    testWidgets('shadow stipple', (tester) async {
+      await _pumpBox(
+        tester,
+        const PixelShapeStyle(
+          corners: PixelCorners.md,
+          fillColor: _fill,
+          borderColor: _border,
+          borderWidth: 1,
+          shadow: PixelShadow(
+            offset: Offset(2, 2),
+            color: _shadowColor,
+            style: PixelShadowStyle.stipple,
+          ),
+        ),
+      );
+      await expectLater(
+        find.byKey(_boundaryKey),
+        matchesGoldenFile('goldens/painter/shadow_stipple.png'),
+      );
+    });
+
     testWidgets('shadow on sharp corners', (tester) async {
       await _pumpBox(
         tester,

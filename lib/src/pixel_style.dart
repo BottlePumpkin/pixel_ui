@@ -82,33 +82,57 @@ class PixelCorners {
       );
 }
 
+/// Rendering style of a [PixelShadow].
+///
+/// - [solid]: the shadow is a filled copy of the shape (default).
+/// - [stipple]: the shadow is a 1-pixel checker pattern over the shape —
+///   a softer, retro "dithered" aesthetic.
+enum PixelShadowStyle { solid, stipple }
+
 /// Pixel drop shadow. Offset is in logical pixel units.
 @immutable
 class PixelShadow {
   final Offset offset;
   final Color color;
+  final PixelShadowStyle style;
 
-  const PixelShadow({required this.offset, required this.color});
+  const PixelShadow({
+    required this.offset,
+    required this.color,
+    this.style = PixelShadowStyle.solid,
+  });
 
   /// Small shadow: offset (1, 1).
-  factory PixelShadow.sm(Color color) =>
-      PixelShadow(offset: const Offset(1, 1), color: color);
+  factory PixelShadow.sm(
+    Color color, {
+    PixelShadowStyle style = PixelShadowStyle.solid,
+  }) =>
+      PixelShadow(offset: const Offset(1, 1), color: color, style: style);
 
   /// Medium shadow: offset (2, 2).
-  factory PixelShadow.md(Color color) =>
-      PixelShadow(offset: const Offset(2, 2), color: color);
+  factory PixelShadow.md(
+    Color color, {
+    PixelShadowStyle style = PixelShadowStyle.solid,
+  }) =>
+      PixelShadow(offset: const Offset(2, 2), color: color, style: style);
 
   /// Large shadow: offset (4, 4).
-  factory PixelShadow.lg(Color color) =>
-      PixelShadow(offset: const Offset(4, 4), color: color);
+  factory PixelShadow.lg(
+    Color color, {
+    PixelShadowStyle style = PixelShadowStyle.solid,
+  }) =>
+      PixelShadow(offset: const Offset(4, 4), color: color, style: style);
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is PixelShadow && offset == other.offset && color == other.color;
+      other is PixelShadow &&
+          offset == other.offset &&
+          color == other.color &&
+          style == other.style;
 
   @override
-  int get hashCode => Object.hash(offset, color);
+  int get hashCode => Object.hash(offset, color, style);
 }
 
 /// Deterministic noise texture overlay.

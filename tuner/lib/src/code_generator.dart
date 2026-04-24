@@ -21,6 +21,9 @@ String generateCode(PixelShapeStyle style) {
       '    offset: Offset(${s.offset.dx.toInt()}, ${s.offset.dy.toInt()}),',
     );
     lines.add('    color: ${_color(s.color)},');
+    if (s.style != PixelShadowStyle.solid) {
+      lines.add('    style: PixelShadowStyle.${s.style.name},');
+    }
     lines.add('  ),');
   }
 

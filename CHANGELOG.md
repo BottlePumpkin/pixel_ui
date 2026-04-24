@@ -9,6 +9,8 @@
 - `PixelShapePainterBuilder` typedef + `PixelBox.painter` optional prop + `PixelBoxTheme.painter` slot now active: inject a custom `CustomPainter` without forking `PixelBox` (#9). Precedence: `painter` prop > theme.painter > default `PixelShapePainter`.
 - `PixelButton.disabledStyle` optional parameter — explicit `PixelShapeStyle` shown when `onPressed` is `null`. Unspecified keeps the existing behavior (`normalStyle` rendered at 50% opacity).
 
+- `PixelShadowStyle { solid, stipple }` enum + `PixelShadow.style` field (default `.solid`, backward compatible). `stipple` renders the drop shadow as a 1-pixel checker pattern — retro "dithered" aesthetic alongside the existing solid look (#11). Tuner gains a `style` dropdown and emits `style: PixelShadowStyle.stipple` only when non-default.
+
 ### Changed
 - `PixelBox.style` and `PixelButton.normalStyle` are now optional. When omitted they resolve from the ancestor theme; asserts if neither is available. Existing call sites that pass these props explicitly are unaffected.
 
