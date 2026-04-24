@@ -4,7 +4,7 @@ import 'package:pixel_ui/pixel_ui.dart';
 
 void main() {
   const style = PixelShapeStyle(
-    corners: PixelCorners.md,
+    corners: PixelCorners.sm,
     fillColor: Color(0xFFFF0000),
   );
 
