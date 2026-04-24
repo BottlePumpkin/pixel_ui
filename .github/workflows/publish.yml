@@ -30,18 +30,10 @@ jobs:
           fi
           echo "Tag $GITHUB_REF_NAME matches pubspec.yaml version"
 
-      - name: Pub get (root package)
+      - name: Pub get
         run: flutter pub get
 
-      - name: Pub get (example)
-        run: flutter pub get
-        working-directory: example
-
-      - name: Pub get (tuner)
-        run: flutter pub get
-        working-directory: tuner
-
-      - name: Analyze (package)
+      - name: Analyze
         run: flutter analyze
 
       - name: Test (exclude screenshot goldens)
