@@ -159,7 +159,7 @@ void main() {
         () => PixelGrid<_Kind>.builder(
           rows: 0,
           cols: 3,
-          tileAt: (_, __) => null,
+          tileAt: (_, _) => null,
           tileLogicalWidth: 4,
           tileLogicalHeight: 4,
           tileScreenSize: const Size(16, 16),
@@ -174,7 +174,7 @@ void main() {
         () => PixelGrid<_Kind>.builder(
           rows: 3,
           cols: 3,
-          tileAt: (_, __) => null,
+          tileAt: (_, _) => null,
           tileLogicalWidth: 0,
           tileLogicalHeight: 4,
           tileScreenSize: const Size(16, 16),
@@ -189,12 +189,12 @@ void main() {
         () => PixelGrid<_Kind>.builder(
           rows: 3,
           cols: 3,
-          tileAt: (_, __) => null,
+          tileAt: (_, _) => null,
           tileLogicalWidth: 4,
           tileLogicalHeight: 4,
           tileScreenSize: const Size(16, 16),
           styleFor: _styleFor,
-          onTileAccept: (_, __, ___) {},
+          onTileAccept: (_, _, _) {},
         ),
         throwsAssertionError,
       );
