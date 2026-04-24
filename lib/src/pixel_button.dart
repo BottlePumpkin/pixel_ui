@@ -1,7 +1,8 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 
 import 'package:pixel_ui/src/pixel_box.dart';
 import 'package:pixel_ui/src/pixel_style.dart';
+import 'package:pixel_ui/src/pixel_theme.dart';
 
 /// Interactive pixel button with optional press-state and disabled-state styles.
 ///
@@ -10,11 +11,15 @@ import 'package:pixel_ui/src/pixel_style.dart';
 /// when [onPressed] is null (falling back to [normalStyle] rendered at 50%
 /// opacity if not provided). The child can be shifted down by
 /// [pressChildOffset] while pressed, simulating a button press.
+///
+/// When any style prop is omitted, falls back to the matching field on
+/// `PixelButtonTheme` supplied via [pixelUiTheme]. Asserts if [normalStyle]
+/// cannot be resolved from either source.
 class PixelButton extends StatefulWidget {
   final int logicalWidth;
   final int logicalHeight;
 
-  final PixelShapeStyle normalStyle;
+  final PixelShapeStyle? normalStyle;
 
   /// Style to show while pressed. `null` keeps [normalStyle].
   final PixelShapeStyle? pressedStyle;
@@ -43,7 +48,7 @@ class PixelButton extends StatefulWidget {
     super.key,
     required this.logicalWidth,
     required this.logicalHeight,
-    required this.normalStyle,
+    this.normalStyle,
     this.pressedStyle,
     this.disabledStyle,
     this.width,
@@ -66,19 +71,6 @@ class _PixelButtonState extends State<PixelButton> {
 
   bool get _enabled => widget.onPressed != null;
 
-  PixelShapeStyle get _currentStyle {
-    if (!_enabled && widget.disabledStyle != null) return widget.disabledStyle!;
-    if (_pressed && widget.pressedStyle != null) return widget.pressedStyle!;
-    return widget.normalStyle;
-  }
-
-  double get _opacity {
-    // Only dim when falling back to normalStyle in the disabled state;
-    // a custom disabledStyle already carries the author's intent.
-    if (!_enabled && widget.disabledStyle == null) return 0.5;
-    return 1.0;
-  }
-
   void _setPressed(bool v) {
     if (!_enabled) return;
     if (_pressed == v) return;
@@ -87,6 +79,20 @@ class _PixelButtonState extends State<PixelButton> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = context.pixelTheme<PixelButtonTheme>();
+    final normal = widget.normalStyle ?? theme?.normalStyle;
+    assert(
+      normal != null,
+      'PixelButton requires a `normalStyle` prop or a '
+      '`PixelButtonTheme.normalStyle` registered via `pixelUiTheme(...)` on '
+      'an ancestor Theme/MaterialApp.',
+    );
+    final pressed = widget.pressedStyle ?? theme?.pressedStyle;
+    final disabled = widget.disabledStyle ?? theme?.disabledStyle;
+
+    final currentStyle = _currentStyle(normal!, pressed, disabled);
+    final opacity = _resolveOpacity(disabled);
+
     return Semantics(
       button: true,
       enabled: _enabled,
@@ -99,11 +105,11 @@ class _PixelButtonState extends State<PixelButton> {
         onTapCancel: () => _setPressed(false),
         onTap: _enabled ? () => widget.onPressed!() : null,
         child: Opacity(
-          opacity: _opacity,
+          opacity: opacity,
           child: PixelBox(
             logicalWidth: widget.logicalWidth,
             logicalHeight: widget.logicalHeight,
-            style: _currentStyle,
+            style: currentStyle,
             width: widget.width,
             height: widget.height,
             padding: widget.padding,
@@ -123,5 +129,22 @@ class _PixelButtonState extends State<PixelButton> {
         ),
       ),
     );
+  }
+
+  PixelShapeStyle _currentStyle(
+    PixelShapeStyle normal,
+    PixelShapeStyle? pressed,
+    PixelShapeStyle? disabled,
+  ) {
+    if (!_enabled && disabled != null) return disabled;
+    if (_pressed && pressed != null) return pressed;
+    return normal;
+  }
+
+  double _resolveOpacity(PixelShapeStyle? disabled) {
+    // Only dim when no explicit disabled style is available; a custom
+    // disabledStyle already carries the author's intent.
+    if (!_enabled && disabled == null) return 0.5;
+    return 1.0;
   }
 }

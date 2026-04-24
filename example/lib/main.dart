@@ -49,6 +49,8 @@ class _ShowcaseScreen extends StatelessWidget {
               _ButtonsShowcase(),
               _SectionDivider('4. Texture'),
               _TextureShowcase(),
+              _SectionDivider('5. Theme inheritance'),
+              _ThemeShowcase(),
               SizedBox(height: 40),
             ],
           ),
@@ -301,7 +303,55 @@ class _TextureShowcase extends StatelessWidget {
   }
 }
 
-/// Section 5 — hero composition for pub.dev screenshot #1.
+/// Section 5 — theme inheritance via `pixelUiTheme`.
+class _ThemeShowcase extends StatelessWidget {
+  const _ThemeShowcase();
+
+  @override
+  Widget build(BuildContext context) {
+    const themedStyle = PixelShapeStyle(
+      corners: PixelCorners.md,
+      fillColor: Color(0xFF3C6BE0),
+      borderColor: Color(0xFF1A3A80),
+      borderWidth: 1,
+    );
+    const overrideStyle = PixelShapeStyle(
+      corners: PixelCorners.md,
+      fillColor: Color(0xFFE07A3C),
+      borderColor: Color(0xFF8B3E1A),
+      borderWidth: 1,
+    );
+
+    return Theme(
+      data: pixelUiTheme(
+        base: Theme.of(context),
+        boxTheme: const PixelBoxTheme(style: themedStyle),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24),
+        child: Row(
+          children: const [
+            _Labelled(
+              'inherits theme',
+              PixelBox(logicalWidth: 16, logicalHeight: 16),
+            ),
+            SizedBox(width: 24),
+            _Labelled(
+              'style prop wins',
+              PixelBox(
+                logicalWidth: 16,
+                logicalHeight: 16,
+                style: overrideStyle,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Section 6 — hero composition for pub.dev screenshot #1.
 class _HeroComposition extends StatelessWidget {
   const _HeroComposition();
 
