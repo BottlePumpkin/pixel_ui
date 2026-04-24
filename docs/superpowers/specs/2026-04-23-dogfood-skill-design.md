@@ -178,16 +178,19 @@ dependencies:
 ### 8.3 라벨 자동 생성 (Prereqs)
 
 ```bash
-gh label create dogfood    --color 0E8A16 --description "Dogfood cycle issue"        2>/dev/null || true
-gh label create dx         --color D93F0B --description "Developer experience issue" 2>/dev/null || true
-gh label create widget-gap --color 5319E7 --description "Missing widget request"     2>/dev/null || true
-gh label create tuner      --color FBCA04 --description "Tuner-related"              2>/dev/null || true
-gh label create stale      --color CCCCCC --description "Outdated content"           2>/dev/null || true
-gh label create missing    --color EEEEEE --description "Missing coverage"           2>/dev/null || true
-gh label create upstream   --color BFD4F2 --description "Upstream Flutter limit"     2>/dev/null || true
+gh label create dogfood    --color 0E8A16 --description "Dogfood cycle issue"                 2>/dev/null || true
+gh label create bug        --color D73A4A --description "Something isn't working"              2>/dev/null || true
+gh label create feature    --color A2EEEF --description "New feature or request"               2>/dev/null || true
+gh label create docs       --color 0075CA --description "Improvements or additions to documentation" 2>/dev/null || true
+gh label create dx         --color D93F0B --description "Developer experience issue"           2>/dev/null || true
+gh label create widget-gap --color 5319E7 --description "Missing widget request"               2>/dev/null || true
+gh label create tuner      --color FBCA04 --description "Tuner-related"                        2>/dev/null || true
+gh label create stale      --color CCCCCC --description "Outdated content"                     2>/dev/null || true
+gh label create missing    --color EEEEEE --description "Missing coverage"                     2>/dev/null || true
+gh label create upstream   --color BFD4F2 --description "Upstream Flutter limit"               2>/dev/null || true
 ```
 
-`bug`, `feature`, `docs`는 GitHub 기본 라벨이라 존재 가정.
+`bug`, `feature`, `docs`는 GitHub 기본 제공 가정이 실제 빈 레포에선 깨지는 경우가 있어(cycle #1에서 확인), prereqs에서 idempotent로 함께 생성.
 
 ### 8.4 외부 기여자 필터 안내
 
