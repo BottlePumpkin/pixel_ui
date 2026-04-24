@@ -6,7 +6,7 @@
 - `PixelTheme` / `PixelBoxTheme` / `PixelButtonTheme` — `ThemeExtension`-based pixel defaults. Wire once with `pixelUiTheme(...)` on `MaterialApp.theme` and any descendant `PixelBox` / `PixelButton` inherits its style (#8).
 - `pixelUiTheme({base, pixelTheme, boxTheme, buttonTheme})` factory returns a `ThemeData` with pixel extensions registered; explicit `boxTheme`/`buttonTheme` override slots on `pixelTheme`. Preserves unrelated extensions on `base`.
 - `context.pixelTheme<T>()` shorthand for `Theme.of(context).extension<T>()`.
-- `PixelShapePainterBuilder` typedef exported as a reserved slot on `PixelBoxTheme.painter` (wired in a future release).
+- `PixelShapePainterBuilder` typedef + `PixelBox.painter` optional prop + `PixelBoxTheme.painter` slot now active: inject a custom `CustomPainter` without forking `PixelBox` (#9). Precedence: `painter` prop > theme.painter > default `PixelShapePainter`.
 - `PixelButton.disabledStyle` optional parameter — explicit `PixelShapeStyle` shown when `onPressed` is `null`. Unspecified keeps the existing behavior (`normalStyle` rendered at 50% opacity).
 
 ### Changed
