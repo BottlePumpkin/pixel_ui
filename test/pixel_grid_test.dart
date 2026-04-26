@@ -216,6 +216,36 @@ void main() {
     expect(activates, isEmpty);
   });
 
+  testWidgets('swapping external FocusNode does not dispose it', (tester) async {
+    final nodeA = FocusNode(debugLabel: 'A');
+    final nodeB = FocusNode(debugLabel: 'B');
+    addTearDown(nodeA.dispose);
+    addTearDown(nodeB.dispose);
+
+    Widget buildWith(FocusNode node) {
+      return MaterialApp(
+        home: Scaffold(
+          body: PixelGrid<_Kind>.builder(
+            rows: 2,
+            cols: 2,
+            tileAt: (_, _) => _Kind.floor,
+            tileLogicalWidth: 4,
+            tileLogicalHeight: 4,
+            tileScreenSize: const Size(16, 16),
+            styleFor: _styleFor,
+            focusNode: node,
+          ),
+        ),
+      );
+    }
+
+    await tester.pumpWidget(buildWith(nodeA));
+    await tester.pumpWidget(buildWith(nodeB));
+    // If nodeA was disposed, calling canRequestFocus would throw.
+    expect(nodeA.canRequestFocus, isTrue);
+    expect(nodeB.canRequestFocus, isTrue);
+  });
+
   group('PixelGrid asserts', () {
     test('empty data throws', () {
       expect(

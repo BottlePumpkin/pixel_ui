@@ -118,6 +118,14 @@ class _PixelGridState<T> extends State<PixelGrid<T>> {
       _focusNode = widget.focusNode ?? FocusNode();
       _ownsFocusNode = widget.focusNode == null;
     }
+    // Clamp focus into new bounds if grid shrank.
+    final (fx, fy) = _focused;
+    if (fx >= widget.cols || fy >= widget.rows) {
+      _focused = (
+        fx.clamp(0, widget.cols - 1),
+        fy.clamp(0, widget.rows - 1),
+      );
+    }
   }
 
   @override
@@ -147,6 +155,7 @@ class _PixelGridState<T> extends State<PixelGrid<T>> {
 
   void _moveFocusTo(int x, int y) {
     if (_focused == (x, y)) return;
+    if (!_isEnabled(x, y)) return;
     setState(() => _focused = (x, y));
   }
 
@@ -165,7 +174,11 @@ class _PixelGridState<T> extends State<PixelGrid<T>> {
       case LogicalKeyboardKey.space:
         final (fx, fy) = _focused;
         final data = widget.tileAt(fx, fy);
-        if (data != null) widget.onTileActivate?.call(fx, fy);
+        if (data != null && widget.onTileActivate != null) {
+          widget.onTileActivate!(fx, fy);
+          return KeyEventResult.handled;
+        }
+        return KeyEventResult.ignored;
       default:
         return KeyEventResult.ignored;
     }
@@ -249,17 +262,15 @@ class _Tile<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget tile = Stack(
-      children: [
-        _TilePaint(
-          style: style,
-          tileLogicalWidth: tileLogicalWidth,
-          tileLogicalHeight: tileLogicalHeight,
-          tileScreenSize: tileScreenSize,
-        ),
-        if (focused) _FocusOutline(size: tileScreenSize),
-      ],
+    final paint = _TilePaint(
+      style: style,
+      tileLogicalWidth: tileLogicalWidth,
+      tileLogicalHeight: tileLogicalHeight,
+      tileScreenSize: tileScreenSize,
     );
+    Widget tile = focused
+        ? Stack(children: [paint, _FocusOutline(size: tileScreenSize)])
+        : paint;
     if (onTileTap != null) {
       tile = GestureDetector(
         behavior: HitTestBehavior.opaque,
