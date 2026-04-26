@@ -246,6 +246,38 @@ void main() {
     expect(nodeB.canRequestFocus, isTrue);
   });
 
+  testWidgets('arrow keys skip disabled tiles', (tester) async {
+    final activates = <(int, int)>[];
+    final focus = FocusNode();
+    addTearDown(focus.dispose);
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: PixelGrid<_Kind>.builder(
+            rows: 1,
+            cols: 5,
+            tileAt: (_, _) => _Kind.floor,
+            tileLogicalWidth: 4,
+            tileLogicalHeight: 4,
+            tileScreenSize: const Size(16, 16),
+            styleFor: _styleFor,
+            focusNode: focus,
+            autofocus: true,
+            // Only even-x tiles are enabled. Starting at (0, 0).
+            isTileEnabled: (x, y) => x.isEven,
+            onTileActivate: (x, y) => activates.add((x, y)),
+          ),
+        ),
+      ),
+    );
+    await tester.pump();
+
+    // Right → skip (1, 0) disabled → land on (2, 0). Activate.
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    expect(activates, [(2, 0)]);
+  });
+
   group('PixelGrid asserts', () {
     test('empty data throws', () {
       expect(
