@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+### Docs
+- README `## Install` version pin bumped `^0.4.0` → `^0.5.0` to match the current minor line (recurring drift; closes #50, follow-up to #19).
+
+### Internal
+- `tool/check_readme_version.dart` — CI guard that fails when `README.md`'s `pixel_ui: ^X.Y` install pin falls behind `pubspec.yaml`'s `version:` major.minor. Wired into `.github/workflows/test.yml` to prevent the recurring drift pattern at PR-time. Supports `--fix` for one-shot local repair and `--json` for tooling.
+
 ## 0.5.1 — 2026-04-27
 
 ### Docs

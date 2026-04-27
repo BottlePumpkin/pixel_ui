@@ -54,7 +54,7 @@ else's chrome.
 
 ```yaml
 dependencies:
-  pixel_ui: ^0.4.0
+  pixel_ui: ^0.5.0
 ```
 
 ## Quick Start

@@ -17,6 +17,8 @@ jobs:
           channel: 'stable'
       - name: Pub get (root package)
         run: flutter pub get
+      - name: Check README install pin matches pubspec version
+        run: dart run tool/check_readme_version.dart
       - name: Pub get (example)
         run: flutter pub get
         working-directory: example
