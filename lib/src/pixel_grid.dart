@@ -217,7 +217,10 @@ class _PixelGridState<T> extends State<PixelGrid<T>> {
     final data = widget.tileAt(x, y);
     // null style → _TilePaint renders a placeholder SizedBox.
     final style = data == null ? widget.emptyStyle : widget.styleFor(data);
-    final dragData = widget.dragDataFor?.call(x, y);
+    final dragValue = widget.dragDataFor?.call(x, y);
+    final dragPayload = dragValue == null
+        ? null
+        : (from: (x, y), payload: dragValue);
     return _Tile<T>(
       key: ValueKey<(int, int)>((x, y)),
       x: x,
@@ -235,7 +238,7 @@ class _PixelGridState<T> extends State<PixelGrid<T>> {
               _moveFocusTo(tx, ty);
               _focusNode.requestFocus();
             },
-      dragData: dragData,
+      dragPayload: dragPayload,
       onTileAccept: widget.onTileAccept,
     );
   }
@@ -253,7 +256,7 @@ class _Tile<T> extends StatelessWidget {
     required this.tileScreenSize,
     required this.focused,
     this.onTileTap,
-    this.dragData,
+    this.dragPayload,
     this.onTileAccept,
   });
 
@@ -266,7 +269,7 @@ class _Tile<T> extends StatelessWidget {
   final Size tileScreenSize;
   final bool focused;
   final void Function(int x, int y)? onTileTap;
-  final T? dragData;
+  final _DragPayload<T>? dragPayload;
   final void Function((int, int) from, (int, int) to, T data)? onTileAccept;
 
   @override
@@ -281,10 +284,15 @@ class _Tile<T> extends StatelessWidget {
         ? Stack(children: [paint, _FocusOutline(size: tileScreenSize)])
         : paint;
 
-    if (dragData != null) {
-      final payload = dragData as T;
+    // Wrap order, innermost-out: Draggable (drag source) → DragTarget (drop
+    // zone) → GestureDetector (tap handler). GestureDetector must be outermost
+    // so the tap recognizer participates in the gesture arena alongside the
+    // drag recognizer; a drag wins on slop distance, a tap wins otherwise.
+    final payload = dragPayload;
+    if (payload != null) {
       tile = Draggable<_DragPayload<T>>(
-        data: (from: (x, y), payload: payload),
+        data: payload,
+        // feedback intentionally uses bare `paint` (no focus border) — the drag ghost should not show focus indication.
         feedback: Opacity(opacity: 0.7, child: paint),
         childWhenDragging: Opacity(opacity: 0.3, child: tile),
         child: tile,
