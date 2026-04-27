@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.5.0 — 2026-04-24
+
+### Added
+- `PixelGrid<T>` — tile-based layout widget for minimaps, inventories, tile maps, and similar 2D compositions (#36). Backed by `PixelShapePainter`. Supports:
+  - `.fromList(data: List<List<T?>>)` for static grids; `.builder(rows, cols, tileAt)` for procedural/large maps.
+  - Tap callback (`onTileTap`), keyboard focus with arrow-key navigation, Enter/Space activation (`onTileActivate`), and `isTileEnabled` skip-search.
+  - `Draggable<T>` + `DragTarget<T>` drag-and-drop via `dragDataFor` + `onTileAccept((from, to, data))`.
+  - Empty slots via `null` data + optional `emptyStyle` fallback.
+
 ## 0.4.1 — 2026-04-24
 
 ### Added

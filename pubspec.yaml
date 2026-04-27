@@ -1,7 +1,7 @@
 name: pixel_ui
 description: Pixel-art design system for Flutter. Parametric shapes, interactive
   buttons, and bundled pixel font.
-version: 0.4.1
+version: 0.5.0
 homepage: https://github.com/BottlePumpkin/pixel_ui
 repository: https://github.com/BottlePumpkin/pixel_ui
 issue_tracker: https://github.com/BottlePumpkin/pixel_ui/issues
@@ -25,6 +25,8 @@ screenshots:
     path: doc/screenshots/04_buttons.png
   - description: "Deterministic LCG texture overlay — plain vs textured"
     path: doc/screenshots/05_texture.png
+  - description: "Tile grid — drag to swap, arrow keys to navigate"
+    path: doc/screenshots/06_pixel_grid.png
 
 environment:
   sdk: ^3.8.0
