@@ -33,7 +33,7 @@ jobs:
             target: windows
             command: flutter build windows
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.32.7'
