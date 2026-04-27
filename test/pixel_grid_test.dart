@@ -325,6 +325,37 @@ void main() {
     expect(lastAccept!.$3, _Kind.wall);
   });
 
+  testWidgets('tile with null dragDataFor has no Draggable ancestor',
+      (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: PixelGrid<_Kind>.fromList(
+            data: const [
+              [_Kind.wall, _Kind.floor],
+            ],
+            tileLogicalWidth: 4,
+            tileLogicalHeight: 4,
+            tileScreenSize: const Size(16, 16),
+            styleFor: _styleFor,
+            dragDataFor: (x, y) => x == 0 ? _Kind.wall : null,
+            onTileAccept: (_, _, _) {},
+          ),
+        ),
+      ),
+    );
+
+    // Tile (1, 0) — its dragDataFor returned null, so should have no Draggable descendant.
+    final nonDraggable = find.byKey(const ValueKey<(int, int)>((1, 0)));
+    expect(
+      find.descendant(
+        of: nonDraggable,
+        matching: find.byWidgetPredicate((w) => w is Draggable),
+      ),
+      findsNothing,
+    );
+  });
+
   group('PixelGrid asserts', () {
     test('empty data throws', () {
       expect(
