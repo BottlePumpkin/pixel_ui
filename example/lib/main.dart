@@ -39,21 +39,26 @@ class _ShowcaseScreen extends StatelessWidget {
           constraints: const BoxConstraints(maxWidth: 480),
           child: ListView(
             padding: const EdgeInsets.symmetric(vertical: 24),
-            children: const [
-              _HeroComposition(),
-              _SectionDivider('1. Corners scale'),
-              _CornersShowcase(),
-              _SectionDivider('2. Shadows'),
-              _ShadowsShowcase(),
-              _SectionDivider('3. Buttons'),
-              _ButtonsShowcase(),
-              _SectionDivider('4. Texture'),
-              _TextureShowcase(),
-              _SectionDivider('5. Theme inheritance'),
-              _ThemeShowcase(),
-              _SectionDivider('6. Label carve-out'),
-              _LabelShowcase(),
-              SizedBox(height: 40),
+            children: [
+              const _HeroComposition(),
+              const _SectionDivider('1. Corners scale'),
+              const _CornersShowcase(),
+              const _SectionDivider('2. Shadows'),
+              const _ShadowsShowcase(),
+              const _SectionDivider('3. Buttons'),
+              const _ButtonsShowcase(),
+              const _SectionDivider('4. Texture'),
+              const _TextureShowcase(),
+              const _SectionDivider('5. Theme inheritance'),
+              const _ThemeShowcase(),
+              const _SectionDivider('6. Label carve-out'),
+              const _LabelShowcase(),
+              const _SectionDivider('7. PixelGrid — inventory'),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 24),
+                child: _PixelGridDemo(),
+              ),
+              const SizedBox(height: 40),
             ],
           ),
         ),
@@ -467,5 +472,81 @@ class _Labelled extends StatelessWidget {
         Text(label, style: PixelText.mulmaru(fontSize: 12)),
       ],
     );
+  }
+}
+
+/// Section 7 — PixelGrid inventory demo (5×3, drag-and-drop, keyboard activate).
+class _PixelGridDemo extends StatefulWidget {
+  const _PixelGridDemo();
+
+  @override
+  State<_PixelGridDemo> createState() => _PixelGridDemoState();
+}
+
+class _PixelGridDemoState extends State<_PixelGridDemo> {
+  final List<List<_Item?>> _grid = [
+    [_Item.sword, _Item.potion, null, _Item.gem, _Item.potion],
+    [null, _Item.sword, _Item.gem, null, _Item.potion],
+    [_Item.gem, null, _Item.potion, _Item.sword, null],
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return PixelGrid<_Item>.fromList(
+      data: _grid,
+      tileLogicalWidth: 10,
+      tileLogicalHeight: 10,
+      tileScreenSize: const Size(48, 48),
+      styleFor: _styleFor,
+      emptyStyle: const PixelShapeStyle(
+        corners: PixelCorners.sharp,
+        fillColor: Color(0xFF2A2733),
+        borderColor: Color(0xFF45404F),
+        borderWidth: 1,
+      ),
+      dragDataFor: (x, y) => _grid[y][x],
+      onTileAccept: (from, to, data) => setState(() {
+        final (fx, fy) = from;
+        final (tx, ty) = to;
+        final tmp = _grid[ty][tx];
+        _grid[ty][tx] = data;
+        _grid[fy][fx] = tmp;
+      }),
+      onTileActivate: (x, y) => ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          duration: const Duration(milliseconds: 600),
+          content: Text('Activated ($x,$y): ${_grid[y][x]?.name ?? "empty"}'),
+        ),
+      ),
+      autofocus: true,
+    );
+  }
+}
+
+enum _Item { sword, potion, gem }
+
+PixelShapeStyle _styleFor(_Item item) {
+  switch (item) {
+    case _Item.sword:
+      return const PixelShapeStyle(
+        corners: PixelCorners.sm,
+        fillColor: Color(0xFFCCCCCC),
+        borderColor: Color(0xFF666666),
+        borderWidth: 1,
+      );
+    case _Item.potion:
+      return const PixelShapeStyle(
+        corners: PixelCorners.sm,
+        fillColor: Color(0xFFC0392B),
+        borderColor: Color(0xFF6B1E14),
+        borderWidth: 1,
+      );
+    case _Item.gem:
+      return const PixelShapeStyle(
+        corners: PixelCorners.sm,
+        fillColor: Color(0xFF85C1E9),
+        borderColor: Color(0xFF2E86C1),
+        borderWidth: 1,
+      );
   }
 }
