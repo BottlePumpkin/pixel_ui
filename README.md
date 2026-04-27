@@ -184,6 +184,39 @@ otherwise. If you compute canvas size yourself, mirror the formula:
 `(logicalWidth + |shadow.offset.dx|) × scale` wide by
 `(logicalHeight + |shadow.offset.dy|) × scale` tall.
 
+### Tile grids
+
+`PixelGrid<T>` lays out a 2D grid of `PixelShapePainter` tiles with
+optional keyboard focus, tap callbacks, and `Draggable<T>`/`DragTarget<T>`
+drag-and-drop. Use `.fromList` for static data or `.builder` for
+procedural/large maps:
+
+```dart
+import 'package:pixel_ui/pixel_ui.dart';
+
+enum Slot { sword, potion }
+
+PixelGrid<Slot>.fromList(
+  data: const [
+    [Slot.sword, null],
+    [null,       Slot.potion],
+  ],
+  tileLogicalWidth: 10,
+  tileLogicalHeight: 10,
+  tileScreenSize: const Size(48, 48),
+  styleFor: (s) => s == Slot.sword ? swordStyle : potionStyle,
+  emptyStyle: emptySlotStyle,
+  dragDataFor: (x, y) => grid[y][x],  // null → non-draggable tile
+  onTileAccept: (from, to, payload) { /* swap / merge / reject */ },
+  onTileActivate: (x, y) { /* arrow keys + Enter/Space or a tap */ },
+  autofocus: true,
+)
+```
+
+Data indexing is `data[y][x]` (outer list = rows). Enter/Space activates
+the focused tile only when its data is non-null — empty slots are not
+"activatable".
+
 ### Typography
 
 The package bundles the Mulmaru proportional pixel font. Use the factory helper:
@@ -225,6 +258,10 @@ Text(
 | Buttons | Texture |
 | --- | --- |
 | ![PixelButton states: normal, pressed, disabled](doc/screenshots/04_buttons.png) | ![Deterministic LCG texture overlay — plain vs textured](doc/screenshots/05_texture.png) |
+
+| Tile grids | |
+| --- | --- |
+| ![PixelGrid inventory with drag & focus](doc/screenshots/06_pixel_grid.png) | |
 
 ## Example
 
