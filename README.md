@@ -6,7 +6,7 @@
 [![Platform Build](https://github.com/BottlePumpkin/pixel_ui/actions/workflows/build.yml/badge.svg)](https://github.com/BottlePumpkin/pixel_ui/actions/workflows/build.yml)
 [![Live Tuner](https://img.shields.io/badge/Live-Tuner-5A8A3A.svg)](https://bottlepumpkin.github.io/pixel_ui/)
 
-Pixel-art design system for Flutter — parametric shapes, interactive buttons, and a bundled pixel font.
+Pixel-art design system for Flutter — build retro, 8-bit, RPG-style game UIs with parametric shapes, tile grids, interactive buttons, pixel drop shadows, and a bundled pixel font.
 
 **🎨 [Try the PixelShapeStyle tuner →](https://bottlepumpkin.github.io/pixel_ui/)**
 
@@ -18,8 +18,21 @@ Pixel-art design system for Flutter — parametric shapes, interactive buttons, 
 - Deterministic LCG texture overlays
 - Pixel-aware drop shadows with `.sm`/`.md`/`.lg` factories
 - Press-state–aware interactive pixel buttons (`PixelButton`)
+- Tile-grid layout widget (`PixelGrid<T>`) for minimaps, inventories, and tile maps — with keyboard focus and drag-and-drop
 - Bundled Mulmaru pixel font (SIL OFL 1.1) with a ready-made `TextStyle` factory
 - Zero external dependencies beyond the Flutter SDK
+
+## Why pixel_ui?
+
+Most Flutter pixel/retro packages ship a complete themed widget set tied to
+a specific era (NES, Windows XP, Steam). `pixel_ui` is positioned
+differently: it provides **low-level pixel primitives**
+(`PixelShapePainter`, `PixelCorners`, `PixelShadow`, `PixelTexture`) plus a
+small set of opinionated composite widgets (`PixelBox`, `PixelButton`,
+`PixelGrid`, `PixelText`) and a **bundled pixel font**. Compose
+inventories, minimaps, dialog frames, HP bars, and tile maps from
+primitives that fit your art direction — instead of inheriting someone
+else's chrome.
 
 ## Platforms
 

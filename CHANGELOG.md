@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.5.1 — 2026-04-27
+
+### Docs
+- Refined positioning copy on `pubspec.yaml` description and README intro to surface `retro`, `8-bit`, `RPG`, `tile grids`, and `game UI` keywords for pub.dev search discoverability (#42).
+- New "Why pixel_ui?" section in README distinguishing the primitives-first model from full-themed widget sets (NES/XP/Steam-style).
+- `PixelGrid<T>` now listed in the Features summary.
+
 ## 0.5.0 — 2026-04-24
 
 ### Added
