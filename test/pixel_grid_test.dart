@@ -278,6 +278,53 @@ void main() {
     expect(activates, [(2, 0)]);
   });
 
+  testWidgets('drag from one tile to another invokes onTileAccept',
+      (tester) async {
+    ((int, int), (int, int), _Kind)? lastAccept;
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: PixelGrid<_Kind>.fromList(
+              data: const [
+                [_Kind.wall, null],
+                [null, _Kind.floor],
+              ],
+              tileLogicalWidth: 4,
+              tileLogicalHeight: 4,
+              tileScreenSize: const Size(32, 32),
+              styleFor: _styleFor,
+              dragDataFor: (x, y) {
+                if (x == 0 && y == 0) return _Kind.wall;
+                if (x == 1 && y == 1) return _Kind.floor;
+                return null;
+              },
+              onTileAccept: (from, to, data) =>
+                  lastAccept = (from, to, data),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    final src = find.byKey(const ValueKey<(int, int)>((0, 0)));
+    final dst = find.byKey(const ValueKey<(int, int)>((1, 1)));
+    final srcCenter = tester.getCenter(src);
+    final dstCenter = tester.getCenter(dst);
+
+    final gesture = await tester.startGesture(srcCenter);
+    await tester.pump();
+    await gesture.moveTo(dstCenter);
+    await tester.pump();
+    await gesture.up();
+    await tester.pump();
+
+    expect(lastAccept, isNotNull);
+    expect(lastAccept!.$1, (0, 0));
+    expect(lastAccept!.$2, (1, 1));
+    expect(lastAccept!.$3, _Kind.wall);
+  });
+
   group('PixelGrid asserts', () {
     test('empty data throws', () {
       expect(

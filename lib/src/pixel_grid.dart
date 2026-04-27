@@ -4,6 +4,8 @@ import 'package:flutter/services.dart';
 import 'package:pixel_ui/src/pixel_shape_painter.dart';
 import 'package:pixel_ui/src/pixel_style.dart';
 
+typedef _DragPayload<T> = ({(int, int) from, T payload});
+
 /// Tile-based layout widget backed by [PixelShapePainter].
 ///
 /// Use [PixelGrid.fromList] for static 2D data, or [PixelGrid.builder] for
@@ -215,6 +217,7 @@ class _PixelGridState<T> extends State<PixelGrid<T>> {
     final data = widget.tileAt(x, y);
     // null style → _TilePaint renders a placeholder SizedBox.
     final style = data == null ? widget.emptyStyle : widget.styleFor(data);
+    final dragData = widget.dragDataFor?.call(x, y);
     return _Tile<T>(
       key: ValueKey<(int, int)>((x, y)),
       x: x,
@@ -224,6 +227,7 @@ class _PixelGridState<T> extends State<PixelGrid<T>> {
       tileLogicalWidth: widget.tileLogicalWidth,
       tileLogicalHeight: widget.tileLogicalHeight,
       tileScreenSize: widget.tileScreenSize,
+      focused: _focused == (x, y),
       onTileTap: widget.onTileTap == null
           ? null
           : (tx, ty) {
@@ -231,7 +235,8 @@ class _PixelGridState<T> extends State<PixelGrid<T>> {
               _moveFocusTo(tx, ty);
               _focusNode.requestFocus();
             },
-      focused: _focused == (x, y),
+      dragData: dragData,
+      onTileAccept: widget.onTileAccept,
     );
   }
 }
@@ -248,6 +253,8 @@ class _Tile<T> extends StatelessWidget {
     required this.tileScreenSize,
     required this.focused,
     this.onTileTap,
+    this.dragData,
+    this.onTileAccept,
   });
 
   final int x;
@@ -259,6 +266,8 @@ class _Tile<T> extends StatelessWidget {
   final Size tileScreenSize;
   final bool focused;
   final void Function(int x, int y)? onTileTap;
+  final T? dragData;
+  final void Function((int, int) from, (int, int) to, T data)? onTileAccept;
 
   @override
   Widget build(BuildContext context) {
@@ -271,6 +280,26 @@ class _Tile<T> extends StatelessWidget {
     Widget tile = focused
         ? Stack(children: [paint, _FocusOutline(size: tileScreenSize)])
         : paint;
+
+    if (dragData != null) {
+      final payload = dragData as T;
+      tile = Draggable<_DragPayload<T>>(
+        data: (from: (x, y), payload: payload),
+        feedback: Opacity(opacity: 0.7, child: paint),
+        childWhenDragging: Opacity(opacity: 0.3, child: tile),
+        child: tile,
+      );
+    }
+
+    if (onTileAccept != null) {
+      final inner = tile;
+      tile = DragTarget<_DragPayload<T>>(
+        onAcceptWithDetails: (d) =>
+            onTileAccept!(d.data.from, (x, y), d.data.payload),
+        builder: (_, _, _) => inner,
+      );
+    }
+
     if (onTileTap != null) {
       tile = GestureDetector(
         behavior: HitTestBehavior.opaque,
@@ -278,6 +307,7 @@ class _Tile<T> extends StatelessWidget {
         child: tile,
       );
     }
+
     return tile;
   }
 }
