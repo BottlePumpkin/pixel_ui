@@ -70,23 +70,23 @@ void main() {
   });
 
   group('PixelListTileTheme', () {
-    const _padA = EdgeInsets.all(8);
-    const _padB = EdgeInsets.symmetric(horizontal: 16, vertical: 4);
+    const padA = EdgeInsets.all(8);
+    const padB = EdgeInsets.symmetric(horizontal: 16, vertical: 4);
 
     const a = PixelListTileTheme(
       style: _normalStyle,
       pressedStyle: _pressedStyle,
       disabledStyle: _disabledStyle,
-      contentPadding: _padA,
+      contentPadding: padA,
       slotGap: 8,
     );
 
     test('copyWith replaces one field, preserves others', () {
-      final b = a.copyWith(contentPadding: _padB);
+      final b = a.copyWith(contentPadding: padB);
       expect(b.style, _normalStyle);
       expect(b.pressedStyle, _pressedStyle);
       expect(b.disabledStyle, _disabledStyle);
-      expect(b.contentPadding, _padB);
+      expect(b.contentPadding, padB);
       expect(b.slotGap, 8);
     });
 
