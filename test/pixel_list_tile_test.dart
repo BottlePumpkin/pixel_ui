@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pixel_ui/pixel_ui.dart';
 
@@ -140,6 +141,121 @@ void main() {
       ),
       findsNothing,
     );
+  });
+
+  testWidgets('invokes onTap on tap when enabled', (tester) async {
+    var tapped = false;
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: PixelListTile(
+            style: _style,
+            title: const Text('t', textDirection: TextDirection.ltr),
+            onTap: () => tapped = true,
+          ),
+        ),
+      ),
+    );
+    await tester.tap(find.byType(PixelListTile));
+    await tester.pumpAndSettle();
+    expect(tapped, isTrue);
+  });
+
+  testWidgets('does not invoke onTap when enabled is false', (tester) async {
+    var tapped = false;
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: PixelListTile(
+            style: _style,
+            enabled: false,
+            title: const Text('t', textDirection: TextDirection.ltr),
+            onTap: () => tapped = true,
+          ),
+        ),
+      ),
+    );
+    await tester.tap(find.byType(PixelListTile));
+    await tester.pumpAndSettle();
+    expect(tapped, isFalse);
+  });
+
+  testWidgets('switches to pressedStyle on tap-down', (tester) async {
+    const pressed = PixelShapeStyle(
+      corners: PixelCorners.sm,
+      fillColor: Color(0xFF222222),
+    );
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: PixelListTile(
+            style: _style,
+            pressedStyle: pressed,
+            title: const Text('t', textDirection: TextDirection.ltr),
+            onTap: () {},
+          ),
+        ),
+      ),
+    );
+    final gesture =
+        await tester.startGesture(tester.getCenter(find.byType(PixelListTile)));
+    await tester.pump();
+    expect(_pixelPainter(tester).style, pressed);
+    await gesture.up();
+  });
+
+  testWidgets('button semantics when onTap given', (tester) async {
+    final handle = tester.ensureSemantics();
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: PixelListTile(
+            style: _style,
+            title: const Text('t', textDirection: TextDirection.ltr),
+            onTap: () {},
+            semanticsLabel: 'Profile',
+          ),
+        ),
+      ),
+    );
+    expect(
+      tester.getSemantics(
+        find.descendant(
+          of: find.byType(PixelListTile),
+          matching: find.byType(Semantics),
+        ).first,
+      ),
+      matchesSemantics(
+        label: 'Profile',
+        isButton: true,
+        isEnabled: true,
+        hasEnabledState: true,
+        hasTapAction: true,
+      ),
+    );
+    handle.dispose();
+  });
+
+  testWidgets('no button semantics when onTap is null', (tester) async {
+    final handle = tester.ensureSemantics();
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: Scaffold(
+          body: PixelListTile(
+            style: _style,
+            title: Text('t', textDirection: TextDirection.ltr),
+          ),
+        ),
+      ),
+    );
+    final node = tester.getSemantics(
+      find.descendant(
+        of: find.byType(PixelListTile),
+        matching: find.byType(Semantics),
+      ).first,
+    );
+    expect(node.hasFlag(SemanticsFlag.isButton), isFalse);
+    handle.dispose();
   });
 }
 

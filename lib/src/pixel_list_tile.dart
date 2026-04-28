@@ -64,6 +64,16 @@ class _PixelListTileState extends State<PixelListTile> {
       EdgeInsets.symmetric(horizontal: 12, vertical: 8);
   static const _defaultSlotGap = 12.0;
 
+  bool _pressed = false;
+
+  bool get _interactive => widget.onTap != null && widget.enabled;
+
+  void _setPressed(bool v) {
+    if (!_interactive) return;
+    if (_pressed == v) return;
+    setState(() => _pressed = v);
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = context.pixelTheme<PixelListTileTheme>();
@@ -73,9 +83,10 @@ class _PixelListTileState extends State<PixelListTile> {
       'PixelListTile requires a `style` prop or a `PixelListTileTheme.style` '
       'registered via `pixelUiTheme(...)` on an ancestor Theme/MaterialApp.',
     );
+    final pressedStyle = widget.pressedStyle ?? theme?.pressedStyle;
     final disabled = widget.disabledStyle ?? theme?.disabledStyle;
-    final currentStyle =
-        !widget.enabled && disabled != null ? disabled : style!;
+
+    final currentStyle = _resolveCurrentStyle(style!, pressedStyle, disabled);
     final opacity = !widget.enabled && disabled == null ? 0.5 : 1.0;
 
     return LayoutBuilder(builder: (context, constraints) {
@@ -89,14 +100,60 @@ class _PixelListTileState extends State<PixelListTile> {
         width: constraints.maxWidth.isFinite ? constraints.maxWidth : null,
         padding: padding,
         alignment: Alignment.centerLeft,
-        child: _buildRow(theme),
+        child: AnimatedSlide(
+          duration: const Duration(milliseconds: 60),
+          curve: Curves.easeOut,
+          offset: _pressed
+              ? Offset(
+                  widget.pressChildOffset.dx /
+                      widget.logicalHeight.toDouble(),
+                  widget.pressChildOffset.dy /
+                      widget.logicalHeight.toDouble(),
+                )
+              : Offset.zero,
+          child: _buildRow(theme),
+        ),
       );
 
       if (opacity < 1.0) {
         tile = Opacity(opacity: opacity, child: tile);
       }
-      return tile;
+
+      if (widget.onTap == null) {
+        return Semantics(
+          container: true,
+          label: widget.semanticsLabel,
+          excludeSemantics: widget.semanticsLabel != null,
+          child: tile,
+        );
+      }
+
+      return Semantics(
+        button: true,
+        enabled: widget.enabled,
+        label: widget.semanticsLabel,
+        excludeSemantics: widget.semanticsLabel != null,
+        onTap: widget.enabled ? widget.onTap : null,
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTapDown: (_) => _setPressed(true),
+          onTapUp: (_) => _setPressed(false),
+          onTapCancel: () => _setPressed(false),
+          onTap: _interactive ? widget.onTap : null,
+          child: tile,
+        ),
+      );
     });
+  }
+
+  PixelShapeStyle _resolveCurrentStyle(
+    PixelShapeStyle normal,
+    PixelShapeStyle? pressed,
+    PixelShapeStyle? disabled,
+  ) {
+    if (!widget.enabled && disabled != null) return disabled;
+    if (_pressed && pressed != null) return pressed;
+    return normal;
   }
 
   Widget _buildRow(PixelListTileTheme? theme) {
