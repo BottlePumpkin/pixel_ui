@@ -341,6 +341,119 @@ void main() {
     await tester.pumpAndSettle();
     expect(newValue, isNull);
   });
+
+  group('theme pickup', () {
+    testWidgets('uses PixelSwitchTheme.* when props omitted', (tester) async {
+      const themedOn = PixelShapeStyle(
+        corners: PixelCorners.sm,
+        fillColor: Color(0xFFAAAAAA),
+      );
+      const themedOff = PixelShapeStyle(
+        corners: PixelCorners.sm,
+        fillColor: Color(0xFFBBBBBB),
+      );
+      const themedThumb = PixelShapeStyle(
+        corners: PixelCorners.sm,
+        fillColor: Color(0xFFCCCCCC),
+      );
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: pixelUiTheme(
+            switchTheme: const PixelSwitchTheme(
+              onTrackStyle: themedOn,
+              offTrackStyle: themedOff,
+              thumbStyle: themedThumb,
+            ),
+          ),
+          home: Scaffold(
+            body: Center(
+              child: PixelSwitch(
+                value: true,
+                onChanged: (_) {},
+              ),
+            ),
+          ),
+        ),
+      );
+      final painters = _painters(tester);
+      expect(painters.first.style, themedOn);
+      expect(painters.any((p) => p.style == themedThumb), isTrue);
+    });
+
+    testWidgets('explicit prop wins over theme', (tester) async {
+      const themedOn = PixelShapeStyle(
+        corners: PixelCorners.sm,
+        fillColor: Color(0xFFAAAAAA),
+      );
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: pixelUiTheme(
+            switchTheme: const PixelSwitchTheme(
+              onTrackStyle: themedOn,
+              offTrackStyle: _offTrack,
+              thumbStyle: _thumb,
+            ),
+          ),
+          home: Scaffold(
+            body: Center(
+              child: PixelSwitch(
+                value: true,
+                onChanged: (_) {},
+                onTrackStyle: _onTrack,
+              ),
+            ),
+          ),
+        ),
+      );
+      expect(_painters(tester).first.style, _onTrack);
+    });
+
+    testWidgets('asserts when required style missing from prop and theme',
+        (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: Center(
+              child: PixelSwitch(
+                value: true,
+                onChanged: (_) {},
+              ),
+            ),
+          ),
+        ),
+      );
+      expect(tester.takeException(), isAssertionError);
+    });
+
+    testWidgets('inherits disabledStyle from theme', (tester) async {
+      const themedDisabled = PixelShapeStyle(
+        corners: PixelCorners.sm,
+        fillColor: Color(0xFF666666),
+      );
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: pixelUiTheme(
+            switchTheme: const PixelSwitchTheme(
+              onTrackStyle: _onTrack,
+              offTrackStyle: _offTrack,
+              thumbStyle: _thumb,
+              disabledStyle: themedDisabled,
+            ),
+          ),
+          home: Scaffold(
+            body: Center(
+              child: PixelSwitch(
+                value: true,
+                onChanged: (_) {},
+                enabled: false,
+              ),
+            ),
+          ),
+        ),
+      );
+      expect(_painters(tester).first.style, themedDisabled);
+    });
+  });
 }
 
 /// Returns the PixelShapePainter instances inside the PixelSwitch subtree
