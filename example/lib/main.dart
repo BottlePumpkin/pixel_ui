@@ -106,6 +106,17 @@ class _ShowcaseScreen extends StatelessWidget {
                 onTap: () {},
                 semanticsLabel: 'Notifications',
               ),
+              // Switches — PixelSwitch demo (#47)
+              const SizedBox(height: 24),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                child: Text(
+                  'PixelSwitch',
+                  style: PixelText.mulmaru(fontSize: 16),
+                ),
+              ),
+              const SizedBox(height: 8),
+              const _PixelSwitchShowcase(),
             ],
           ),
         ),
@@ -571,6 +582,71 @@ class _PixelGridDemoState extends State<_PixelGridDemo> {
 }
 
 enum _Item { sword, potion, gem }
+
+class _PixelSwitchShowcase extends StatefulWidget {
+  const _PixelSwitchShowcase();
+  @override
+  State<_PixelSwitchShowcase> createState() => _PixelSwitchShowcaseState();
+}
+
+class _PixelSwitchShowcaseState extends State<_PixelSwitchShowcase> {
+  bool sound = true;
+  bool dark = false;
+
+  @override
+  Widget build(BuildContext context) {
+    const onTrack = PixelShapeStyle(
+      corners: PixelCorners.sm,
+      fillColor: Color(0xFFFFD643),
+      borderColor: Color(0xFF2A4820),
+      borderWidth: 1,
+    );
+    const offTrack = PixelShapeStyle(
+      corners: PixelCorners.sm,
+      fillColor: Color(0xFF555E73),
+      borderColor: Color(0xFF12141A),
+      borderWidth: 1,
+    );
+    const thumb = PixelShapeStyle(
+      corners: PixelCorners.sm,
+      fillColor: Color(0xFFFFFFFF),
+    );
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      child: Row(
+        children: [
+          PixelSwitch(
+            value: sound,
+            onChanged: (v) => setState(() => sound = v),
+            onTrackStyle: onTrack,
+            offTrackStyle: offTrack,
+            thumbStyle: thumb,
+            semanticsLabel: 'Sound',
+          ),
+          const SizedBox(width: 24),
+          PixelSwitch(
+            value: dark,
+            onChanged: (v) => setState(() => dark = v),
+            onTrackStyle: onTrack,
+            offTrackStyle: offTrack,
+            thumbStyle: thumb,
+            semanticsLabel: 'Dark mode',
+          ),
+          const SizedBox(width: 24),
+          // Disabled
+          PixelSwitch(
+            value: true,
+            onChanged: null,
+            onTrackStyle: onTrack,
+            offTrackStyle: offTrack,
+            thumbStyle: thumb,
+          ),
+        ],
+      ),
+    );
+  }
+}
 
 PixelShapeStyle _styleFor(_Item item) {
   switch (item) {
