@@ -6,6 +6,7 @@ export 'src/pixel_button.dart';
 export 'src/pixel_grid.dart';
 export 'src/pixel_list_tile.dart';
 export 'src/pixel_shape_painter.dart';
+export 'src/pixel_slider.dart';
 export 'src/pixel_style.dart';
 export 'src/pixel_switch.dart';
 export 'src/pixel_text.dart';

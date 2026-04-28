@@ -136,6 +136,39 @@ void main() {
     });
   });
 
+  group('PixelSliderTheme', () {
+    const dimmed = PixelShapeStyle(
+      corners: PixelCorners.sm,
+      fillColor: Color(0xFF222222),
+    );
+
+    const a = PixelSliderTheme(
+      trackStyle: _normalStyle,
+      fillStyle: _pressedStyle,
+      thumbStyle: _boxStyle,
+      disabledStyle: _disabledStyle,
+    );
+
+    test('copyWith replaces one field, preserves others', () {
+      final b = a.copyWith(disabledStyle: dimmed);
+      expect(b.trackStyle, _normalStyle);
+      expect(b.fillStyle, _pressedStyle);
+      expect(b.thumbStyle, _boxStyle);
+      expect(b.disabledStyle, dimmed);
+    });
+
+    test('lerp snaps at t=0.5', () {
+      const other = PixelSliderTheme(trackStyle: dimmed);
+      expect(a.lerp(other, 0.0).trackStyle, _normalStyle);
+      expect(a.lerp(other, 0.49).trackStyle, _normalStyle);
+      expect(a.lerp(other, 0.5).trackStyle, dimmed);
+    });
+
+    test('lerp returns self when other is null', () {
+      expect(a.lerp(null, 0.5), same(a));
+    });
+  });
+
   group('PixelTheme (umbrella)', () {
     test('copyWith replaces box and button', () {
       const a = PixelTheme();
@@ -168,6 +201,14 @@ void main() {
         switch_: const PixelSwitchTheme(thumbStyle: _boxStyle),
       );
       expect(b.switch_?.thumbStyle, _boxStyle);
+    });
+
+    test('copyWith replaces slider slot', () {
+      const a = PixelTheme();
+      final b = a.copyWith(
+        slider: const PixelSliderTheme(thumbStyle: _boxStyle),
+      );
+      expect(b.slider?.thumbStyle, _boxStyle);
     });
   });
 
@@ -275,6 +316,32 @@ void main() {
         switchTheme: const PixelSwitchTheme(thumbStyle: _normalStyle),
       );
       expect(theme.extension<PixelSwitchTheme>()?.thumbStyle, _normalStyle);
+    });
+
+    test('registers PixelSliderTheme when sliderTheme provided', () {
+      final theme = pixelUiTheme(
+        sliderTheme: const PixelSliderTheme(thumbStyle: _boxStyle),
+      );
+      expect(theme.extension<PixelSliderTheme>()?.thumbStyle, _boxStyle);
+    });
+
+    test('derives slider from umbrella when explicit not given', () {
+      final theme = pixelUiTheme(
+        pixelTheme: const PixelTheme(
+          slider: PixelSliderTheme(thumbStyle: _boxStyle),
+        ),
+      );
+      expect(theme.extension<PixelSliderTheme>()?.thumbStyle, _boxStyle);
+    });
+
+    test('explicit sliderTheme overrides umbrella.slider', () {
+      final theme = pixelUiTheme(
+        pixelTheme: const PixelTheme(
+          slider: PixelSliderTheme(thumbStyle: _boxStyle),
+        ),
+        sliderTheme: const PixelSliderTheme(thumbStyle: _normalStyle),
+      );
+      expect(theme.extension<PixelSliderTheme>()?.thumbStyle, _normalStyle);
     });
   });
 

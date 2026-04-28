@@ -514,6 +514,39 @@ PixelSwitch(
 Wire `pixelUiTheme(switchTheme: PixelSwitchTheme(...))` to share style
 across all switches app-wide. See [Theming](#theming).
 
+### Pixel slider
+
+Drop-in pixel-styled value slider for volumes, brightness, difficulty.
+Tap or drag to set the value; arrow keys / PageUp+Down adjust when focused.
+Pass `divisions` for discrete steps.
+
+```dart
+PixelSlider(
+  value: volume,
+  onChanged: (v) => setState(() => volume = v),
+  trackStyle: PixelShapeStyle(
+    corners: PixelCorners.sm,
+    fillColor: const Color(0xFF222732),
+    borderColor: const Color(0xFF12141A),
+    borderWidth: 1,
+  ),
+  fillStyle: PixelShapeStyle(
+    corners: PixelCorners.sm,
+    fillColor: const Color(0xFFFFD643),
+    borderColor: const Color(0xFF2A4820),
+    borderWidth: 1,
+  ),
+  thumbStyle: PixelShapeStyle(
+    corners: PixelCorners.sm,
+    fillColor: const Color(0xFFFFFFFF),
+  ),
+  semanticsLabel: '볼륨',
+);
+```
+
+Wire `pixelUiTheme(sliderTheme: PixelSliderTheme(...))` to share style
+across all sliders app-wide. See [Theming](#theming).
+
 ### Tappable inventory slot
 
 Wrap a `PixelBox` background in a `PixelButton` for pressable feedback. For
@@ -557,9 +590,9 @@ PixelButton(
 | --- | --- |
 | ![PixelGrid inventory with drag & focus](doc/screenshots/06_pixel_grid.png) | ![PixelListTile rows: title+subtitle+trailing, tappable, disabled](doc/screenshots/07_pixel_list_tile.png) |
 
-| Switches | |
+| Switches | Sliders |
 | --- | --- |
-| ![PixelSwitch on, off, and disabled states](doc/screenshots/08_pixel_switch.png) | |
+| ![PixelSwitch on, off, and disabled states](doc/screenshots/08_pixel_switch.png) | ![PixelSlider continuous + discrete + disabled](doc/screenshots/09_pixel_slider.png) |
 
 ## Example
 
