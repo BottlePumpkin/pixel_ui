@@ -389,6 +389,104 @@ void main() {
     expect(current, greaterThan(afterArrow));
   });
 
+  testWidgets('exposes slider semantics with value text and label',
+      (tester) async {
+    final handle = tester.ensureSemantics();
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: SizedBox(
+              width: 200,
+              child: PixelSlider(
+                value: 0.5,
+                onChanged: (_) {},
+                trackStyle: _track,
+                fillStyle: _fill,
+                thumbStyle: _thumb,
+                semanticsLabel: '볼륨',
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+    final node = tester.getSemantics(
+      find
+          .descendant(
+            of: find.byType(PixelSlider),
+            matching: find.byType(Semantics),
+          )
+          .first,
+    );
+    expect(node, matchesSemantics(
+      label: '볼륨',
+      value: '50%',
+      isSlider: true,
+      hasEnabledState: true,
+      isEnabled: true,
+      isFocusable: true,
+      hasTapAction: true,
+      hasFocusAction: true,
+      hasIncreaseAction: true,
+      hasDecreaseAction: true,
+      hasScrollLeftAction: true,
+      hasScrollRightAction: true,
+    ));
+    handle.dispose();
+  });
+
+  testWidgets('semanticsValueText overrides default formatter',
+      (tester) async {
+    final handle = tester.ensureSemantics();
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: SizedBox(
+              width: 200,
+              child: PixelSlider(
+                value: 3,
+                onChanged: (_) {},
+                min: 1,
+                max: 5,
+                divisions: 4,
+                trackStyle: _track,
+                fillStyle: _fill,
+                thumbStyle: _thumb,
+                semanticsLabel: '난이도',
+                semanticsValueText: (v) => '난이도 ${v.round()}',
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+    final node = tester.getSemantics(
+      find
+          .descendant(
+            of: find.byType(PixelSlider),
+            matching: find.byType(Semantics),
+          )
+          .first,
+    );
+    expect(node, matchesSemantics(
+      label: '난이도',
+      value: '난이도 3',
+      isSlider: true,
+      hasEnabledState: true,
+      isEnabled: true,
+      isFocusable: true,
+      hasTapAction: true,
+      hasFocusAction: true,
+      hasIncreaseAction: true,
+      hasDecreaseAction: true,
+      hasScrollLeftAction: true,
+      hasScrollRightAction: true,
+    ));
+    handle.dispose();
+  });
+
   testWidgets('keyboard inactive when disabled', (tester) async {
     double current = 0.5;
     final focus = FocusNode();

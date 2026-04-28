@@ -99,7 +99,7 @@ class _PixelSliderState extends State<PixelSlider> {
     final trackTopOffset = (outerDpH - trackDpH) / 2;
     final thumbTopOffset = (outerDpH - thumbDp) / 2;
 
-    return LayoutBuilder(builder: (context, constraints) {
+    final tree = LayoutBuilder(builder: (context, constraints) {
       final trackDpW =
           constraints.maxWidth.isFinite ? constraints.maxWidth : 320.0;
       final thumbLeft = (trackDpW - thumbDp) * _ratio;
@@ -215,6 +215,35 @@ class _PixelSliderState extends State<PixelSlider> {
       }
       return focusable;
     });
+
+    final formatted = _formatValue(widget.value);
+    final preview = _formatValue(
+      (widget.value + _keyboardStep).clamp(widget.min, widget.max),
+    );
+    final reverse = _formatValue(
+      (widget.value - _keyboardStep).clamp(widget.min, widget.max),
+    );
+
+    return Semantics(
+      slider: true,
+      enabled: _interactive,
+      label: widget.semanticsLabel,
+      value: formatted,
+      increasedValue: preview,
+      decreasedValue: reverse,
+      onIncrease: _interactive ? () => _adjust(_keyboardStep) : null,
+      onDecrease: _interactive ? () => _adjust(-_keyboardStep) : null,
+      child: tree,
+    );
+  }
+
+  String _formatValue(double v) {
+    final formatter = widget.semanticsValueText;
+    if (formatter != null) return formatter(v);
+    if (widget.min == 0.0 && widget.max == 1.0) {
+      return '${(v * 100).round()}%';
+    }
+    return v.toString();
   }
 
   bool get _interactive => widget.enabled && widget.onChanged != null;
