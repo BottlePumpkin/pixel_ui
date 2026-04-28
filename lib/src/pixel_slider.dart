@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:pixel_ui/src/pixel_box.dart';
 import 'package:pixel_ui/src/pixel_style.dart';
@@ -153,7 +154,7 @@ class _PixelSliderState extends State<PixelSlider> {
         ),
       );
 
-      Widget gd = GestureDetector(
+      final gd = GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTapDown: _interactive
             ? (d) => _setValueFromDx(d.localPosition.dx, trackDpW, thumbDp)
@@ -167,10 +168,52 @@ class _PixelSliderState extends State<PixelSlider> {
         child: visual,
       );
 
+      Widget focusable = FocusableActionDetector(
+        focusNode: widget.focusNode,
+        autofocus: _interactive && widget.autofocus,
+        enabled: _interactive,
+        shortcuts: const {
+          SingleActivator(LogicalKeyboardKey.arrowLeft): _DecreaseSmallIntent(),
+          SingleActivator(LogicalKeyboardKey.arrowDown): _DecreaseSmallIntent(),
+          SingleActivator(LogicalKeyboardKey.arrowRight):
+              _IncreaseSmallIntent(),
+          SingleActivator(LogicalKeyboardKey.arrowUp): _IncreaseSmallIntent(),
+          SingleActivator(LogicalKeyboardKey.pageDown): _DecreaseLargeIntent(),
+          SingleActivator(LogicalKeyboardKey.pageUp): _IncreaseLargeIntent(),
+        },
+        actions: {
+          _DecreaseSmallIntent: CallbackAction<_DecreaseSmallIntent>(
+            onInvoke: (_) {
+              _adjust(-_keyboardStep);
+              return null;
+            },
+          ),
+          _IncreaseSmallIntent: CallbackAction<_IncreaseSmallIntent>(
+            onInvoke: (_) {
+              _adjust(_keyboardStep);
+              return null;
+            },
+          ),
+          _DecreaseLargeIntent: CallbackAction<_DecreaseLargeIntent>(
+            onInvoke: (_) {
+              _adjust(-_pageStep);
+              return null;
+            },
+          ),
+          _IncreaseLargeIntent: CallbackAction<_IncreaseLargeIntent>(
+            onInvoke: (_) {
+              _adjust(_pageStep);
+              return null;
+            },
+          ),
+        },
+        child: gd,
+      );
+
       if (opacity < 1.0) {
-        gd = Opacity(opacity: opacity, child: gd);
+        focusable = Opacity(opacity: opacity, child: focusable);
       }
-      return gd;
+      return focusable;
     });
   }
 
@@ -204,4 +247,49 @@ class _PixelSliderState extends State<PixelSlider> {
     final stepIndex = ((v - widget.min) / stepSize).round();
     return widget.min + stepIndex * stepSize;
   }
+
+  double get _defaultKeyboardStep {
+    final span = widget.max - widget.min;
+    final n = widget.divisions;
+    if (n != null && n > 0) return span / n;
+    return span / 20;
+  }
+
+  double get _defaultPageStep {
+    final span = widget.max - widget.min;
+    final n = widget.divisions;
+    if (n != null && n > 0) {
+      final small = span / n;
+      final big = span / 10;
+      return small > big ? small : big;
+    }
+    return span / 4;
+  }
+
+  double get _keyboardStep => widget.keyboardStep ?? _defaultKeyboardStep;
+  double get _pageStep => widget.pageStep ?? _defaultPageStep;
+
+  void _adjust(double delta) {
+    if (!_interactive) return;
+    final raw = (widget.value + delta).clamp(widget.min, widget.max);
+    final snapped = _maybeSnap(raw);
+    if (snapped == widget.value) return;
+    widget.onChanged?.call(snapped);
+  }
+}
+
+class _DecreaseSmallIntent extends Intent {
+  const _DecreaseSmallIntent();
+}
+
+class _IncreaseSmallIntent extends Intent {
+  const _IncreaseSmallIntent();
+}
+
+class _DecreaseLargeIntent extends Intent {
+  const _DecreaseLargeIntent();
+}
+
+class _IncreaseLargeIntent extends Intent {
+  const _IncreaseLargeIntent();
 }

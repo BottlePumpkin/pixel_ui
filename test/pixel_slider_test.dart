@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pixel_ui/pixel_ui.dart';
 
@@ -281,6 +282,144 @@ void main() {
       ),
       findsNothing,
     );
+  });
+
+  testWidgets('Arrow Right increments by keyboardStep when focused',
+      (tester) async {
+    double current = 0.5;
+    final focus = FocusNode();
+    addTearDown(focus.dispose);
+    await tester.pumpWidget(
+      StatefulBuilder(builder: (context, setState) {
+        return MaterialApp(
+          home: Scaffold(
+            body: Center(
+              child: SizedBox(
+                width: 200,
+                child: PixelSlider(
+                  value: current,
+                  onChanged: (v) => setState(() => current = v),
+                  trackStyle: _track,
+                  fillStyle: _fill,
+                  thumbStyle: _thumb,
+                  focusNode: focus,
+                  autofocus: true,
+                ),
+              ),
+            ),
+          ),
+        );
+      }),
+    );
+    await tester.pumpAndSettle();
+    expect(focus.hasFocus, isTrue);
+    final before = current;
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+    await tester.pumpAndSettle();
+    expect(current, greaterThan(before));
+  });
+
+  testWidgets('Arrow Left decrements by keyboardStep', (tester) async {
+    double current = 0.5;
+    final focus = FocusNode();
+    addTearDown(focus.dispose);
+    await tester.pumpWidget(
+      StatefulBuilder(builder: (context, setState) {
+        return MaterialApp(
+          home: Scaffold(
+            body: Center(
+              child: SizedBox(
+                width: 200,
+                child: PixelSlider(
+                  value: current,
+                  onChanged: (v) => setState(() => current = v),
+                  trackStyle: _track,
+                  fillStyle: _fill,
+                  thumbStyle: _thumb,
+                  focusNode: focus,
+                  autofocus: true,
+                ),
+              ),
+            ),
+          ),
+        );
+      }),
+    );
+    await tester.pumpAndSettle();
+    final before = current;
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowLeft);
+    await tester.pumpAndSettle();
+    expect(current, lessThan(before));
+  });
+
+  testWidgets('PageUp moves more than ArrowRight', (tester) async {
+    double current = 0.0;
+    final focus = FocusNode();
+    addTearDown(focus.dispose);
+    await tester.pumpWidget(
+      StatefulBuilder(builder: (context, setState) {
+        return MaterialApp(
+          home: Scaffold(
+            body: Center(
+              child: SizedBox(
+                width: 200,
+                child: PixelSlider(
+                  value: current,
+                  onChanged: (v) => setState(() => current = v),
+                  trackStyle: _track,
+                  fillStyle: _fill,
+                  thumbStyle: _thumb,
+                  focusNode: focus,
+                  autofocus: true,
+                ),
+              ),
+            ),
+          ),
+        );
+      }),
+    );
+    await tester.pumpAndSettle();
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+    await tester.pumpAndSettle();
+    final afterArrow = current;
+    current = 0.0;
+    await tester.pumpAndSettle();
+    await tester.sendKeyEvent(LogicalKeyboardKey.pageUp);
+    await tester.pumpAndSettle();
+    expect(current, greaterThan(afterArrow));
+  });
+
+  testWidgets('keyboard inactive when disabled', (tester) async {
+    double current = 0.5;
+    final focus = FocusNode();
+    addTearDown(focus.dispose);
+    await tester.pumpWidget(
+      StatefulBuilder(builder: (context, setState) {
+        return MaterialApp(
+          home: Scaffold(
+            body: Center(
+              child: SizedBox(
+                width: 200,
+                child: PixelSlider(
+                  value: current,
+                  onChanged: (v) => setState(() => current = v),
+                  enabled: false,
+                  trackStyle: _track,
+                  fillStyle: _fill,
+                  thumbStyle: _thumb,
+                  focusNode: focus,
+                  autofocus: true,
+                ),
+              ),
+            ),
+          ),
+        );
+      }),
+    );
+    await tester.pumpAndSettle();
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+    await tester.pumpAndSettle();
+    expect(current, 0.5);
   });
 }
 
