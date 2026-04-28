@@ -120,6 +120,14 @@ void main() {
       final mid = a.lerp(b, 0.6);
       expect(mid.box?.style, _normalStyle);
     });
+
+    test('copyWith replaces listTile slot', () {
+      const a = PixelTheme();
+      final b = a.copyWith(
+        listTile: const PixelListTileTheme(style: _boxStyle),
+      );
+      expect(b.listTile?.style, _boxStyle);
+    });
   });
 
   group('pixelUiTheme factory', () {
@@ -174,6 +182,32 @@ void main() {
         boxTheme: const PixelBoxTheme(style: _normalStyle),
       );
       expect(theme.extension<PixelBoxTheme>()?.style, _normalStyle);
+    });
+
+    test('registers PixelListTileTheme when listTileTheme provided', () {
+      final theme = pixelUiTheme(
+        listTileTheme: const PixelListTileTheme(style: _boxStyle),
+      );
+      expect(theme.extension<PixelListTileTheme>()?.style, _boxStyle);
+    });
+
+    test('derives listTile from umbrella when explicit not given', () {
+      final theme = pixelUiTheme(
+        pixelTheme: const PixelTheme(
+          listTile: PixelListTileTheme(style: _boxStyle),
+        ),
+      );
+      expect(theme.extension<PixelListTileTheme>()?.style, _boxStyle);
+    });
+
+    test('explicit listTileTheme overrides umbrella.listTile', () {
+      final theme = pixelUiTheme(
+        pixelTheme: const PixelTheme(
+          listTile: PixelListTileTheme(style: _boxStyle),
+        ),
+        listTileTheme: const PixelListTileTheme(style: _normalStyle),
+      );
+      expect(theme.extension<PixelListTileTheme>()?.style, _normalStyle);
     });
   });
 

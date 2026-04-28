@@ -136,14 +136,20 @@ class PixelListTileTheme extends ThemeExtension<PixelListTileTheme> {
 class PixelTheme extends ThemeExtension<PixelTheme> {
   final PixelBoxTheme? box;
   final PixelButtonTheme? button;
+  final PixelListTileTheme? listTile;
 
-  const PixelTheme({this.box, this.button});
+  const PixelTheme({this.box, this.button, this.listTile});
 
   @override
-  PixelTheme copyWith({PixelBoxTheme? box, PixelButtonTheme? button}) {
+  PixelTheme copyWith({
+    PixelBoxTheme? box,
+    PixelButtonTheme? button,
+    PixelListTileTheme? listTile,
+  }) {
     return PixelTheme(
       box: box ?? this.box,
       button: button ?? this.button,
+      listTile: listTile ?? this.listTile,
     );
   }
 
@@ -163,20 +169,24 @@ ThemeData pixelUiTheme({
   PixelTheme? pixelTheme,
   PixelBoxTheme? boxTheme,
   PixelButtonTheme? buttonTheme,
+  PixelListTileTheme? listTileTheme,
 }) {
   final data = base ?? ThemeData();
   final resolvedBox = boxTheme ?? pixelTheme?.box;
   final resolvedButton = buttonTheme ?? pixelTheme?.button;
+  final resolvedListTile = listTileTheme ?? pixelTheme?.listTile;
 
   final preserved = Map<Object, ThemeExtension<dynamic>>.of(data.extensions)
     ..remove(PixelTheme)
     ..remove(PixelBoxTheme)
-    ..remove(PixelButtonTheme);
+    ..remove(PixelButtonTheme)
+    ..remove(PixelListTileTheme);
   final merged = [
     ...preserved.values,
     ?pixelTheme,
     ?resolvedBox,
     ?resolvedButton,
+    ?resolvedListTile,
   ];
 
   return data.copyWith(extensions: merged);
