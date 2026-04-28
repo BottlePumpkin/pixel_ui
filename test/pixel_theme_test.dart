@@ -69,6 +69,40 @@ void main() {
     });
   });
 
+  group('PixelListTileTheme', () {
+    const _padA = EdgeInsets.all(8);
+    const _padB = EdgeInsets.symmetric(horizontal: 16, vertical: 4);
+
+    const a = PixelListTileTheme(
+      style: _normalStyle,
+      pressedStyle: _pressedStyle,
+      disabledStyle: _disabledStyle,
+      contentPadding: _padA,
+      slotGap: 8,
+    );
+
+    test('copyWith replaces one field, preserves others', () {
+      final b = a.copyWith(contentPadding: _padB);
+      expect(b.style, _normalStyle);
+      expect(b.pressedStyle, _pressedStyle);
+      expect(b.disabledStyle, _disabledStyle);
+      expect(b.contentPadding, _padB);
+      expect(b.slotGap, 8);
+    });
+
+    test('lerp snaps at t=0.5', () {
+      const other = PixelListTileTheme(style: _boxStyle, slotGap: 16);
+      expect(a.lerp(other, 0.0).style, _normalStyle);
+      expect(a.lerp(other, 0.49).style, _normalStyle);
+      expect(a.lerp(other, 0.5).style, _boxStyle);
+      expect(a.lerp(other, 0.5).slotGap, 16);
+    });
+
+    test('lerp returns self when other is null', () {
+      expect(a.lerp(null, 0.5), same(a));
+    });
+  });
+
   group('PixelTheme (umbrella)', () {
     test('copyWith replaces box and button', () {
       const a = PixelTheme();
