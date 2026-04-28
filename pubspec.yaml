@@ -27,6 +27,8 @@ screenshots:
     path: doc/screenshots/05_texture.png
   - description: "Tile grid — drag to swap, arrow keys to navigate"
     path: doc/screenshots/06_pixel_grid.png
+  - description: "PixelListTile rows — title/subtitle/trailing, pressed, disabled"
+    path: doc/screenshots/07_pixel_list_tile.png
 
 environment:
   sdk: ^3.8.0
