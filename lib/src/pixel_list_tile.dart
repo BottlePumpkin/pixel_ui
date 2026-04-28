@@ -73,13 +73,17 @@ class _PixelListTileState extends State<PixelListTile> {
       'PixelListTile requires a `style` prop or a `PixelListTileTheme.style` '
       'registered via `pixelUiTheme(...)` on an ancestor Theme/MaterialApp.',
     );
+    final disabled = widget.disabledStyle ?? theme?.disabledStyle;
+    final currentStyle =
+        !widget.enabled && disabled != null ? disabled : style!;
+    final opacity = !widget.enabled && disabled == null ? 0.5 : 1.0;
 
     return LayoutBuilder(builder: (context, constraints) {
       final padding =
           widget.contentPadding ?? theme?.contentPadding ?? _defaultPadding;
 
-      return PixelBox(
-        style: style,
+      Widget tile = PixelBox(
+        style: currentStyle,
         logicalWidth: widget.logicalWidth,
         logicalHeight: widget.logicalHeight,
         width: constraints.maxWidth.isFinite ? constraints.maxWidth : null,
@@ -87,6 +91,11 @@ class _PixelListTileState extends State<PixelListTile> {
         alignment: Alignment.centerLeft,
         child: _buildRow(theme),
       );
+
+      if (opacity < 1.0) {
+        tile = Opacity(opacity: opacity, child: tile);
+      }
+      return tile;
     });
   }
 

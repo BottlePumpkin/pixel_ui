@@ -77,4 +77,80 @@ void main() {
     expect(find.text('R'), findsNothing);
     expect(find.text('S'), findsNothing);
   });
+
+  testWidgets('uses disabledStyle when enabled is false and disabledStyle given',
+      (tester) async {
+    const disabledStyle = PixelShapeStyle(
+      corners: PixelCorners.sm,
+      fillColor: Color(0xFF888888),
+    );
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: Scaffold(
+          body: PixelListTile(
+            style: _style,
+            disabledStyle: disabledStyle,
+            enabled: false,
+            title: Text('x', textDirection: TextDirection.ltr),
+          ),
+        ),
+      ),
+    );
+    final painter = _pixelPainter(tester);
+    expect(painter.style, disabledStyle);
+  });
+
+  testWidgets('falls back to 50% opacity when disabled and no disabledStyle',
+      (tester) async {
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: Scaffold(
+          body: PixelListTile(
+            style: _style,
+            enabled: false,
+            title: Text('x', textDirection: TextDirection.ltr),
+          ),
+        ),
+      ),
+    );
+    final opacity = tester.widget<Opacity>(
+      find.descendant(
+        of: find.byType(PixelListTile),
+        matching: find.byType(Opacity),
+      ),
+    );
+    expect(opacity.opacity, 0.5);
+  });
+
+  testWidgets('enabled true → no opacity wrapper', (tester) async {
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: Scaffold(
+          body: PixelListTile(
+            style: _style,
+            title: Text('x', textDirection: TextDirection.ltr),
+          ),
+        ),
+      ),
+    );
+    expect(
+      find.descendant(
+        of: find.byType(PixelListTile),
+        matching: find.byType(Opacity),
+      ),
+      findsNothing,
+    );
+  });
+}
+
+PixelShapePainter _pixelPainter(WidgetTester tester) {
+  final finder = find.descendant(
+    of: find.byType(PixelListTile),
+    matching: find.byType(CustomPaint),
+  );
+  return tester
+      .widgetList<CustomPaint>(finder)
+      .map((p) => p.painter)
+      .whereType<PixelShapePainter>()
+      .first;
 }
