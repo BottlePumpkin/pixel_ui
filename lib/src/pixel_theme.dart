@@ -183,18 +183,23 @@ class PixelTheme extends ThemeExtension<PixelTheme> {
   final PixelButtonTheme? button;
   final PixelListTileTheme? listTile;
 
-  const PixelTheme({this.box, this.button, this.listTile});
+  /// Trailing underscore because `switch` is a Dart reserved word.
+  final PixelSwitchTheme? switch_;
+
+  const PixelTheme({this.box, this.button, this.listTile, this.switch_});
 
   @override
   PixelTheme copyWith({
     PixelBoxTheme? box,
     PixelButtonTheme? button,
     PixelListTileTheme? listTile,
+    PixelSwitchTheme? switch_,
   }) {
     return PixelTheme(
       box: box ?? this.box,
       button: button ?? this.button,
       listTile: listTile ?? this.listTile,
+      switch_: switch_ ?? this.switch_,
     );
   }
 
@@ -215,23 +220,27 @@ ThemeData pixelUiTheme({
   PixelBoxTheme? boxTheme,
   PixelButtonTheme? buttonTheme,
   PixelListTileTheme? listTileTheme,
+  PixelSwitchTheme? switchTheme,
 }) {
   final data = base ?? ThemeData();
   final resolvedBox = boxTheme ?? pixelTheme?.box;
   final resolvedButton = buttonTheme ?? pixelTheme?.button;
   final resolvedListTile = listTileTheme ?? pixelTheme?.listTile;
+  final resolvedSwitch = switchTheme ?? pixelTheme?.switch_;
 
   final preserved = Map<Object, ThemeExtension<dynamic>>.of(data.extensions)
     ..remove(PixelTheme)
     ..remove(PixelBoxTheme)
     ..remove(PixelButtonTheme)
-    ..remove(PixelListTileTheme);
+    ..remove(PixelListTileTheme)
+    ..remove(PixelSwitchTheme);
   final merged = [
     ...preserved.values,
     ?pixelTheme,
     ?resolvedBox,
     ?resolvedButton,
     ?resolvedListTile,
+    ?resolvedSwitch,
   ];
 
   return data.copyWith(extensions: merged);

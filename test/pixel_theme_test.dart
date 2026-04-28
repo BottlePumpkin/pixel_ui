@@ -161,6 +161,14 @@ void main() {
       );
       expect(b.listTile?.style, _boxStyle);
     });
+
+    test('copyWith replaces switch_ slot', () {
+      const a = PixelTheme();
+      final b = a.copyWith(
+        switch_: const PixelSwitchTheme(thumbStyle: _boxStyle),
+      );
+      expect(b.switch_?.thumbStyle, _boxStyle);
+    });
   });
 
   group('pixelUiTheme factory', () {
@@ -241,6 +249,32 @@ void main() {
         listTileTheme: const PixelListTileTheme(style: _normalStyle),
       );
       expect(theme.extension<PixelListTileTheme>()?.style, _normalStyle);
+    });
+
+    test('registers PixelSwitchTheme when switchTheme provided', () {
+      final theme = pixelUiTheme(
+        switchTheme: const PixelSwitchTheme(thumbStyle: _boxStyle),
+      );
+      expect(theme.extension<PixelSwitchTheme>()?.thumbStyle, _boxStyle);
+    });
+
+    test('derives switch_ from umbrella when explicit not given', () {
+      final theme = pixelUiTheme(
+        pixelTheme: const PixelTheme(
+          switch_: PixelSwitchTheme(thumbStyle: _boxStyle),
+        ),
+      );
+      expect(theme.extension<PixelSwitchTheme>()?.thumbStyle, _boxStyle);
+    });
+
+    test('explicit switchTheme overrides umbrella.switch_', () {
+      final theme = pixelUiTheme(
+        pixelTheme: const PixelTheme(
+          switch_: PixelSwitchTheme(thumbStyle: _boxStyle),
+        ),
+        switchTheme: const PixelSwitchTheme(thumbStyle: _normalStyle),
+      );
+      expect(theme.extension<PixelSwitchTheme>()?.thumbStyle, _normalStyle);
     });
   });
 
