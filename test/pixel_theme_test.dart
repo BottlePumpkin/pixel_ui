@@ -202,6 +202,14 @@ void main() {
       );
       expect(b.switch_?.thumbStyle, _boxStyle);
     });
+
+    test('copyWith replaces slider slot', () {
+      const a = PixelTheme();
+      final b = a.copyWith(
+        slider: const PixelSliderTheme(thumbStyle: _boxStyle),
+      );
+      expect(b.slider?.thumbStyle, _boxStyle);
+    });
   });
 
   group('pixelUiTheme factory', () {
@@ -308,6 +316,32 @@ void main() {
         switchTheme: const PixelSwitchTheme(thumbStyle: _normalStyle),
       );
       expect(theme.extension<PixelSwitchTheme>()?.thumbStyle, _normalStyle);
+    });
+
+    test('registers PixelSliderTheme when sliderTheme provided', () {
+      final theme = pixelUiTheme(
+        sliderTheme: const PixelSliderTheme(thumbStyle: _boxStyle),
+      );
+      expect(theme.extension<PixelSliderTheme>()?.thumbStyle, _boxStyle);
+    });
+
+    test('derives slider from umbrella when explicit not given', () {
+      final theme = pixelUiTheme(
+        pixelTheme: const PixelTheme(
+          slider: PixelSliderTheme(thumbStyle: _boxStyle),
+        ),
+      );
+      expect(theme.extension<PixelSliderTheme>()?.thumbStyle, _boxStyle);
+    });
+
+    test('explicit sliderTheme overrides umbrella.slider', () {
+      final theme = pixelUiTheme(
+        pixelTheme: const PixelTheme(
+          slider: PixelSliderTheme(thumbStyle: _boxStyle),
+        ),
+        sliderTheme: const PixelSliderTheme(thumbStyle: _normalStyle),
+      );
+      expect(theme.extension<PixelSliderTheme>()?.thumbStyle, _normalStyle);
     });
   });
 
