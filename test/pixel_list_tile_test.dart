@@ -257,6 +257,141 @@ void main() {
     expect(node.hasFlag(SemanticsFlag.isButton), isFalse);
     handle.dispose();
   });
+
+  group('theme pickup', () {
+    testWidgets('uses PixelListTileTheme.style when style prop omitted',
+        (tester) async {
+      const themed = PixelShapeStyle(
+        corners: PixelCorners.sm,
+        fillColor: Color(0xFF111111),
+      );
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: pixelUiTheme(
+            listTileTheme: const PixelListTileTheme(style: themed),
+          ),
+          home: const Scaffold(
+            body: PixelListTile(
+              title: Text('t', textDirection: TextDirection.ltr),
+            ),
+          ),
+        ),
+      );
+      expect(_pixelPainter(tester).style, themed);
+    });
+
+    testWidgets('explicit style prop wins over theme', (tester) async {
+      const themed = PixelShapeStyle(
+        corners: PixelCorners.sm,
+        fillColor: Color(0xFF111111),
+      );
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: pixelUiTheme(
+            listTileTheme: const PixelListTileTheme(style: themed),
+          ),
+          home: const Scaffold(
+            body: PixelListTile(
+              style: _style,
+              title: Text('t', textDirection: TextDirection.ltr),
+            ),
+          ),
+        ),
+      );
+      expect(_pixelPainter(tester).style, _style);
+    });
+
+    testWidgets('asserts when both style prop and theme absent',
+        (tester) async {
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: Scaffold(
+            body: PixelListTile(
+              title: Text('t', textDirection: TextDirection.ltr),
+            ),
+          ),
+        ),
+      );
+      expect(tester.takeException(), isAssertionError);
+    });
+
+    testWidgets('inherits pressedStyle from theme', (tester) async {
+      const pressed = PixelShapeStyle(
+        corners: PixelCorners.sm,
+        fillColor: Color(0xFF222222),
+      );
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: pixelUiTheme(
+            listTileTheme: const PixelListTileTheme(
+              style: _style,
+              pressedStyle: pressed,
+            ),
+          ),
+          home: Scaffold(
+            body: PixelListTile(
+              title: const Text('t', textDirection: TextDirection.ltr),
+              onTap: () {},
+            ),
+          ),
+        ),
+      );
+      final gesture = await tester
+          .startGesture(tester.getCenter(find.byType(PixelListTile)));
+      await tester.pump();
+      expect(_pixelPainter(tester).style, pressed);
+      await gesture.up();
+    });
+
+    testWidgets('inherits disabledStyle from theme', (tester) async {
+      const disabled = PixelShapeStyle(
+        corners: PixelCorners.sm,
+        fillColor: Color(0xFF888888),
+      );
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: _ListTileThemeWrapper(
+            theme: PixelListTileTheme(
+              style: _style,
+              disabledStyle: disabled,
+            ),
+            child: Scaffold(
+              body: PixelListTile(
+                enabled: false,
+                title: Text('t', textDirection: TextDirection.ltr),
+              ),
+            ),
+          ),
+        ),
+      );
+      expect(_pixelPainter(tester).style, disabled);
+    });
+
+    testWidgets('inherits contentPadding and slotGap from theme',
+        (tester) async {
+      const themePadding = EdgeInsets.symmetric(horizontal: 24, vertical: 16);
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: pixelUiTheme(
+            listTileTheme: const PixelListTileTheme(
+              style: _style,
+              contentPadding: themePadding,
+              slotGap: 30,
+            ),
+          ),
+          home: const Scaffold(
+            body: PixelListTile(
+              leading: Text('L', textDirection: TextDirection.ltr),
+              title: Text('T', textDirection: TextDirection.ltr),
+            ),
+          ),
+        ),
+      );
+      final lRight = tester.getTopRight(find.text('L')).dx;
+      final tLeft = tester.getTopLeft(find.text('T')).dx;
+      expect(tLeft - lRight, greaterThanOrEqualTo(30));
+    });
+  });
 }
 
 PixelShapePainter _pixelPainter(WidgetTester tester) {
@@ -269,4 +404,17 @@ PixelShapePainter _pixelPainter(WidgetTester tester) {
       .map((p) => p.painter)
       .whereType<PixelShapePainter>()
       .first;
+}
+
+class _ListTileThemeWrapper extends StatelessWidget {
+  const _ListTileThemeWrapper({required this.theme, required this.child});
+  final PixelListTileTheme theme;
+  final Widget child;
+  @override
+  Widget build(BuildContext context) {
+    return Theme(
+      data: pixelUiTheme(listTileTheme: theme),
+      child: child,
+    );
+  }
 }
