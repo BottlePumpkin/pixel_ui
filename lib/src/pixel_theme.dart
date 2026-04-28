@@ -80,6 +80,54 @@ class PixelButtonTheme extends ThemeExtension<PixelButtonTheme> {
   }
 }
 
+/// Theme overrides for [PixelListTile].
+///
+/// `style` provides the default container [PixelShapeStyle].
+/// `pressedStyle` and `disabledStyle` are consulted when the tile is pressed
+/// or `enabled == false`. `contentPadding` and `slotGap` set default inner
+/// metrics; widget props override per call site.
+class PixelListTileTheme extends ThemeExtension<PixelListTileTheme> {
+  final PixelShapeStyle? style;
+  final PixelShapeStyle? pressedStyle;
+  final PixelShapeStyle? disabledStyle;
+  final EdgeInsetsGeometry? contentPadding;
+  final double? slotGap;
+
+  const PixelListTileTheme({
+    this.style,
+    this.pressedStyle,
+    this.disabledStyle,
+    this.contentPadding,
+    this.slotGap,
+  });
+
+  @override
+  PixelListTileTheme copyWith({
+    PixelShapeStyle? style,
+    PixelShapeStyle? pressedStyle,
+    PixelShapeStyle? disabledStyle,
+    EdgeInsetsGeometry? contentPadding,
+    double? slotGap,
+  }) {
+    return PixelListTileTheme(
+      style: style ?? this.style,
+      pressedStyle: pressedStyle ?? this.pressedStyle,
+      disabledStyle: disabledStyle ?? this.disabledStyle,
+      contentPadding: contentPadding ?? this.contentPadding,
+      slotGap: slotGap ?? this.slotGap,
+    );
+  }
+
+  @override
+  PixelListTileTheme lerp(
+    covariant ThemeExtension<PixelListTileTheme>? other,
+    double t,
+  ) {
+    if (other is! PixelListTileTheme) return this;
+    return t < 0.5 ? this : other;
+  }
+}
+
 /// Umbrella extension grouping per-component pixel themes.
 ///
 /// Used as a convenient entry point for [pixelUiTheme]; individual
@@ -88,14 +136,20 @@ class PixelButtonTheme extends ThemeExtension<PixelButtonTheme> {
 class PixelTheme extends ThemeExtension<PixelTheme> {
   final PixelBoxTheme? box;
   final PixelButtonTheme? button;
+  final PixelListTileTheme? listTile;
 
-  const PixelTheme({this.box, this.button});
+  const PixelTheme({this.box, this.button, this.listTile});
 
   @override
-  PixelTheme copyWith({PixelBoxTheme? box, PixelButtonTheme? button}) {
+  PixelTheme copyWith({
+    PixelBoxTheme? box,
+    PixelButtonTheme? button,
+    PixelListTileTheme? listTile,
+  }) {
     return PixelTheme(
       box: box ?? this.box,
       button: button ?? this.button,
+      listTile: listTile ?? this.listTile,
     );
   }
 
@@ -115,20 +169,24 @@ ThemeData pixelUiTheme({
   PixelTheme? pixelTheme,
   PixelBoxTheme? boxTheme,
   PixelButtonTheme? buttonTheme,
+  PixelListTileTheme? listTileTheme,
 }) {
   final data = base ?? ThemeData();
   final resolvedBox = boxTheme ?? pixelTheme?.box;
   final resolvedButton = buttonTheme ?? pixelTheme?.button;
+  final resolvedListTile = listTileTheme ?? pixelTheme?.listTile;
 
   final preserved = Map<Object, ThemeExtension<dynamic>>.of(data.extensions)
     ..remove(PixelTheme)
     ..remove(PixelBoxTheme)
-    ..remove(PixelButtonTheme);
+    ..remove(PixelButtonTheme)
+    ..remove(PixelListTileTheme);
   final merged = [
     ...preserved.values,
     ?pixelTheme,
     ?resolvedBox,
     ?resolvedButton,
+    ?resolvedListTile,
   ];
 
   return data.copyWith(extensions: merged);

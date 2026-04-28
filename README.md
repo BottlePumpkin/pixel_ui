@@ -452,6 +452,35 @@ PixelBox(
 );
 ```
 
+### Settings row
+
+`PixelListTile` composes a leading / title+subtitle / trailing row into a
+themed pixel container. Pass `onTap` for press feedback.
+
+```dart
+PixelListTile(
+  style: PixelShapeStyle(
+    corners: PixelCorners.md,
+    fillColor: const Color(0xFF333A4D),
+    borderColor: const Color(0xFF12141A),
+    borderWidth: 1,
+  ),
+  pressedStyle: PixelShapeStyle(
+    corners: PixelCorners.md,
+    fillColor: const Color(0xFF464E66),
+    borderColor: const Color(0xFF12141A),
+    borderWidth: 1,
+  ),
+  title: Text('효과음', style: PixelText.mulmaru(fontSize: 14, color: const Color(0xFFFFFFFF))),
+  subtitle: Text('버튼 · 알림 픽셀 사운드', style: PixelText.mulmaru(fontSize: 11, color: const Color(0xFFB7BCC9))),
+  trailing: Text('ON', style: PixelText.mulmaruMono(fontSize: 12, color: const Color(0xFFFFD643))),
+  onTap: () {},
+);
+```
+
+Wire `pixelUiTheme(listTileTheme: PixelListTileTheme(...))` to apply the
+container style across all tiles app-wide. See [Theming](#theming).
+
 ### Tappable inventory slot
 
 Wrap a `PixelBox` background in a `PixelButton` for pressable feedback. For
@@ -491,9 +520,9 @@ PixelButton(
 | --- | --- |
 | ![PixelButton states: normal, pressed, disabled](doc/screenshots/04_buttons.png) | ![Deterministic LCG texture overlay — plain vs textured](doc/screenshots/05_texture.png) |
 
-| Tile grids | |
+| Tile grids | List tiles |
 | --- | --- |
-| ![PixelGrid inventory with drag & focus](doc/screenshots/06_pixel_grid.png) | |
+| ![PixelGrid inventory with drag & focus](doc/screenshots/06_pixel_grid.png) | ![PixelListTile rows: title+subtitle+trailing, tappable, disabled](doc/screenshots/07_pixel_list_tile.png) |
 
 ## Example
 

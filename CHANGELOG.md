@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+### Added
+- `PixelListTile` — pixel-styled row layout for settings / profile / menu screens. Slots: `leading?` / `title` / `subtitle?` / `trailing?`. Optional `onTap` adds `PixelButton`-style press feedback (swap to `pressedStyle`, slide children by `pressChildOffset`) and `Semantics(button: true)`. `enabled` is independent of `onTap` (matches Material `ListTile`) — when `false`, paints `disabledStyle` if given, else `style` at 50% opacity. Stretches to parent width via internal `LayoutBuilder`. New `PixelListTileTheme` extension (also slotted on `PixelTheme.listTile` and `pixelUiTheme(listTileTheme:)`) lets apps register defaults. Closes #49.
+
 ### Docs
 - README `## Install` version pin bumped `^0.4.0` → `^0.5.0` to match the current minor line (recurring drift; closes #50, follow-up to #19).
 - New `## Theming` section documenting `pixelUiTheme(...)` wire-up, the `PixelTheme` / `PixelBoxTheme` / `PixelButtonTheme` extensions, style resolution precedence, and the `context.pixelTheme<T>()` reader (closes #51). The theming system has been live since 0.3.0 but had zero presence in the README.
