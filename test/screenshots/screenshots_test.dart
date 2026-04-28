@@ -19,6 +19,7 @@ import 'scenes/corners_scene.dart';
 import 'scenes/hero_scene.dart';
 import 'scenes/pixel_grid_scene.dart';
 import 'scenes/pixel_list_tile_scene.dart';
+import 'scenes/pixel_slider_scene.dart';
 import 'scenes/pixel_switch_scene.dart';
 import 'scenes/shadows_scene.dart';
 import 'scenes/texture_scene.dart';
@@ -84,6 +85,7 @@ void main() {
     ('06_pixel_grid', const PixelGridScene()),
     ('07_pixel_list_tile', const PixelListTileScene()),
     ('08_pixel_switch', const PixelSwitchScene()),
+    ('09_pixel_slider', const PixelSliderScene()),
   ];
 
   for (final (name, scene) in scenes) {
