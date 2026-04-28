@@ -239,6 +239,108 @@ void main() {
     await tester.pumpAndSettle();
     expect(newValue, isFalse);
   });
+
+  testWidgets('uses disabledStyle when enabled is false and disabledStyle given',
+      (tester) async {
+    const disabled = PixelShapeStyle(
+      corners: PixelCorners.sm,
+      fillColor: Color(0xFF333333),
+    );
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: PixelSwitch(
+              value: true,
+              onChanged: (_) {},
+              enabled: false,
+              onTrackStyle: _onTrack,
+              offTrackStyle: _offTrack,
+              thumbStyle: _thumb,
+              disabledStyle: disabled,
+            ),
+          ),
+        ),
+      ),
+    );
+    final painters = _painters(tester);
+    expect(painters.first.style, disabled);
+  });
+
+  testWidgets('falls back to 50% opacity when disabled and no disabledStyle',
+      (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: PixelSwitch(
+              value: true,
+              onChanged: (_) {},
+              enabled: false,
+              onTrackStyle: _onTrack,
+              offTrackStyle: _offTrack,
+              thumbStyle: _thumb,
+            ),
+          ),
+        ),
+      ),
+    );
+    final opacity = tester.widget<Opacity>(
+      find.descendant(
+        of: find.byType(PixelSwitch),
+        matching: find.byType(Opacity),
+      ),
+    );
+    expect(opacity.opacity, 0.5);
+  });
+
+  testWidgets('enabled true → no Opacity wrapper', (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: PixelSwitch(
+              value: true,
+              onChanged: (_) {},
+              onTrackStyle: _onTrack,
+              offTrackStyle: _offTrack,
+              thumbStyle: _thumb,
+            ),
+          ),
+        ),
+      ),
+    );
+    expect(
+      find.descendant(
+        of: find.byType(PixelSwitch),
+        matching: find.byType(Opacity),
+      ),
+      findsNothing,
+    );
+  });
+
+  testWidgets('disabled blocks tap', (tester) async {
+    bool? newValue;
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: PixelSwitch(
+              value: false,
+              onChanged: (v) => newValue = v,
+              enabled: false,
+              onTrackStyle: _onTrack,
+              offTrackStyle: _offTrack,
+              thumbStyle: _thumb,
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.tap(find.byType(PixelSwitch), warnIfMissed: false);
+    await tester.pumpAndSettle();
+    expect(newValue, isNull);
+  });
 }
 
 /// Returns the PixelShapePainter instances inside the PixelSwitch subtree

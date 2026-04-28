@@ -69,7 +69,12 @@ class _PixelSwitchState extends State<PixelSwitch> {
       '`pixelUiTheme(...)` on an ancestor Theme/MaterialApp.',
     );
 
-    final trackStyle = widget.value ? on! : off!;
+    final disabled = widget.disabledStyle ?? theme?.disabledStyle;
+    final activeStyle = widget.value ? on! : off!;
+    final trackStyle =
+        !widget.enabled && disabled != null ? disabled : activeStyle;
+    final opacity =
+        !widget.enabled && disabled == null ? 0.5 : 1.0;
 
     final thumbSize = widget.thumbLogicalSize ??
         widget.trackLogicalHeight - 2 * widget.thumbInset;
@@ -139,13 +144,18 @@ class _PixelSwitchState extends State<PixelSwitch> {
       child: tappable,
     );
 
+    Widget visual = focusable;
+    if (opacity < 1.0) {
+      visual = Opacity(opacity: opacity, child: visual);
+    }
+
     return Semantics(
       toggled: widget.value,
       enabled: _interactive,
       label: widget.semanticsLabel,
       excludeSemantics: widget.semanticsLabel != null,
       onTap: _interactive ? _toggle : null,
-      child: focusable,
+      child: visual,
     );
   }
 
