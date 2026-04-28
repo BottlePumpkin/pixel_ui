@@ -59,6 +59,56 @@ class _ShowcaseScreen extends StatelessWidget {
                 child: _PixelGridDemo(),
               ),
               const SizedBox(height: 40),
+              // Settings — PixelListTile demo (#49)
+              const SizedBox(height: 24),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                child: Text(
+                  'PixelListTile',
+                  style: PixelText.mulmaru(fontSize: 16),
+                ),
+              ),
+              const SizedBox(height: 8),
+              PixelListTile(
+                style: const PixelShapeStyle(
+                  corners: PixelCorners.sm,
+                  fillColor: Color(0xFF333A4D),
+                  borderColor: Color(0xFF12141A),
+                  borderWidth: 1,
+                ),
+                title: Text('효과음',
+                    style: PixelText.mulmaru(
+                        fontSize: 14, color: const Color(0xFFFFFFFF))),
+                subtitle: Text('버튼 · 알림 픽셀 사운드',
+                    style: PixelText.mulmaru(
+                        fontSize: 11, color: const Color(0xFFB7BCC9))),
+                trailing: Text('ON',
+                    style: PixelText.mulmaruMono(
+                        fontSize: 12, color: const Color(0xFFFFD643))),
+              ),
+              const SizedBox(height: 4),
+              PixelListTile(
+                style: const PixelShapeStyle(
+                  corners: PixelCorners.sm,
+                  fillColor: Color(0xFF333A4D),
+                  borderColor: Color(0xFF12141A),
+                  borderWidth: 1,
+                ),
+                pressedStyle: const PixelShapeStyle(
+                  corners: PixelCorners.sm,
+                  fillColor: Color(0xFF5A8A3A),
+                  borderColor: Color(0xFF2A4820),
+                  borderWidth: 1,
+                ),
+                title: Text('알림 설정',
+                    style: PixelText.mulmaru(
+                        fontSize: 14, color: const Color(0xFFFFFFFF))),
+                trailing: Text('›',
+                    style: PixelText.mulmaru(
+                        fontSize: 18, color: const Color(0xFFB7BCC9))),
+                onTap: () {},
+                semanticsLabel: 'Notifications',
+              ),
             ],
           ),
         ),
