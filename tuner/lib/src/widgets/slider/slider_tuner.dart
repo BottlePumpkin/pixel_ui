@@ -54,7 +54,7 @@ class _SliderIcon extends StatelessWidget {
             height: 2,
             child: PixelBox(
               style: const PixelShapeStyle(
-                corners: PixelCorners.sm,
+                corners: PixelCorners.sharp,
                 fillColor: Color(0xFF222732),
               ),
               logicalWidth: 16,
