@@ -55,6 +55,53 @@ void main() {
     final painters = _painters(tester);
     expect(painters.first.style, _offTrack);
   });
+
+  testWidgets('renders thumb with thumbStyle', (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: PixelSwitch(
+              value: true,
+              onChanged: (_) {},
+              onTrackStyle: _onTrack,
+              offTrackStyle: _offTrack,
+              thumbStyle: _thumb,
+            ),
+          ),
+        ),
+      ),
+    );
+    final painters = _painters(tester);
+    expect(painters.length, greaterThanOrEqualTo(2));
+    expect(painters.any((p) => p.style == _thumb), isTrue);
+  });
+
+  testWidgets('thumb slides from left (off) to right (on)', (tester) async {
+    Widget build(bool v) => MaterialApp(
+          home: Scaffold(
+            body: Center(
+              child: PixelSwitch(
+                value: v,
+                onChanged: (_) {},
+                onTrackStyle: _onTrack,
+                offTrackStyle: _offTrack,
+                thumbStyle: _thumb,
+              ),
+            ),
+          ),
+        );
+
+    await tester.pumpWidget(build(false));
+    await tester.pumpAndSettle();
+    final offThumb = _thumbCenter(tester);
+
+    await tester.pumpWidget(build(true));
+    await tester.pumpAndSettle();
+    final onThumb = _thumbCenter(tester);
+
+    expect(onThumb.dx, greaterThan(offThumb.dx));
+  });
 }
 
 /// Returns the PixelShapePainter instances inside the PixelSwitch subtree
@@ -69,4 +116,21 @@ List<PixelShapePainter> _painters(WidgetTester tester) {
       .map((p) => p.painter)
       .whereType<PixelShapePainter>()
       .toList();
+}
+
+Offset _thumbCenter(WidgetTester tester) {
+  // The thumb is the inner CustomPaint whose painter style equals the
+  // configured thumb style. Locate by matching painter.style.
+  final finder = find.descendant(
+    of: find.byType(PixelSwitch),
+    matching: find.byType(CustomPaint),
+  );
+  for (final element in tester.elementList(finder)) {
+    final paint = element.widget as CustomPaint;
+    final painter = paint.painter;
+    if (painter is PixelShapePainter && painter.style == _thumb) {
+      return tester.getCenter(find.byElementPredicate((e) => e == element));
+    }
+  }
+  throw StateError('Thumb CustomPaint not found');
 }

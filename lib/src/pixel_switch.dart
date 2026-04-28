@@ -70,10 +70,47 @@ class _PixelSwitchState extends State<PixelSwitch> {
 
     final trackStyle = widget.value ? on! : off!;
 
-    return PixelBox(
-      style: trackStyle,
-      logicalWidth: widget.trackLogicalWidth,
-      logicalHeight: widget.trackLogicalHeight,
+    final thumbSize = widget.thumbLogicalSize ??
+        widget.trackLogicalHeight - 2 * widget.thumbInset;
+    const logicalToDp = 4.0;
+    final trackDpW = widget.trackLogicalWidth * logicalToDp;
+    final trackDpH = widget.trackLogicalHeight * logicalToDp;
+    final thumbDp = thumbSize * logicalToDp;
+    final insetDp = widget.thumbInset * logicalToDp;
+    final onLeft = trackDpW - thumbDp - insetDp;
+
+    return SizedBox(
+      width: trackDpW,
+      height: trackDpH,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Positioned.fill(
+            child: PixelBox(
+              style: trackStyle,
+              logicalWidth: widget.trackLogicalWidth,
+              logicalHeight: widget.trackLogicalHeight,
+              width: trackDpW,
+              height: trackDpH,
+            ),
+          ),
+          AnimatedPositioned(
+            duration: widget.animationDuration,
+            curve: Curves.easeOut,
+            left: widget.value ? onLeft : insetDp,
+            top: insetDp,
+            width: thumbDp,
+            height: thumbDp,
+            child: PixelBox(
+              style: thumb!,
+              logicalWidth: thumbSize,
+              logicalHeight: thumbSize,
+              width: thumbDp,
+              height: thumbDp,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
