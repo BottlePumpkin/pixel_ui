@@ -86,6 +86,12 @@ class _PixelSliderState extends State<PixelSlider> {
       '`pixelUiTheme(...)` on an ancestor Theme/MaterialApp.',
     );
 
+    final disabled = widget.disabledStyle ?? theme?.disabledStyle;
+    final trackEffective =
+        !widget.enabled && disabled != null ? disabled : track!;
+    final opacity =
+        !widget.enabled && disabled == null ? 0.5 : 1.0;
+
     final thumbDp = widget.thumbLogicalSize * _logicalToDp;
     final trackDpH = widget.trackLogicalHeight * _logicalToDp;
     final outerDpH = thumbDp > trackDpH ? thumbDp : trackDpH;
@@ -110,7 +116,7 @@ class _PixelSliderState extends State<PixelSlider> {
               width: trackDpW,
               height: trackDpH,
               child: PixelBox(
-                style: track!,
+                style: trackEffective,
                 logicalWidth: widget.trackLogicalWidth,
                 logicalHeight: widget.trackLogicalHeight,
                 width: trackDpW,
@@ -147,7 +153,7 @@ class _PixelSliderState extends State<PixelSlider> {
         ),
       );
 
-      return GestureDetector(
+      Widget gd = GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTapDown: _interactive
             ? (d) => _setValueFromDx(d.localPosition.dx, trackDpW, thumbDp)
@@ -160,6 +166,11 @@ class _PixelSliderState extends State<PixelSlider> {
             : null,
         child: visual,
       );
+
+      if (opacity < 1.0) {
+        gd = Opacity(opacity: opacity, child: gd);
+      }
+      return gd;
     });
   }
 

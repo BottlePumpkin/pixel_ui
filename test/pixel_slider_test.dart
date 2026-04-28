@@ -192,6 +192,96 @@ void main() {
     // No exception, no callback. Test passes if the pump doesn't throw.
     expect(true, isTrue);
   });
+
+  testWidgets('uses disabledStyle when enabled is false and disabledStyle given',
+      (tester) async {
+    const disabled = PixelShapeStyle(
+      corners: PixelCorners.sm,
+      fillColor: Color(0xFF333333),
+    );
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: SizedBox(
+              width: 200,
+              child: PixelSlider(
+                value: 0.5,
+                onChanged: (_) {},
+                enabled: false,
+                trackStyle: _track,
+                fillStyle: _fill,
+                thumbStyle: _thumb,
+                disabledStyle: disabled,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+    final painters = _painters(tester);
+    // Track is the first painter (drawn first under fill+thumb). When
+    // disabled with explicit disabledStyle, the track adopts disabledStyle.
+    expect(painters.any((p) => p.style == disabled), isTrue);
+  });
+
+  testWidgets('falls back to 50% opacity when disabled and no disabledStyle',
+      (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: SizedBox(
+              width: 200,
+              child: PixelSlider(
+                value: 0.5,
+                onChanged: (_) {},
+                enabled: false,
+                trackStyle: _track,
+                fillStyle: _fill,
+                thumbStyle: _thumb,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+    final opacity = tester.widget<Opacity>(
+      find.descendant(
+        of: find.byType(PixelSlider),
+        matching: find.byType(Opacity),
+      ),
+    );
+    expect(opacity.opacity, 0.5);
+  });
+
+  testWidgets('enabled true → no Opacity wrapper', (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: SizedBox(
+              width: 200,
+              child: PixelSlider(
+                value: 0.5,
+                onChanged: (_) {},
+                trackStyle: _track,
+                fillStyle: _fill,
+                thumbStyle: _thumb,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+    expect(
+      find.descendant(
+        of: find.byType(PixelSlider),
+        matching: find.byType(Opacity),
+      ),
+      findsNothing,
+    );
+  });
 }
 
 List<PixelShapePainter> _painters(WidgetTester tester) {
