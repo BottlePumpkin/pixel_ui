@@ -4,6 +4,9 @@
 
 ### Docs
 - README `## Install` version pin bumped `^0.4.0` → `^0.5.0` to match the current minor line (recurring drift; closes #50, follow-up to #19).
+- New `## Theming` section documenting `pixelUiTheme(...)` wire-up, the `PixelTheme` / `PixelBoxTheme` / `PixelButtonTheme` extensions, style resolution precedence, and the `context.pixelTheme<T>()` reader (closes #51). The theming system has been live since 0.3.0 but had zero presence in the README.
+- New `### PixelBox` subsection under `## Usage` with a standalone container example plus a `label:` / `labelLeftInset:` cutout walkthrough and a pointer to the `painter:` slot (closes #53). `PixelBox` was advertised as a primitive in Features but had no usage example in the README.
+- New `## Cookbook` section with three copy-pasteable recipes — HP / MP bar, NPC dialog frame with asymmetric corners + label, tappable inventory slot — so the pub.dev Example tab and first-time readers have short, self-contained patterns alongside the full `example/` showcase (closes #52).
 
 ### Internal
 - `tool/check_readme_version.dart` — CI guard that fails when `README.md`'s `pixel_ui: ^X.Y` install pin falls behind `pubspec.yaml`'s `version:` major.minor. Wired into `.github/workflows/test.yml` to prevent the recurring drift pattern at PR-time. Supports `--fix` for one-shot local repair and `--json` for tooling.
