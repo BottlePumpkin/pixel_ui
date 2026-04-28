@@ -62,7 +62,6 @@ class PixelListTile extends StatefulWidget {
 class _PixelListTileState extends State<PixelListTile> {
   static const _defaultPadding =
       EdgeInsets.symmetric(horizontal: 12, vertical: 8);
-  // ignore: unused_field  — T5 will use this for slot spacing
   static const _defaultSlotGap = 12.0;
 
   @override
@@ -86,8 +85,41 @@ class _PixelListTileState extends State<PixelListTile> {
         width: constraints.maxWidth.isFinite ? constraints.maxWidth : null,
         padding: padding,
         alignment: Alignment.centerLeft,
-        child: widget.title,
+        child: _buildRow(theme),
       );
     });
+  }
+
+  Widget _buildRow(PixelListTileTheme? theme) {
+    final gap = widget.slotGap ?? theme?.slotGap ?? _defaultSlotGap;
+
+    final children = <Widget>[];
+    if (widget.leading != null) {
+      children.add(widget.leading!);
+      children.add(SizedBox(width: gap));
+    }
+    children.add(Expanded(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          widget.title,
+          if (widget.subtitle != null) ...[
+            const SizedBox(height: 2),
+            widget.subtitle!,
+          ],
+        ],
+      ),
+    ));
+    if (widget.trailing != null) {
+      children.add(SizedBox(width: gap));
+      children.add(widget.trailing!);
+    }
+
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: children,
+    );
   }
 }
