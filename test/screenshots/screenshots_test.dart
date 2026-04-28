@@ -18,6 +18,7 @@ import 'scenes/buttons_scene.dart';
 import 'scenes/corners_scene.dart';
 import 'scenes/hero_scene.dart';
 import 'scenes/pixel_grid_scene.dart';
+import 'scenes/pixel_list_tile_scene.dart';
 import 'scenes/shadows_scene.dart';
 import 'scenes/texture_scene.dart';
 
@@ -80,6 +81,7 @@ void main() {
     ('04_buttons', const ButtonsScene()),
     ('05_texture', const TextureScene()),
     ('06_pixel_grid', const PixelGridScene()),
+    ('07_pixel_list_tile', const PixelListTileScene()),
   ];
 
   for (final (name, scene) in scenes) {

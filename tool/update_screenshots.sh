@@ -8,7 +8,7 @@ cd "$(dirname "$0")/.."
 echo "→ Regenerating goldens..."
 flutter test --update-goldens test/screenshots/screenshots_test.dart
 
-expected=(01_hero 02_corners 03_shadows 04_buttons 05_texture 06_pixel_grid)
+expected=(01_hero 02_corners 03_shadows 04_buttons 05_texture 06_pixel_grid 07_pixel_list_tile)
 
 echo "→ Verifying goldens exist..."
 for name in "${expected[@]}"; do
