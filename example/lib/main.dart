@@ -117,6 +117,17 @@ class _ShowcaseScreen extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               const _PixelSwitchShowcase(),
+              // Sliders — PixelSlider demo (#48)
+              const SizedBox(height: 24),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                child: Text(
+                  'PixelSlider',
+                  style: PixelText.mulmaru(fontSize: 16),
+                ),
+              ),
+              const SizedBox(height: 8),
+              const _PixelSliderShowcase(),
             ],
           ),
         ),
@@ -641,6 +652,69 @@ class _PixelSwitchShowcaseState extends State<_PixelSwitchShowcase> {
             onTrackStyle: onTrack,
             offTrackStyle: offTrack,
             thumbStyle: thumb,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _PixelSliderShowcase extends StatefulWidget {
+  const _PixelSliderShowcase();
+  @override
+  State<_PixelSliderShowcase> createState() => _PixelSliderShowcaseState();
+}
+
+class _PixelSliderShowcaseState extends State<_PixelSliderShowcase> {
+  double volume = 0.6;
+  double difficulty = 3;
+
+  @override
+  Widget build(BuildContext context) {
+    const track = PixelShapeStyle(
+      corners: PixelCorners.sm,
+      fillColor: Color(0xFF222732),
+      borderColor: Color(0xFF12141A),
+      borderWidth: 1,
+    );
+    const fill = PixelShapeStyle(
+      corners: PixelCorners.sm,
+      fillColor: Color(0xFFFFD643),
+      borderColor: Color(0xFF2A4820),
+      borderWidth: 1,
+    );
+    const thumb = PixelShapeStyle(
+      corners: PixelCorners.sm,
+      fillColor: Color(0xFFFFFFFF),
+      borderColor: Color(0xFF12141A),
+      borderWidth: 1,
+    );
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          PixelSlider(
+            value: volume,
+            onChanged: (v) => setState(() => volume = v),
+            trackStyle: track,
+            fillStyle: fill,
+            thumbStyle: thumb,
+            semanticsLabel: 'Volume',
+          ),
+          const SizedBox(height: 16),
+          PixelSlider(
+            value: difficulty,
+            onChanged: (v) => setState(() => difficulty = v),
+            min: 1,
+            max: 5,
+            divisions: 4,
+            trackStyle: track,
+            fillStyle: fill,
+            thumbStyle: thumb,
+            semanticsLabel: 'Difficulty',
+            semanticsValueText: (v) => 'Level ${v.round()}',
           ),
         ],
       ),
