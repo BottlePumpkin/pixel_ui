@@ -128,6 +128,51 @@ class PixelListTileTheme extends ThemeExtension<PixelListTileTheme> {
   }
 }
 
+/// Theme overrides for [PixelSwitch].
+///
+/// `onTrackStyle` and `offTrackStyle` paint the track based on the switch's
+/// `value`. `thumbStyle` paints the sliding thumb (independent of value).
+/// `disabledStyle` is consulted when the switch's `enabled == false`; if
+/// omitted, the widget falls back to painting the active track at 50%
+/// opacity.
+class PixelSwitchTheme extends ThemeExtension<PixelSwitchTheme> {
+  final PixelShapeStyle? onTrackStyle;
+  final PixelShapeStyle? offTrackStyle;
+  final PixelShapeStyle? thumbStyle;
+  final PixelShapeStyle? disabledStyle;
+
+  const PixelSwitchTheme({
+    this.onTrackStyle,
+    this.offTrackStyle,
+    this.thumbStyle,
+    this.disabledStyle,
+  });
+
+  @override
+  PixelSwitchTheme copyWith({
+    PixelShapeStyle? onTrackStyle,
+    PixelShapeStyle? offTrackStyle,
+    PixelShapeStyle? thumbStyle,
+    PixelShapeStyle? disabledStyle,
+  }) {
+    return PixelSwitchTheme(
+      onTrackStyle: onTrackStyle ?? this.onTrackStyle,
+      offTrackStyle: offTrackStyle ?? this.offTrackStyle,
+      thumbStyle: thumbStyle ?? this.thumbStyle,
+      disabledStyle: disabledStyle ?? this.disabledStyle,
+    );
+  }
+
+  @override
+  PixelSwitchTheme lerp(
+    covariant ThemeExtension<PixelSwitchTheme>? other,
+    double t,
+  ) {
+    if (other is! PixelSwitchTheme) return this;
+    return t < 0.5 ? this : other;
+  }
+}
+
 /// Umbrella extension grouping per-component pixel themes.
 ///
 /// Used as a convenient entry point for [pixelUiTheme]; individual
