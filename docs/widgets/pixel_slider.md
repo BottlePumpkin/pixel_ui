@@ -68,7 +68,7 @@ class PixelSlider extends StatefulWidget {
   - Defaults — `keyboardStep`: `(max − min) / divisions` for discrete, else `(max − min) / 20`. `pageStep`: `(max − min) / 4` for continuous, else `max(keyboardStep, (max − min) / 10)` for discrete.
 - **Disabled visual**: when `enabled == false`, the track paints `disabledStyle` if provided; else the entire visual subtree (track + fill + thumb) is wrapped in `Opacity(0.5)`. Tap/drag/keyboard are blocked.
 - **Theming**: omit any of `trackStyle` / `fillStyle` / `thumbStyle` / `disabledStyle` to inherit from `PixelSliderTheme` registered via `pixelUiTheme(...)`. The three required styles (`trackStyle`, `fillStyle`, `thumbStyle`) assert in debug if neither prop nor theme provides them.
-- **Semantics**: outermost `Semantics(slider: true, label: semanticsLabel, value: text, increasedValue: textForIncrement, decreasedValue: textForDecrement, onIncrease: …, onDecrease: …)`. Value text is computed by `semanticsValueText(widget.value)` when set, else `'${((widget.value - min) / (max - min) * 100).round()}%'` for the default `[0, 1]` range, else `widget.value.toString()` for other ranges.
+- **Semantics**: outermost `Semantics(slider: true, label: semanticsLabel, value: text, increasedValue: textForIncrement, decreasedValue: textForDecrement, onIncrease: …, onDecrease: …)`. Value text is computed by `semanticsValueText(widget.value)` when set, else `'${(widget.value * 100).round()}%'` when `min == 0.0 && max == 1.0`, else `widget.value.toString()` for other ranges.
 
 ## Style resolution precedence
 

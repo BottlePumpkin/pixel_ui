@@ -257,8 +257,6 @@ class _PixelSliderState extends State<PixelSlider> {
     if (usable <= 0) return;
     final ratio = ((dx - thumbW / 2) / usable).clamp(0.0, 1.0);
     var raw = widget.min + ratio * (widget.max - widget.min);
-    // Snap to nearest division if discrete (T6 implements; this line is a
-    // no-op until then).
     raw = _maybeSnap(raw);
     if (raw == widget.value) return;
     widget.onChanged?.call(raw);
