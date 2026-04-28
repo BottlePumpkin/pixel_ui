@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:pixel_ui/src/pixel_box.dart';
 import 'package:pixel_ui/src/pixel_style.dart';
@@ -113,10 +114,38 @@ class _PixelSwitchState extends State<PixelSwitch> {
       ),
     );
 
-    return GestureDetector(
+    final tappable = GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: _interactive ? _toggle : null,
       child: track,
+    );
+
+    final focusable = FocusableActionDetector(
+      focusNode: widget.focusNode,
+      autofocus: widget.autofocus,
+      enabled: _interactive,
+      shortcuts: const {
+        SingleActivator(LogicalKeyboardKey.space): _ToggleIntent(),
+        SingleActivator(LogicalKeyboardKey.enter): _ToggleIntent(),
+      },
+      actions: {
+        _ToggleIntent: CallbackAction<_ToggleIntent>(
+          onInvoke: (_) {
+            if (_interactive) _toggle();
+            return null;
+          },
+        ),
+      },
+      child: tappable,
+    );
+
+    return Semantics(
+      toggled: widget.value,
+      enabled: _interactive,
+      label: widget.semanticsLabel,
+      excludeSemantics: widget.semanticsLabel != null,
+      onTap: _interactive ? _toggle : null,
+      child: focusable,
     );
   }
 
@@ -127,4 +156,8 @@ class _PixelSwitchState extends State<PixelSwitch> {
     if (cb == null) return;
     cb(!widget.value);
   }
+}
+
+class _ToggleIntent extends Intent {
+  const _ToggleIntent();
 }

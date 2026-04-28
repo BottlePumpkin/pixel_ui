@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pixel_ui/pixel_ui.dart';
 
@@ -145,6 +146,98 @@ void main() {
     final onThumb = _thumbCenter(tester);
 
     expect(onThumb.dx, greaterThan(offThumb.dx));
+  });
+
+  testWidgets('exposes switch semantics with toggled state', (tester) async {
+    final handle = tester.ensureSemantics();
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: PixelSwitch(
+              value: true,
+              onChanged: (_) {},
+              onTrackStyle: _onTrack,
+              offTrackStyle: _offTrack,
+              thumbStyle: _thumb,
+              semanticsLabel: '효과음',
+            ),
+          ),
+        ),
+      ),
+    );
+    final node = tester.getSemantics(
+      find
+          .descendant(
+            of: find.byType(PixelSwitch),
+            matching: find.byType(Semantics),
+          )
+          .first,
+    );
+    expect(node, matchesSemantics(
+      label: '효과음',
+      isToggled: true,
+      hasToggledState: true,
+      hasEnabledState: true,
+      isEnabled: true,
+      hasTapAction: true,
+    ));
+    handle.dispose();
+  });
+
+  testWidgets('Space toggles when focused', (tester) async {
+    bool? newValue;
+    final focus = FocusNode();
+    addTearDown(focus.dispose);
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: PixelSwitch(
+              value: false,
+              onChanged: (v) => newValue = v,
+              onTrackStyle: _onTrack,
+              offTrackStyle: _offTrack,
+              thumbStyle: _thumb,
+              focusNode: focus,
+              autofocus: true,
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(focus.hasFocus, isTrue);
+    await tester.sendKeyEvent(LogicalKeyboardKey.space);
+    await tester.pumpAndSettle();
+    expect(newValue, isTrue);
+  });
+
+  testWidgets('Enter toggles when focused', (tester) async {
+    bool? newValue;
+    final focus = FocusNode();
+    addTearDown(focus.dispose);
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: PixelSwitch(
+              value: true,
+              onChanged: (v) => newValue = v,
+              onTrackStyle: _onTrack,
+              offTrackStyle: _offTrack,
+              thumbStyle: _thumb,
+              focusNode: focus,
+              autofocus: true,
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pumpAndSettle();
+    expect(newValue, isFalse);
   });
 }
 
