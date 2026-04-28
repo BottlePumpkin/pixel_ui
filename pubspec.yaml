@@ -31,6 +31,8 @@ screenshots:
     path: doc/screenshots/07_pixel_list_tile.png
   - description: "PixelSwitch — on / off / disabled states"
     path: doc/screenshots/08_pixel_switch.png
+  - description: "PixelSlider — continuous, discrete, and disabled states"
+    path: doc/screenshots/09_pixel_slider.png
 
 environment:
   sdk: ^3.8.0
