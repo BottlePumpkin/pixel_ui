@@ -96,10 +96,9 @@ class _PixelSliderState extends State<PixelSlider> {
       final trackDpW =
           constraints.maxWidth.isFinite ? constraints.maxWidth : 320.0;
       final thumbLeft = (trackDpW - thumbDp) * _ratio;
-      // Fill spans from track left to thumb's right edge.
       final fillDpW = thumbLeft + thumbDp;
 
-      return SizedBox(
+      final visual = SizedBox(
         width: trackDpW,
         height: outerDpH,
         child: Stack(
@@ -147,6 +146,41 @@ class _PixelSliderState extends State<PixelSlider> {
           ],
         ),
       );
+
+      return GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTapDown: _interactive
+            ? (d) => _setValueFromDx(d.localPosition.dx, trackDpW, thumbDp)
+            : null,
+        onHorizontalDragStart: _interactive
+            ? (d) => _setValueFromDx(d.localPosition.dx, trackDpW, thumbDp)
+            : null,
+        onHorizontalDragUpdate: _interactive
+            ? (d) => _setValueFromDx(d.localPosition.dx, trackDpW, thumbDp)
+            : null,
+        child: visual,
+      );
     });
   }
+
+  bool get _interactive => widget.enabled && widget.onChanged != null;
+
+  /// Maps an x-coordinate inside the slider widget to a value in [min, max]
+  /// using the iOS-style geometry: thumb anchors `value == min` to left=0
+  /// and `value == max` to left = trackW − thumbW. Dragging beyond either
+  /// edge clamps to the bounds.
+  void _setValueFromDx(double dx, double trackW, double thumbW) {
+    final usable = trackW - thumbW;
+    if (usable <= 0) return;
+    final ratio = ((dx - thumbW / 2) / usable).clamp(0.0, 1.0);
+    var raw = widget.min + ratio * (widget.max - widget.min);
+    // Snap to nearest division if discrete (T6 implements; this line is a
+    // no-op until then).
+    raw = _maybeSnap(raw);
+    if (raw == widget.value) return;
+    widget.onChanged?.call(raw);
+  }
+
+  /// Discrete snap (no-op when `divisions == null`); fully implemented in T6.
+  double _maybeSnap(double v) => v;
 }
