@@ -52,7 +52,7 @@ class PixelSwitch extends StatefulWidget {
 - **Tap behavior**:
   - `onChanged == null` OR `enabled == false` → no gesture, no keyboard, but still paints. `Semantics(toggled, isEnabled: false, hasEnabledState: true)`.
   - otherwise → tap fires `onChanged(!value)`. `Semantics(toggled: value, isEnabled: true, hasEnabledState: true, onTap: …)`.
-- **Keyboard**: when focused, `LogicalKeyboardKey.space` and `LogicalKeyboardKey.enter` invoke `onChanged(!value)`. Focus is owned by an internal `Focus` widget unless `focusNode` is supplied.
+- **Keyboard**: when focused, `LogicalKeyboardKey.space` and `LogicalKeyboardKey.enter` invoke `onChanged(!value)`. Focus is owned by an internal `FocusableActionDetector` unless `focusNode` is supplied.
 - **Disabled visual**: when `enabled == false`, the track paints `disabledStyle` if provided; else paints the active (`onTrackStyle` / `offTrackStyle`) style at 50% opacity. The thumb continues to paint `thumbStyle` (under the same opacity wrapper).
 - **Theming**: omit any of `onTrackStyle` / `offTrackStyle` / `thumbStyle` / `disabledStyle` to inherit from `PixelSwitchTheme` registered via `pixelUiTheme(...)`. The three required styles (`onTrackStyle`, `offTrackStyle`, `thumbStyle`) assert in debug if neither prop nor theme provides them.
 

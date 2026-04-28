@@ -342,6 +342,45 @@ void main() {
     expect(newValue, isNull);
   });
 
+  testWidgets(
+      'disabled switch does not steal autofocus',
+      (tester) async {
+    final switchFocus = FocusNode();
+    final siblingFocus = FocusNode();
+    addTearDown(switchFocus.dispose);
+    addTearDown(siblingFocus.dispose);
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: Column(
+            children: [
+              PixelSwitch(
+                value: false,
+                onChanged: (_) {},
+                enabled: false,
+                onTrackStyle: _onTrack,
+                offTrackStyle: _offTrack,
+                thumbStyle: _thumb,
+                focusNode: switchFocus,
+                autofocus: true,
+              ),
+              Focus(
+                focusNode: siblingFocus,
+                autofocus: true,
+                child: const SizedBox(width: 10, height: 10),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    // Disabled switch must NOT have stolen focus from the sibling.
+    expect(switchFocus.hasFocus, isFalse);
+    expect(siblingFocus.hasFocus, isTrue);
+  });
+
   group('theme pickup', () {
     testWidgets('uses PixelSwitchTheme.* when props omitted', (tester) async {
       const themedOn = PixelShapeStyle(

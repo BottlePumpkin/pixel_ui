@@ -127,7 +127,7 @@ class _PixelSwitchState extends State<PixelSwitch> {
 
     final focusable = FocusableActionDetector(
       focusNode: widget.focusNode,
-      autofocus: widget.autofocus,
+      autofocus: _interactive && widget.autofocus,
       enabled: _interactive,
       shortcuts: const {
         SingleActivator(LogicalKeyboardKey.space): _ToggleIntent(),
