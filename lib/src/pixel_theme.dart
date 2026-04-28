@@ -173,6 +173,51 @@ class PixelSwitchTheme extends ThemeExtension<PixelSwitchTheme> {
   }
 }
 
+/// Theme overrides for [PixelSlider].
+///
+/// `trackStyle` paints the unfilled track. `fillStyle` paints the value-clipped
+/// fill that grows from the track's left edge toward the thumb. `thumbStyle`
+/// paints the draggable thumb. `disabledStyle` is consulted when the slider's
+/// `enabled == false` and replaces the track only; if omitted, the entire
+/// visual subtree (track + fill + thumb) renders at 50% opacity.
+class PixelSliderTheme extends ThemeExtension<PixelSliderTheme> {
+  final PixelShapeStyle? trackStyle;
+  final PixelShapeStyle? fillStyle;
+  final PixelShapeStyle? thumbStyle;
+  final PixelShapeStyle? disabledStyle;
+
+  const PixelSliderTheme({
+    this.trackStyle,
+    this.fillStyle,
+    this.thumbStyle,
+    this.disabledStyle,
+  });
+
+  @override
+  PixelSliderTheme copyWith({
+    PixelShapeStyle? trackStyle,
+    PixelShapeStyle? fillStyle,
+    PixelShapeStyle? thumbStyle,
+    PixelShapeStyle? disabledStyle,
+  }) {
+    return PixelSliderTheme(
+      trackStyle: trackStyle ?? this.trackStyle,
+      fillStyle: fillStyle ?? this.fillStyle,
+      thumbStyle: thumbStyle ?? this.thumbStyle,
+      disabledStyle: disabledStyle ?? this.disabledStyle,
+    );
+  }
+
+  @override
+  PixelSliderTheme lerp(
+    covariant ThemeExtension<PixelSliderTheme>? other,
+    double t,
+  ) {
+    if (other is! PixelSliderTheme) return this;
+    return t < 0.5 ? this : other;
+  }
+}
+
 /// Umbrella extension grouping per-component pixel themes.
 ///
 /// Used as a convenient entry point for [pixelUiTheme]; individual
