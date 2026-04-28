@@ -519,6 +519,133 @@ void main() {
     await tester.pumpAndSettle();
     expect(current, 0.5);
   });
+
+  group('theme pickup', () {
+    testWidgets('uses PixelSliderTheme.* when props omitted', (tester) async {
+      const themedTrack = PixelShapeStyle(
+        corners: PixelCorners.sm,
+        fillColor: Color(0xFFAAAAAA),
+      );
+      const themedFill = PixelShapeStyle(
+        corners: PixelCorners.sm,
+        fillColor: Color(0xFFBBBBBB),
+      );
+      const themedThumb = PixelShapeStyle(
+        corners: PixelCorners.sm,
+        fillColor: Color(0xFFCCCCCC),
+      );
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: pixelUiTheme(
+            sliderTheme: const PixelSliderTheme(
+              trackStyle: themedTrack,
+              fillStyle: themedFill,
+              thumbStyle: themedThumb,
+            ),
+          ),
+          home: Scaffold(
+            body: Center(
+              child: SizedBox(
+                width: 200,
+                child: PixelSlider(
+                  value: 0.5,
+                  onChanged: (_) {},
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      final painters = _painters(tester);
+      expect(painters.any((p) => p.style == themedTrack), isTrue);
+      expect(painters.any((p) => p.style == themedFill), isTrue);
+      expect(painters.any((p) => p.style == themedThumb), isTrue);
+    });
+
+    testWidgets('explicit prop wins over theme', (tester) async {
+      const themedThumb = PixelShapeStyle(
+        corners: PixelCorners.sm,
+        fillColor: Color(0xFFAAAAAA),
+      );
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: pixelUiTheme(
+            sliderTheme: const PixelSliderTheme(
+              trackStyle: _track,
+              fillStyle: _fill,
+              thumbStyle: themedThumb,
+            ),
+          ),
+          home: Scaffold(
+            body: Center(
+              child: SizedBox(
+                width: 200,
+                child: PixelSlider(
+                  value: 0.5,
+                  onChanged: (_) {},
+                  thumbStyle: _thumb,
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      expect(_painters(tester).any((p) => p.style == _thumb), isTrue);
+      expect(_painters(tester).any((p) => p.style == themedThumb), isFalse);
+    });
+
+    testWidgets('asserts when required style missing from prop and theme',
+        (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: Center(
+              child: SizedBox(
+                width: 200,
+                child: PixelSlider(
+                  value: 0.5,
+                  onChanged: (_) {},
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      expect(tester.takeException(), isAssertionError);
+    });
+
+    testWidgets('inherits disabledStyle from theme', (tester) async {
+      const themedDisabled = PixelShapeStyle(
+        corners: PixelCorners.sm,
+        fillColor: Color(0xFF666666),
+      );
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: pixelUiTheme(
+            sliderTheme: const PixelSliderTheme(
+              trackStyle: _track,
+              fillStyle: _fill,
+              thumbStyle: _thumb,
+              disabledStyle: themedDisabled,
+            ),
+          ),
+          home: Scaffold(
+            body: Center(
+              child: SizedBox(
+                width: 200,
+                child: PixelSlider(
+                  value: 0.5,
+                  onChanged: (_) {},
+                  enabled: false,
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      expect(_painters(tester).any((p) => p.style == themedDisabled), isTrue);
+    });
+  });
 }
 
 List<PixelShapePainter> _painters(WidgetTester tester) {
