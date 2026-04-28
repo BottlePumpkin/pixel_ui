@@ -103,9 +103,6 @@ class _ShowcaseScreen extends StatelessWidget {
                 title: Text('알림 설정',
                     style: PixelText.mulmaru(
                         fontSize: 14, color: const Color(0xFFFFFFFF))),
-                trailing: Text('›',
-                    style: PixelText.mulmaru(
-                        fontSize: 18, color: const Color(0xFFB7BCC9))),
                 onTap: () {},
                 semanticsLabel: 'Notifications',
               ),

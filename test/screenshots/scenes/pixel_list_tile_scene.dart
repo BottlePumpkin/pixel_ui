@@ -57,9 +57,6 @@ class PixelListTileScene extends StatelessWidget {
                 title: Text('알림 설정',
                     style:
                         PixelText.mulmaru(fontSize: 14, color: _ink)),
-                trailing: Text('›',
-                    style: PixelText.mulmaru(
-                        fontSize: 20, color: _muted)),
                 onTap: () {},
               ),
               const SizedBox(height: 6),
