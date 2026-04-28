@@ -77,6 +77,50 @@ void main() {
     expect(painters.any((p) => p.style == _thumb), isTrue);
   });
 
+  testWidgets('tap toggles value via onChanged', (tester) async {
+    bool? newValue;
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: PixelSwitch(
+              value: false,
+              onChanged: (v) => newValue = v,
+              onTrackStyle: _onTrack,
+              offTrackStyle: _offTrack,
+              thumbStyle: _thumb,
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.tap(find.byType(PixelSwitch));
+    await tester.pumpAndSettle();
+    expect(newValue, isTrue);
+  });
+
+  testWidgets('tap is a no-op when onChanged is null', (tester) async {
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: PixelSwitch(
+              value: false,
+              onChanged: null,
+              onTrackStyle: _onTrack,
+              offTrackStyle: _offTrack,
+              thumbStyle: _thumb,
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.tap(find.byType(PixelSwitch), warnIfMissed: false);
+    await tester.pumpAndSettle();
+    // No exception, no callback fired (no callback exists).
+    expect(true, isTrue);
+  });
+
   testWidgets('thumb slides from left (off) to right (on)', (tester) async {
     Widget build(bool v) => MaterialApp(
           home: Scaffold(

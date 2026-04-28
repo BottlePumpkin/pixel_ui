@@ -79,7 +79,7 @@ class _PixelSwitchState extends State<PixelSwitch> {
     final insetDp = widget.thumbInset * logicalToDp;
     final onLeft = trackDpW - thumbDp - insetDp;
 
-    return SizedBox(
+    final track = SizedBox(
       width: trackDpW,
       height: trackDpH,
       child: Stack(
@@ -112,5 +112,19 @@ class _PixelSwitchState extends State<PixelSwitch> {
         ],
       ),
     );
+
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: _interactive ? _toggle : null,
+      child: track,
+    );
+  }
+
+  bool get _interactive => widget.enabled && widget.onChanged != null;
+
+  void _toggle() {
+    final cb = widget.onChanged;
+    if (cb == null) return;
+    cb(!widget.value);
   }
 }
