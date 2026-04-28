@@ -181,6 +181,16 @@ class _PixelSliderState extends State<PixelSlider> {
     widget.onChanged?.call(raw);
   }
 
-  /// Discrete snap (no-op when `divisions == null`); fully implemented in T6.
-  double _maybeSnap(double v) => v;
+  /// Snaps `v` to the nearest division step when `divisions != null`. With
+  /// `divisions = N`, the valid steps are `min + i * (max - min) / N` for
+  /// `i in 0..N`.
+  double _maybeSnap(double v) {
+    final n = widget.divisions;
+    if (n == null || n <= 0) return v;
+    final span = widget.max - widget.min;
+    if (span == 0) return widget.min;
+    final stepSize = span / n;
+    final stepIndex = ((v - widget.min) / stepSize).round();
+    return widget.min + stepIndex * stepSize;
+  }
 }

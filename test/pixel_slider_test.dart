@@ -129,6 +129,45 @@ void main() {
     expect(current, greaterThan(0.5));
   });
 
+  testWidgets('divisions snaps drag values to nearest step', (tester) async {
+    final values = <double>[];
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: SizedBox(
+              width: 400,
+              child: PixelSlider(
+                value: 0.0,
+                onChanged: (v) => values.add(v),
+                min: 0,
+                max: 4,
+                divisions: 4,
+                trackStyle: _track,
+                fillStyle: _fill,
+                thumbStyle: _thumb,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    final start = tester.getTopLeft(find.byType(PixelSlider)) + const Offset(10, 8);
+    final gesture = await tester.startGesture(start);
+    await gesture.moveBy(const Offset(300, 0));
+    await tester.pumpAndSettle();
+    await gesture.up();
+
+    // All emitted values must be in {0, 1, 2, 3, 4}.
+    for (final v in values) {
+      expect(v, anyOf(0.0, 1.0, 2.0, 3.0, 4.0),
+          reason: 'expected a snapped step, got $v');
+    }
+    // And at least one step should have changed.
+    expect(values, isNotEmpty);
+  });
+
   testWidgets('tap is a no-op when onChanged is null', (tester) async {
     await tester.pumpWidget(
       const MaterialApp(
