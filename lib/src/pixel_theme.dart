@@ -128,6 +128,51 @@ class PixelListTileTheme extends ThemeExtension<PixelListTileTheme> {
   }
 }
 
+/// Theme overrides for [PixelSwitch].
+///
+/// `onTrackStyle` and `offTrackStyle` paint the track based on the switch's
+/// `value`. `thumbStyle` paints the sliding thumb (independent of value).
+/// `disabledStyle` is consulted when the switch's `enabled == false`; if
+/// omitted, the widget falls back to painting the active track at 50%
+/// opacity.
+class PixelSwitchTheme extends ThemeExtension<PixelSwitchTheme> {
+  final PixelShapeStyle? onTrackStyle;
+  final PixelShapeStyle? offTrackStyle;
+  final PixelShapeStyle? thumbStyle;
+  final PixelShapeStyle? disabledStyle;
+
+  const PixelSwitchTheme({
+    this.onTrackStyle,
+    this.offTrackStyle,
+    this.thumbStyle,
+    this.disabledStyle,
+  });
+
+  @override
+  PixelSwitchTheme copyWith({
+    PixelShapeStyle? onTrackStyle,
+    PixelShapeStyle? offTrackStyle,
+    PixelShapeStyle? thumbStyle,
+    PixelShapeStyle? disabledStyle,
+  }) {
+    return PixelSwitchTheme(
+      onTrackStyle: onTrackStyle ?? this.onTrackStyle,
+      offTrackStyle: offTrackStyle ?? this.offTrackStyle,
+      thumbStyle: thumbStyle ?? this.thumbStyle,
+      disabledStyle: disabledStyle ?? this.disabledStyle,
+    );
+  }
+
+  @override
+  PixelSwitchTheme lerp(
+    covariant ThemeExtension<PixelSwitchTheme>? other,
+    double t,
+  ) {
+    if (other is! PixelSwitchTheme) return this;
+    return t < 0.5 ? this : other;
+  }
+}
+
 /// Umbrella extension grouping per-component pixel themes.
 ///
 /// Used as a convenient entry point for [pixelUiTheme]; individual
@@ -138,18 +183,23 @@ class PixelTheme extends ThemeExtension<PixelTheme> {
   final PixelButtonTheme? button;
   final PixelListTileTheme? listTile;
 
-  const PixelTheme({this.box, this.button, this.listTile});
+  /// Trailing underscore because `switch` is a Dart reserved word.
+  final PixelSwitchTheme? switch_;
+
+  const PixelTheme({this.box, this.button, this.listTile, this.switch_});
 
   @override
   PixelTheme copyWith({
     PixelBoxTheme? box,
     PixelButtonTheme? button,
     PixelListTileTheme? listTile,
+    PixelSwitchTheme? switch_,
   }) {
     return PixelTheme(
       box: box ?? this.box,
       button: button ?? this.button,
       listTile: listTile ?? this.listTile,
+      switch_: switch_ ?? this.switch_,
     );
   }
 
@@ -170,23 +220,27 @@ ThemeData pixelUiTheme({
   PixelBoxTheme? boxTheme,
   PixelButtonTheme? buttonTheme,
   PixelListTileTheme? listTileTheme,
+  PixelSwitchTheme? switchTheme,
 }) {
   final data = base ?? ThemeData();
   final resolvedBox = boxTheme ?? pixelTheme?.box;
   final resolvedButton = buttonTheme ?? pixelTheme?.button;
   final resolvedListTile = listTileTheme ?? pixelTheme?.listTile;
+  final resolvedSwitch = switchTheme ?? pixelTheme?.switch_;
 
   final preserved = Map<Object, ThemeExtension<dynamic>>.of(data.extensions)
     ..remove(PixelTheme)
     ..remove(PixelBoxTheme)
     ..remove(PixelButtonTheme)
-    ..remove(PixelListTileTheme);
+    ..remove(PixelListTileTheme)
+    ..remove(PixelSwitchTheme);
   final merged = [
     ...preserved.values,
     ?pixelTheme,
     ?resolvedBox,
     ?resolvedButton,
     ?resolvedListTile,
+    ?resolvedSwitch,
   ];
 
   return data.copyWith(extensions: merged);

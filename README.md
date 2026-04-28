@@ -481,6 +481,39 @@ PixelListTile(
 Wire `pixelUiTheme(listTileTheme: PixelListTileTheme(...))` to apply the
 container style across all tiles app-wide. See [Theming](#theming).
 
+### Pixel switch
+
+Drop-in pixel-styled toggle for settings, preferences, and on/off rows.
+Tap or `Space` / `Enter` (when focused) toggles the value; the thumb
+slides over `animationDuration` (default 120 ms).
+
+```dart
+PixelSwitch(
+  value: soundOn,
+  onChanged: (v) => setState(() => soundOn = v),
+  onTrackStyle: PixelShapeStyle(
+    corners: PixelCorners.sm,
+    fillColor: const Color(0xFFFFD643),
+    borderColor: const Color(0xFF2A4820),
+    borderWidth: 1,
+  ),
+  offTrackStyle: PixelShapeStyle(
+    corners: PixelCorners.sm,
+    fillColor: const Color(0xFF555E73),
+    borderColor: const Color(0xFF12141A),
+    borderWidth: 1,
+  ),
+  thumbStyle: PixelShapeStyle(
+    corners: PixelCorners.sm,
+    fillColor: const Color(0xFFFFFFFF),
+  ),
+  semanticsLabel: '효과음',
+);
+```
+
+Wire `pixelUiTheme(switchTheme: PixelSwitchTheme(...))` to share style
+across all switches app-wide. See [Theming](#theming).
+
 ### Tappable inventory slot
 
 Wrap a `PixelBox` background in a `PixelButton` for pressable feedback. For
@@ -523,6 +556,10 @@ PixelButton(
 | Tile grids | List tiles |
 | --- | --- |
 | ![PixelGrid inventory with drag & focus](doc/screenshots/06_pixel_grid.png) | ![PixelListTile rows: title+subtitle+trailing, tappable, disabled](doc/screenshots/07_pixel_list_tile.png) |
+
+| Switches | |
+| --- | --- |
+| ![PixelSwitch on, off, and disabled states](doc/screenshots/08_pixel_switch.png) | |
 
 ## Example
 

@@ -29,6 +29,8 @@ screenshots:
     path: doc/screenshots/06_pixel_grid.png
   - description: "PixelListTile rows — title/subtitle/trailing, pressed, disabled"
     path: doc/screenshots/07_pixel_list_tile.png
+  - description: "PixelSwitch — on / off / disabled states"
+    path: doc/screenshots/08_pixel_switch.png
 
 environment:
   sdk: ^3.8.0

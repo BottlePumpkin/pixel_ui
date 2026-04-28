@@ -103,6 +103,39 @@ void main() {
     });
   });
 
+  group('PixelSwitchTheme', () {
+    const dimmed = PixelShapeStyle(
+      corners: PixelCorners.sm,
+      fillColor: Color(0xFF222222),
+    );
+
+    const a = PixelSwitchTheme(
+      onTrackStyle: _normalStyle,
+      offTrackStyle: _pressedStyle,
+      thumbStyle: _boxStyle,
+      disabledStyle: _disabledStyle,
+    );
+
+    test('copyWith replaces one field, preserves others', () {
+      final b = a.copyWith(disabledStyle: dimmed);
+      expect(b.onTrackStyle, _normalStyle);
+      expect(b.offTrackStyle, _pressedStyle);
+      expect(b.thumbStyle, _boxStyle);
+      expect(b.disabledStyle, dimmed);
+    });
+
+    test('lerp snaps at t=0.5', () {
+      const other = PixelSwitchTheme(onTrackStyle: dimmed);
+      expect(a.lerp(other, 0.0).onTrackStyle, _normalStyle);
+      expect(a.lerp(other, 0.49).onTrackStyle, _normalStyle);
+      expect(a.lerp(other, 0.5).onTrackStyle, dimmed);
+    });
+
+    test('lerp returns self when other is null', () {
+      expect(a.lerp(null, 0.5), same(a));
+    });
+  });
+
   group('PixelTheme (umbrella)', () {
     test('copyWith replaces box and button', () {
       const a = PixelTheme();
@@ -127,6 +160,14 @@ void main() {
         listTile: const PixelListTileTheme(style: _boxStyle),
       );
       expect(b.listTile?.style, _boxStyle);
+    });
+
+    test('copyWith replaces switch_ slot', () {
+      const a = PixelTheme();
+      final b = a.copyWith(
+        switch_: const PixelSwitchTheme(thumbStyle: _boxStyle),
+      );
+      expect(b.switch_?.thumbStyle, _boxStyle);
     });
   });
 
@@ -208,6 +249,32 @@ void main() {
         listTileTheme: const PixelListTileTheme(style: _normalStyle),
       );
       expect(theme.extension<PixelListTileTheme>()?.style, _normalStyle);
+    });
+
+    test('registers PixelSwitchTheme when switchTheme provided', () {
+      final theme = pixelUiTheme(
+        switchTheme: const PixelSwitchTheme(thumbStyle: _boxStyle),
+      );
+      expect(theme.extension<PixelSwitchTheme>()?.thumbStyle, _boxStyle);
+    });
+
+    test('derives switch_ from umbrella when explicit not given', () {
+      final theme = pixelUiTheme(
+        pixelTheme: const PixelTheme(
+          switch_: PixelSwitchTheme(thumbStyle: _boxStyle),
+        ),
+      );
+      expect(theme.extension<PixelSwitchTheme>()?.thumbStyle, _boxStyle);
+    });
+
+    test('explicit switchTheme overrides umbrella.switch_', () {
+      final theme = pixelUiTheme(
+        pixelTheme: const PixelTheme(
+          switch_: PixelSwitchTheme(thumbStyle: _boxStyle),
+        ),
+        switchTheme: const PixelSwitchTheme(thumbStyle: _normalStyle),
+      );
+      expect(theme.extension<PixelSwitchTheme>()?.thumbStyle, _normalStyle);
     });
   });
 
