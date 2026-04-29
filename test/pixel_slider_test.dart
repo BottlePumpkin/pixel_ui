@@ -646,6 +646,82 @@ void main() {
       expect(_painters(tester).any((p) => p.style == themedDisabled), isTrue);
     });
   });
+
+  group('fillLogicalWidthFor', () {
+    test('value=min (fillDp == thumbDp) at natural track width', () {
+      // trackLogicalWidth=80 → trackDpW=320 (natural). thumbDp=32 → fillDp=32.
+      // Expected: 80 * 32 / 320 = 8 logical pixels (matches thumb).
+      expect(
+        fillLogicalWidthFor(
+          trackLogicalWidth: 80,
+          fillDp: 32,
+          trackDp: 320,
+        ),
+        8,
+      );
+    });
+
+    test('value=max (fillDp == trackDp) returns trackLogicalWidth', () {
+      expect(
+        fillLogicalWidthFor(
+          trackLogicalWidth: 80,
+          fillDp: 320,
+          trackDp: 320,
+        ),
+        80,
+      );
+    });
+
+    test('value=half at narrow track (200dp) rounds proportionally', () {
+      // Natural would be 80 * 176 / 320 = 44 — but here track is 200dp.
+      // ratio=0.5: thumbLeft=(200-32)*0.5=84, fillDp=84+32=116.
+      // expected fillLogicalW = round(80 * 116 / 200) = round(46.4) = 46.
+      expect(
+        fillLogicalWidthFor(
+          trackLogicalWidth: 80,
+          fillDp: 116,
+          trackDp: 200,
+        ),
+        46,
+      );
+    });
+
+    test('clamps to 1 when fillDp/trackDp ratio rounds below 1', () {
+      // trackLogicalWidth=80, fillDp=1, trackDp=200 → 80*1/200=0.4 → round=0
+      // → clamped to 1.
+      expect(
+        fillLogicalWidthFor(
+          trackLogicalWidth: 80,
+          fillDp: 1,
+          trackDp: 200,
+        ),
+        1,
+      );
+    });
+
+    test('clamps to trackLogicalWidth when fillDp exceeds trackDp', () {
+      // Defensive: fillDp shouldn't exceed trackDp in practice, but guard.
+      expect(
+        fillLogicalWidthFor(
+          trackLogicalWidth: 80,
+          fillDp: 999,
+          trackDp: 200,
+        ),
+        80,
+      );
+    });
+
+    test('returns 0 when trackDp == 0 (avoid division by zero)', () {
+      expect(
+        fillLogicalWidthFor(
+          trackLogicalWidth: 80,
+          fillDp: 0,
+          trackDp: 0,
+        ),
+        0,
+      );
+    });
+  });
 }
 
 List<PixelShapePainter> _painters(WidgetTester tester) {
