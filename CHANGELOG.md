@@ -16,6 +16,9 @@
 ### Internal
 - `tool/check_readme_version.dart` — CI guard that fails when `README.md`'s `pixel_ui: ^X.Y` install pin falls behind `pubspec.yaml`'s `version:` major.minor. Wired into `.github/workflows/test.yml` to prevent the recurring drift pattern at PR-time. Supports `--fix` for one-shot local repair and `--json` for tooling.
 
+### Fixed
+- `PixelSlider` — fill no longer renders at a different per-pixel scale than the track when the slider is laid out at a width other than the natural `trackLogicalWidth × 4 dp` (default 320dp). Border thickness and corner pixels of the fill now match the track at any layout width. Adds `fillLogicalWidthFor` test helper and three regression goldens at `width=200dp` (`narrow_value_0` / `narrow_value_half` / `narrow_value_1`).
+
 ## 0.5.1 — 2026-04-27
 
 ### Docs
