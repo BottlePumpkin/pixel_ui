@@ -46,6 +46,26 @@ Widget _frame({required Widget slider}) {
   );
 }
 
+Widget _frameNarrow({required Widget slider}) {
+  return MaterialApp(
+    home: Scaffold(
+      backgroundColor: const Color(0xFF1B1F2A),
+      body: Center(
+        child: SizedBox(
+          width: 200,
+          child: RepaintBoundary(
+            key: _boundaryKey,
+            child: Padding(
+              padding: const EdgeInsets.all(8),
+              child: slider,
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
+}
+
 PixelSlider _continuous(double v) => PixelSlider(
       value: v,
       onChanged: (_) {},
@@ -108,6 +128,33 @@ void main() {
     await expectLater(
       find.byKey(_boundaryKey),
       matchesGoldenFile('goldens/pixel_slider/discrete_step_5_of_5.png'),
+    );
+  });
+
+  testWidgets('narrow width=200, continuous value=0', (tester) async {
+    await tester.pumpWidget(_frameNarrow(slider: _continuous(0)));
+    await tester.pumpAndSettle();
+    await expectLater(
+      find.byKey(_boundaryKey),
+      matchesGoldenFile('goldens/pixel_slider/narrow_value_0.png'),
+    );
+  });
+
+  testWidgets('narrow width=200, continuous value=0.5', (tester) async {
+    await tester.pumpWidget(_frameNarrow(slider: _continuous(0.5)));
+    await tester.pumpAndSettle();
+    await expectLater(
+      find.byKey(_boundaryKey),
+      matchesGoldenFile('goldens/pixel_slider/narrow_value_half.png'),
+    );
+  });
+
+  testWidgets('narrow width=200, continuous value=1.0', (tester) async {
+    await tester.pumpWidget(_frameNarrow(slider: _continuous(1.0)));
+    await tester.pumpAndSettle();
+    await expectLater(
+      find.byKey(_boundaryKey),
+      matchesGoldenFile('goldens/pixel_slider/narrow_value_1.png'),
     );
   });
 }

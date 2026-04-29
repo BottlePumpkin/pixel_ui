@@ -5,6 +5,35 @@ import 'package:pixel_ui/src/pixel_box.dart';
 import 'package:pixel_ui/src/pixel_style.dart';
 import 'package:pixel_ui/src/pixel_theme.dart';
 
+/// Computes the [PixelBox.logicalWidth] for the slider's fill, given
+/// the track's logical width and the dp widths of fill and track.
+///
+/// The fill renders inside the slider track but its visible dp width
+/// changes with `value`. Naively passing `trackLogicalWidth` to the fill
+/// would mean each logical pixel of the fill is squeezed into a smaller
+/// dp width than the track's, producing a visible mismatch in border
+/// thickness and corner pixels at non-natural slider widths. This helper
+/// scales the fill's logical width proportionally so that
+/// `fillDp / fillLogicalWidth ≈ trackDp / trackLogicalWidth`,
+/// keeping the per-logical-pixel dp size consistent across track and fill.
+///
+/// Edge cases:
+/// - `trackDp <= 0` → returns `0` (caller should skip rendering).
+/// - Result is clamped to `[1, trackLogicalWidth]` when `trackDp > 0`,
+///   so a near-zero fill still produces a visible 1-pixel-wide box.
+@visibleForTesting
+int fillLogicalWidthFor({
+  required int trackLogicalWidth,
+  required double fillDp,
+  required double trackDp,
+}) {
+  if (trackDp <= 0) return 0;
+  final raw = (trackLogicalWidth * fillDp / trackDp).round();
+  if (raw < 1) return 1;
+  if (raw > trackLogicalWidth) return trackLogicalWidth;
+  return raw;
+}
+
 /// A pixel-styled value slider (continuous or discrete).
 ///
 /// Drop-in replacement for Material `Slider` inside a pixel-themed app.
@@ -104,6 +133,11 @@ class _PixelSliderState extends State<PixelSlider> {
           constraints.maxWidth.isFinite ? constraints.maxWidth : 320.0;
       final thumbLeft = (trackDpW - thumbDp) * _ratio;
       final fillDpW = thumbLeft + thumbDp;
+      final fillLogicalW = fillLogicalWidthFor(
+        trackLogicalWidth: widget.trackLogicalWidth,
+        fillDp: fillDpW,
+        trackDp: trackDpW,
+      );
 
       final visual = SizedBox(
         width: trackDpW,
@@ -131,7 +165,7 @@ class _PixelSliderState extends State<PixelSlider> {
               height: trackDpH,
               child: PixelBox(
                 style: fill!,
-                logicalWidth: widget.trackLogicalWidth,
+                logicalWidth: fillLogicalW,
                 logicalHeight: widget.trackLogicalHeight,
                 width: fillDpW,
                 height: trackDpH,
