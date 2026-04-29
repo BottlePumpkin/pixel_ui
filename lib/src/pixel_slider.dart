@@ -133,6 +133,11 @@ class _PixelSliderState extends State<PixelSlider> {
           constraints.maxWidth.isFinite ? constraints.maxWidth : 320.0;
       final thumbLeft = (trackDpW - thumbDp) * _ratio;
       final fillDpW = thumbLeft + thumbDp;
+      final fillLogicalW = fillLogicalWidthFor(
+        trackLogicalWidth: widget.trackLogicalWidth,
+        fillDp: fillDpW,
+        trackDp: trackDpW,
+      );
 
       final visual = SizedBox(
         width: trackDpW,
@@ -160,7 +165,7 @@ class _PixelSliderState extends State<PixelSlider> {
               height: trackDpH,
               child: PixelBox(
                 style: fill!,
-                logicalWidth: widget.trackLogicalWidth,
+                logicalWidth: fillLogicalW,
                 logicalHeight: widget.trackLogicalHeight,
                 width: fillDpW,
                 height: trackDpH,
