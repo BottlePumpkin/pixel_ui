@@ -2,12 +2,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/painting.dart';
 import 'package:pixel_ui/pixel_ui.dart';
 
-/// Single source of truth for the tuner's current [PixelShapeStyle].
+/// Single source of truth for the Box tuner's [PixelShapeStyle].
 ///
-/// The optional [labelText] is tracked separately because it is not a field of
-/// [PixelShapeStyle] — it is a widget-level option on `PixelBox.label`.
-class TunerState extends ValueNotifier<PixelShapeStyle> {
-  TunerState() : super(_initial);
+/// The optional [labelText] is tracked separately because it is not a field
+/// of [PixelShapeStyle] — it is a widget-level option on `PixelBox.label`.
+class BoxState extends ValueNotifier<PixelShapeStyle> {
+  BoxState() : super(_initial);
 
   static const _initial = PixelShapeStyle(
     corners: PixelCorners.lg,
@@ -22,8 +22,7 @@ class TunerState extends ValueNotifier<PixelShapeStyle> {
   void setCorners(PixelCorners corners) =>
       value = value.copyWith(corners: corners);
 
-  void setFillColor(Color color) =>
-      value = value.copyWith(fillColor: color);
+  void setFillColor(Color color) => value = value.copyWith(fillColor: color);
 
   void setBorderColor(Color? color) =>
       value = value.copyWith(borderColor: color);

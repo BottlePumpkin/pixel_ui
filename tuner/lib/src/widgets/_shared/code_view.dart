@@ -2,16 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pixel_ui/pixel_ui.dart';
 
-import 'code_generator.dart';
-import 'tuner_state.dart';
-import 'widgets/pixel_section_header.dart';
-
-/// Dark-themed code panel: PixelShapeStyle → Dart source + copy button.
+/// Dark-themed read-only code view + COPY CODE button.
 ///
-/// Visual refinement R2: #1A1A1A background, #9CCC65 lime text, MulmaruMono font.
-class CodePanel extends StatelessWidget {
-  final TunerState state;
-  const CodePanel({super.key, required this.state});
+/// Accepts the rendered Dart source as a [code] prop; widget-specific
+/// generation lives in each `WidgetTuner.buildCode` callsite.
+class CodeView extends StatelessWidget {
+  final String code;
+  const CodeView({super.key, required this.code});
 
   static const _bgColor = Color(0xFF1A1A1A);
   static const _textColor = Color(0xFF9CCC65);
@@ -21,7 +18,6 @@ class CodePanel extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const PixelSectionHeader('CODE'),
         Container(
           margin: const EdgeInsets.symmetric(vertical: 8),
           padding: const EdgeInsets.all(16),
@@ -29,24 +25,13 @@ class CodePanel extends StatelessWidget {
             color: _bgColor,
             border: Border.all(color: const Color(0xFF2A2A2A), width: 2),
           ),
-          child: ValueListenableBuilder<PixelShapeStyle>(
-            valueListenable: state,
-            builder: (context, style, _) {
-              return ValueListenableBuilder<String?>(
-                valueListenable: state.labelText,
-                builder: (context, labelText, _) {
-                  final code = generateCode(style, labelText: labelText);
-                  return SelectableText(
-                    code,
-                    style: PixelText.mulmaruMono(
-                      fontSize: 12,
-                      color: _textColor,
-                      height: 1.4,
-                    ),
-                  );
-                },
-              );
-            },
+          child: SelectableText(
+            code,
+            style: PixelText.mulmaruMono(
+              fontSize: 12,
+              color: _textColor,
+              height: 1.4,
+            ),
           ),
         ),
         const SizedBox(height: 8),
@@ -87,7 +72,6 @@ class CodePanel extends StatelessWidget {
   }
 
   Future<void> _copy(BuildContext context) async {
-    final code = generateCode(state.value, labelText: state.labelText.value);
     try {
       await Clipboard.setData(ClipboardData(text: code));
       if (!context.mounted) return;

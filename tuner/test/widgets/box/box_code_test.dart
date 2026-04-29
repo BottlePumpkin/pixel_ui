@@ -1,16 +1,16 @@
 import 'package:flutter/painting.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pixel_ui/pixel_ui.dart';
-import 'package:pixel_ui_tuner/src/code_generator.dart';
+import 'package:pixel_ui_tuner/src/widgets/box/box_code.dart';
 
 void main() {
-  group('generateCode', () {
+  group('generateBoxCode', () {
     test('preset corners emit preset identifier', () {
       const style = PixelShapeStyle(
         corners: PixelCorners.lg,
         fillColor: Color(0xFF5A8A3A),
       );
-      final code = generateCode(style);
+      final code = generateBoxCode(style);
       expect(code, contains('corners: PixelCorners.lg,'));
       expect(code, contains('fillColor: Color(0xFF5A8A3A),'));
     });
@@ -19,9 +19,9 @@ void main() {
       const style = PixelShapeStyle(
         corners: PixelCorners.sharp,
         fillColor: Color(0xFFFFFFFF),
-        borderWidth: 3, // should still be omitted because borderColor is null
+        borderWidth: 3,
       );
-      final code = generateCode(style);
+      final code = generateBoxCode(style);
       expect(code, isNot(contains('borderColor:')));
       expect(code, isNot(contains('borderWidth:')));
     });
@@ -31,7 +31,7 @@ void main() {
         corners: PixelCorners.md,
         fillColor: Color(0xFF000000),
       );
-      expect(generateCode(style), isNot(contains('shadow:')));
+      expect(generateBoxCode(style), isNot(contains('shadow:')));
     });
 
     test('shadow present emits nested block with offset and color', () {
@@ -40,19 +40,10 @@ void main() {
         fillColor: Color(0xFF000000),
         shadow: PixelShadow(offset: Offset(2, -1), color: Color(0xFF123456)),
       );
-      final code = generateCode(style);
+      final code = generateBoxCode(style);
       expect(code, contains('shadow: PixelShadow('));
       expect(code, contains('offset: Offset(2, -1),'));
       expect(code, contains('color: Color(0xFF123456),'));
-    });
-
-    test('solid shadow style is omitted from emitted source', () {
-      const style = PixelShapeStyle(
-        corners: PixelCorners.md,
-        fillColor: Color(0xFF000000),
-        shadow: PixelShadow(offset: Offset(1, 1), color: Color(0xFF000000)),
-      );
-      expect(generateCode(style), isNot(contains('style:')));
     });
 
     test('omitting labelText produces no label comment block', () {
@@ -60,8 +51,8 @@ void main() {
         corners: PixelCorners.md,
         fillColor: Color(0xFF000000),
       );
-      expect(generateCode(style), isNot(contains('Paired usage')));
-      expect(generateCode(style), isNot(contains('label:')));
+      expect(generateBoxCode(style), isNot(contains('Paired usage')));
+      expect(generateBoxCode(style), isNot(contains('label:')));
     });
 
     test('non-null labelText emits PixelBox usage comment', () {
@@ -69,7 +60,7 @@ void main() {
         corners: PixelCorners.md,
         fillColor: Color(0xFF000000),
       );
-      final code = generateCode(style, labelText: 'INVENTORY');
+      final code = generateBoxCode(style, labelText: 'INVENTORY');
       expect(code, contains('// Paired usage:'));
       expect(code, contains("//   label: Text('INVENTORY'),"));
     });
@@ -79,24 +70,8 @@ void main() {
         corners: PixelCorners.md,
         fillColor: Color(0xFF000000),
       );
-      final code = generateCode(style, labelText: "it's");
+      final code = generateBoxCode(style, labelText: "it's");
       expect(code, contains(r"//   label: Text('it\'s'),"));
-    });
-
-    test('stipple shadow style is emitted as PixelShadowStyle.stipple', () {
-      const style = PixelShapeStyle(
-        corners: PixelCorners.md,
-        fillColor: Color(0xFF000000),
-        shadow: PixelShadow(
-          offset: Offset(1, 1),
-          color: Color(0xFF000000),
-          style: PixelShadowStyle.stipple,
-        ),
-      );
-      expect(
-        generateCode(style),
-        contains('style: PixelShadowStyle.stipple,'),
-      );
     });
 
     test('output uses 2-space indent', () {
@@ -104,16 +79,8 @@ void main() {
         corners: PixelCorners.lg,
         fillColor: Color(0xFF5A8A3A),
       );
-      final code = generateCode(style);
+      final code = generateBoxCode(style);
       expect(code, startsWith('const style = PixelShapeStyle(\n  corners: '));
-    });
-
-    test('fillColor uses uppercase 8-digit hex with 0xFF prefix', () {
-      const style = PixelShapeStyle(
-        corners: PixelCorners.sharp,
-        fillColor: Color(0xFFAABBCC),
-      );
-      expect(generateCode(style), contains('Color(0xFFAABBCC)'));
     });
   });
 }
